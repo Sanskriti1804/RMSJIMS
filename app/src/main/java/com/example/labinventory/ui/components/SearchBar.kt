@@ -1,4 +1,4 @@
-package com.example.labinventory.components
+package com.example.labinventory.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

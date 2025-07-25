@@ -1,4 +1,4 @@
-package com.example.labinventory.screens
+package com.example.labinventory.ui.screens
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
@@ -26,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
@@ -36,10 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.labinventory.R
-import com.example.labinventory.components.AppButton
-import com.example.labinventory.components.AppCategoryIcon
-import com.example.labinventory.components.AppCircularIcon
-import com.example.labinventory.components.CustomLabel
+import com.example.labinventory.ui.components.AppButton
+import com.example.labinventory.ui.components.AppCategoryIcon
+import com.example.labinventory.ui.components.AppCircularIcon
+import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.highlightColor

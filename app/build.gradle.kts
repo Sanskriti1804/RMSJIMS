@@ -1,12 +1,28 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.0.21"
+}
+
+val localPropsFile = rootProject.file("local.properties")
+val localProps = Properties().apply {
+    if (localPropsFile.exists()) {
+        load(FileInputStream(localPropsFile))
+    }
 }
 
 android {
     namespace = "com.example.labinventory"
     compileSdk = 35
+
+    buildFeatures {
+        buildConfig = true
+        compose = true
+    }
 
     defaultConfig {
         applicationId = "com.example.labinventory"
@@ -16,6 +32,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        localProps["SUPABASE_URL"]?.let {
+            buildConfigField("String", "SUPABASE_URL", "\"$it\"")
+        }
+        localProps["SUPABASE_KEY"]?.let {
+            buildConfigField("String", "SUPABASE_KEY", "\"$it\"")
+        }
     }
 
     buildTypes {
@@ -34,9 +57,6 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
@@ -44,6 +64,18 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-pager:0.34.0")
     implementation ("com.google.accompanist:accompanist-pager-indicators:0.34.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
+
+    // Supabase
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.2.2"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:3.2.2")
+
+    // Koin for DI
+    implementation("io.insert-koin:koin-android:3.5.3")
+    //serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    //ktor
+    implementation("io.ktor:ktor-client-android:2.3.9")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

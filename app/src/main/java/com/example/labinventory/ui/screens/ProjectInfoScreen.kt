@@ -1,4 +1,4 @@
-package com.example.labinventory.screens
+package com.example.labinventory.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -18,10 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.labinventory.components.AppButton
-import com.example.labinventory.components.AppDropDownTextField
-import com.example.labinventory.components.AppTextField
-import com.example.labinventory.components.CustomLabel
+import com.example.labinventory.ui.components.AppButton
+import com.example.labinventory.ui.components.AppDropDownTextField
+import com.example.labinventory.ui.components.AppTextField
+import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.theme.darkTextColor
 
 @SuppressLint("RememberReturnType")

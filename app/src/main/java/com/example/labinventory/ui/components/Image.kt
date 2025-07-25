@@ -1,4 +1,4 @@
-package com.example.labinventory.components
+package com.example.labinventory.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
