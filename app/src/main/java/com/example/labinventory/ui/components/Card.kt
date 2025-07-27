@@ -15,41 +15,4 @@ import androidx.compose.ui.unit.dp
 import com.example.labinventory.ui.theme.cardColor
 
 
-@Composable
-fun AppCategoryCard(
-    onClick: () -> Unit = {},
-    title : String,
-    padding : Dp = 4.dp,
-//    shape: Shape = Shapes.CardShape,
-//    elevation: CardElevation = CardDefaults.cardElevation(Dimensions.cardElevation),
-    containerColor: Color = cardColor
-){
-    Card(
-        modifier = Modifier
-            .padding(padding)
-            .aspectRatio(192f/109f),
-        onClick = onClick,
-//        elevation = elevation,
-        colors = CardDefaults.cardColors(
-            containerColor = containerColor
-        )
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(5.dp)
-        ){
-
-            CustomLabel(
-                header = "Film",
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-            )
-
-            AppCategoryImage(
-                modifier = Modifier.align(Alignment.BottomEnd),
-            )
-        }
-    }
-}
 

@@ -11,6 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.labinventory.ui.screens.EquipmentScreen
+import com.example.labinventory.ui.screens.HomeScreen
+import com.example.labinventory.ui.screens.ProdDescScreen
+import com.example.labinventory.ui.screens.ProjectInfoScreen
 import com.example.labinventory.ui.theme.LabInventoryTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,8 +22,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LabInventoryTheme {
-            }
+            HomeScreen()
+//            EquipmentScreen()
+//            ProdDescScreen()
+//            ProjectInfoScreen()
+//            LabInventoryTheme {
+//            }
         }
     }
 }

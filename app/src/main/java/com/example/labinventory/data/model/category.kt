@@ -1,7 +1,6 @@
-package com.example.labinventory.equipments.data
+package com.example.labinventory.data.model
 
 import androidx.annotation.DrawableRes
-import androidx.compose.ui.graphics.painter.Painter
 import com.example.labinventory.R
 
 data class EquipmentCategory(

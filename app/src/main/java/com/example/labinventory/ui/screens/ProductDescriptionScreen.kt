@@ -145,7 +145,7 @@ fun ProductCarousel(
             activeColor = activeColor,
             indicatorShape = indicatorShape,
             modifier = Modifier
-                .align(Alignment.BottomCenter as Alignment.Horizontal)
+//                .align(Alignment.BottomCenter as Alignment.Horizontal)
                 .padding(prodPadding)
                 .size(indicatorSize)
         )
@@ -171,7 +171,6 @@ fun ProductDescriptionCard(){
             AppCategoryIcon(
                 painter = painterResource(R.drawable.ic_favorite),
                 iconDescription = "Save Icon",
-                iconSize = 5.dp,
                 modifier = Modifier.padding(1.dp)
             )
         }
@@ -296,7 +295,6 @@ fun InChargeCard(){
             AppCategoryIcon(
                 painter = painterResource(R.drawable.ic_favorite),
                 iconDescription = "Save Icon",
-                iconSize = 6.dp,
                 modifier = Modifier.padding(1.dp)
             )
         }

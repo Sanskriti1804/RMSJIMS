@@ -89,7 +89,8 @@ fun ProjectInfoScreen(){
         AppButton(
             buttonText = "BOOK",
             onClick = {},
-            modifier = Modifier.align(Alignment.Bottom as Alignment.Horizontal)
+            modifier = Modifier.padding(1.dp)
+//            modifier = Modifier.align(Alignment.Bottom as Alignment.Horizontal)
         )
     }
 }

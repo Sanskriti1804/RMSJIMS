@@ -20,13 +20,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.labinventory.R
+import com.example.labinventory.data.model.EquipmentCategory
+import com.example.labinventory.data.model.categories
 import com.example.labinventory.ui.components.AppCategoryIcon
 import com.example.labinventory.ui.components.AppCategoryImage
 import com.example.labinventory.ui.components.AppCircularIcon
 import com.example.labinventory.ui.components.AppSearchBar
 import com.example.labinventory.ui.components.CustomLabel
-import com.example.labinventory.equipments.data.EquipmentCategory
-import com.example.labinventory.equipments.data.categories
 import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.highlightColor
@@ -45,7 +45,6 @@ fun EquipmentScreen(){
                 AppSearchBar(
                     query = "",
                     onQueryChange = {},
-                    onSearch = {},
                     placeholder = "Equipments, Tools, Supplies, etc..."
                 )
 
@@ -124,7 +123,6 @@ fun EquipmentCard(
                 AppCategoryIcon(
                     painter = painterResource(R.drawable.ic_save),
                     iconDescription = "Save icon",
-                    iconSize = 6.dp,
                     modifier = Modifier.align(Alignment.TopEnd)
                 )
             }
@@ -155,7 +153,6 @@ fun EquipmentCard(
                     AppCategoryIcon(
                         painter = painterResource(R.drawable.ic_location),
                         iconDescription = "location icon",
-                        iconSize = 3.dp
                     )
                     CustomLabel(
                         header = "IDC, Photo Studio" ,

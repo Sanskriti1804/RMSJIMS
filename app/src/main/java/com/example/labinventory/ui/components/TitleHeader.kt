@@ -7,14 +7,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.labinventory.R
 import com.example.labinventory.ui.theme.categoryColor
+import com.example.labinventory.ui.theme.navLabelColor
 import com.example.labinventory.ui.theme.titleColor
+import com.example.labinventory.util.pxToDp
 
 @Composable
 fun CustomTitle(
@@ -22,36 +27,36 @@ fun CustomTitle(
     headerColor : Color = titleColor,
     fontWeight: FontWeight = FontWeight.Normal,
     fontSize : TextUnit = 20.sp,
+    fontFamily: FontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
     maxLine: Int = 1
 ){
     Text(
         text = header,
         color = headerColor,
-        fontWeight = fontWeight,
-        fontSize = fontSize,
+        style = TextStyle(
+            fontWeight = fontWeight,
+            fontSize = fontSize,
+            fontFamily = fontFamily),
         maxLines = maxLine
     )
 }
 
 @Composable
-fun CustomBody(
+fun CustomSmallLabel(
     header : String,
-    headerColor : Color = Color.Black,
-    fontWeight: FontWeight = FontWeight.SemiBold,
-    fontSize : TextUnit = 22.sp,
-    style: TextStyle = MaterialTheme.typography.bodyLarge,
-    modifier: Modifier = Modifier.padding(1.dp),
-    maxLine: Int = 1
+    headerColor : Color = navLabelColor,
+    fontWeight: FontWeight = FontWeight.Normal,
+    fontSize : TextUnit = 14.sp,
+    fontFamily: FontFamily = FontFamily(Font(R.font.font_sf_pro_display)),
+    modifier : Modifier
 ){
     Text(
         text = header,
         modifier = modifier,
         color = headerColor,
-        style = style.copy(
-            fontWeight = fontWeight,
-            fontSize = fontSize
-        ),
-        maxLines = maxLine
+        fontWeight = fontWeight,
+        fontSize = fontSize,
+        fontFamily = fontFamily
     )
 }
 
@@ -60,17 +65,20 @@ fun CustomLabel(
     header : String,
     headerColor : Color = categoryColor,
     fontWeight: FontWeight = FontWeight.Normal,
-    fontSize : TextUnit = 16.sp,
+    fontSize : TextUnit = pxToDp(16).value.sp,
+    fontFamily: FontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
     modifier: Modifier,
     maxLine: Int = 1
 ){
+
     Text(
         text = header,
         modifier = modifier,
         color = headerColor,
-        fontWeight = fontWeight,
-        fontSize = fontSize,
-        maxLines = maxLine
+        style = TextStyle(
+            fontWeight = fontWeight,
+            fontSize = fontSize,
+            fontFamily = fontFamily),        maxLines = maxLine
     )
 }
 

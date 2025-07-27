@@ -1,74 +1,100 @@
 package com.example.labinventory.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.labinventory.R
 import com.example.labinventory.ui.theme.Typography
 import com.example.labinventory.ui.theme.labelColor
 import com.example.labinventory.ui.theme.searchBarColor
+import com.example.labinventory.util.pxToDp
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppSearchBar(
-    query : String,
-    onQueryChange : (String) -> Unit,
-    onSearch : (String) -> Unit,
-    active : Boolean = false,
-    searchIcon : Painter = painterResource(id = R.drawable.search),
-    iconSize : Dp = 7.dp,
-    iconDescription : String = "Search",
-    containerColor : Color = searchBarColor,
-    placeholder: String,
-    textColor : Color = labelColor,
-//    onClick: @Composable () -> Unit,
-    shape: Shape = SearchBarDefaults.inputFieldShape,
-    ){
-    SearchBar(
-        modifier = Modifier
+    modifier: Modifier = Modifier,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    placeholder: String = "Search",
+    searchIcon: Painter = painterResource(id = R.drawable.search),
+    iconDescription: String = "Search",
+    backgroundColor: Color = searchBarColor,
+    textColor: Color = labelColor,
+    shape: Shape = RoundedCornerShape(pxToDp(50)),
+) {
+    Box(
+        modifier = modifier
+            .clip(shape)
+            .background(backgroundColor)
+            .height(pxToDp(46))
             .fillMaxWidth()
-            .padding(top = 8.dp, end = 3.dp)
-            .height(16.dp),
-        query = query,
-        onQueryChange = onQueryChange,
-        onSearch = onSearch,
-        active = active,
-//        onActiveChange = { onActiveChange },
-        onActiveChange = {},
-        shape = shape,
-        colors = SearchBarDefaults.colors(
-            containerColor = containerColor
-        )
+            .padding(horizontal = pxToDp(16)), // inner padding
+        contentAlignment = Alignment.CenterStart
     ) {
-        Icon(
-            painter = searchIcon,
-            modifier = Modifier
-                .size(iconSize)
-                .padding(4.dp),
-            contentDescription = iconDescription,
-        )
-        Text(
-            text = placeholder,
-            modifier = Modifier.padding(5.dp),
-            style = Typography.labelSmall,
-            color = textColor
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = searchIcon,
+                contentDescription = iconDescription,
+                modifier = Modifier
+                    .size(pxToDp(21)),
+                tint = textColor
+            )
+            Spacer(modifier = Modifier.width(pxToDp(16)))
+
+            BasicTextField(
+                value = query,
+                onValueChange = onQueryChange,
+                singleLine = true,
+                textStyle = Typography.labelSmall.copy(
+                    color = labelColor,
+                    fontSize =15.sp
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = pxToDp(8)), // vertical centering
+                decorationBox = { innerTextField ->
+                    if (query.isEmpty()) {
+                        Text(
+                            text = placeholder,
+                            style = Typography.labelSmall.copy(
+                                color = labelColor,
+                                fontSize =15.sp
+                            )
+                        )
+                    }
+                    innerTextField()
+                }
+            )
+        }
     }
 }
 

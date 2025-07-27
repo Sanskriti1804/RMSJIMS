@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -17,20 +18,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.labinventory.R
+import com.example.labinventory.ui.theme.labelColor
+import com.example.labinventory.ui.theme.navLabelColor
 import com.example.labinventory.ui.theme.searchBarColor
+import com.example.labinventory.util.pxToDp
 
 @Composable
 fun AppCircularIcon(
     painter : Painter = painterResource(R.drawable.ic_reset),
     iconDescription : String = "Circular Icon",
-    boxSize : Dp = 15.dp,
+    boxSize : Dp = pxToDp(46),
     boxShape : Shape = CircleShape,
     boxBackgroundColor : Color = searchBarColor,
-    iconPadding : Dp = 3.dp,
-    iconSize : Dp = 8.dp,
+    iconPadding : Dp = pxToDp(11),
+    iconSize : Dp = pxToDp(24),
     onClick : () -> Unit = {}
 ){
     Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(boxSize)
             .clip(boxShape)
@@ -43,6 +48,7 @@ fun AppCircularIcon(
             modifier = Modifier
                 .padding(iconPadding)
                 .size(iconSize),
+            tint = labelColor
         )
     }
 }
@@ -53,14 +59,12 @@ fun AppCategoryIcon(
     painter : Painter,
     iconDescription : String = "Equipment Category Icon",
     modifier: Modifier = Modifier,
-    iconSize : Dp = 8.dp
+//    iconSize : Dp = 8.dp
 ){
     Icon(
         painter = painter,
         contentDescription = iconDescription,
-        modifier = Modifier
-            .padding(top = 4.dp)
-            .size(iconSize)
+        modifier = modifier
     )
 }
 
@@ -69,12 +73,14 @@ fun AppNavIcon(
     painter : Painter,
     iconDescription : String = "Navigation Icon",
     modifier: Modifier = Modifier,
-    iconSize : Dp = 8.dp
+    iconSize : Dp = pxToDp(24),
+    tint : Color = navLabelColor
 ){
     Icon(
         painter = painter,
         contentDescription = iconDescription,
         modifier = modifier
-            .size(iconSize)
+            .size(iconSize),
+        tint = tint
     )
 }

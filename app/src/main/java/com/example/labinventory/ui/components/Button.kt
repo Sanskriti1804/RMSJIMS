@@ -58,8 +58,8 @@ fun AppButton(
             Text(
                 text = buttonText,
                 modifier = Modifier
-                    .padding(5.dp)
-                    .align(Alignment.Center as Alignment.Vertical),
+                    .padding(5.dp),
+//                    .align(Alignment.Center as Alignment.Vertical),
                 fontSize = 14.sp,
                 color = whiteColor
             )

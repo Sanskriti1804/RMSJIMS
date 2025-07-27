@@ -1,49 +1,122 @@
 package com.example.labinventory.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.labinventory.ui.components.AppCategoryCard
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
+import com.example.labinventory.ui.components.AppCategoryImage
 import com.example.labinventory.ui.components.AppCircularIcon
 import com.example.labinventory.ui.components.AppSearchBar
 
 import com.example.labinventory.ui.components.CustomLabel
-import com.example.labinventory.ui.theme.Dimensions
+import com.example.labinventory.ui.components.CustomNavigationBar
+import com.example.labinventory.ui.theme.cardColor
+import com.example.labinventory.ui.theme.titleColor
+import com.example.labinventory.ui.theme.whiteColor
+import com.example.labinventory.util.pxToDp
 
 @Composable
 fun HomeScreen() {
-    Column(modifier = Modifier.fillMaxSize().padding(Dimensions.appPadding)) {
-        Row {
-            AppSearchBar(
-                query = "",
-                onQueryChange = {},
-                onSearch = {},
-                placeholder = "Equipments, Tools, Supplies, etc..."
-            )
-
-            AppCircularIcon()
-        }
-
-
-        CustomLabel(
-            "Explore by Category",
+    Scaffold(
+        bottomBar = { CustomNavigationBar() },
+        containerColor = whiteColor
+    ) {paddingValues ->
+        Column(
             modifier = Modifier
-                .padding(top = 12.dp, bottom = 4.dp)
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = pxToDp(14), end = pxToDp(14), top = pxToDp(19), bottom = pxToDp(37))
+            ){
+                AppSearchBar(
+                    query = "",
+                    onQueryChange = {},
+                    modifier = Modifier
+                        .height(pxToDp(46))
+                        .weight(1f),
+                    placeholder = "Equipments, Tools, Supplies, etc..."
+                )
+
+                Spacer(modifier = Modifier.width(pxToDp(8)))
+
+                AppCircularIcon()
+            }
+
+
+            CustomLabel(
+                "Explore by Category",
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .padding(start = pxToDp(16), bottom =pxToDp(13)),
+                headerColor = titleColor
             )
 
-        AppCategoryCard(
-            title = "Film"
-        )
-
-//
-//        CategoryGrid(items = categoryItems)
+            AppCategoryCard(
+                title = "Film"
+            )
+        }
     }
 }
+
+@Composable
+fun AppCategoryCard(
+    onClick: () -> Unit = {},
+    title : String,
+    padding : Dp = pxToDp(16),
+    containerColor: Color = cardColor,
+    shape: Shape = RectangleShape
+){
+    Card(
+        modifier = Modifier
+            .padding(padding)
+            .aspectRatio(192f/109f),
+        onClick = onClick,
+        shape = shape,
+//        elevation = elevation,
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ){
+
+            CustomLabel(
+                header =title,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+            )
+
+            AppCategoryImage(
+                modifier = Modifier.align(Alignment.BottomEnd),
+            )
+        }
+    }
+}
+
+
 //    LazyVerticalGrid(
 //        columns = GridCells.Fixed(2)
 //    ) {
