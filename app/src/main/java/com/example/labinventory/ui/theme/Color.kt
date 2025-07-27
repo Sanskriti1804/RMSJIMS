@@ -13,11 +13,13 @@ val Pink40 = Color(0xFF7D5260)
 
 // temp color
 val searchBarColor = Color(0xFFF7F7F8)
-val navBarColor = Color(0xFFD4D4D4)
+
+val navBackColor = Color(0xFF2A2A2A)
 val labelColor = Color(0xFF706F70)
 val titleColor = Color(0xFF2B2B2B)
 val headerColor = Color(0xFF1C1C1C)
 val categoryColor = Color(0xFF272727)
+val categoryIconColor = Color(0xFF999999)
 val navLabelColor = Color(0xFFA0A0A0)
 val cardColor = Color(0xFFF6F6F6)
 val darkTextColor = Color(0xFF000000)

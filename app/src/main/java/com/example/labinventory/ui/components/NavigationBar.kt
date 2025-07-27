@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.labinventory.navigation.bottomNavItems
-import com.example.labinventory.ui.theme.navBarColor
 import com.example.labinventory.ui.theme.highlightColor
 import com.example.labinventory.ui.theme.navLabelColor
 import com.example.labinventory.ui.theme.whiteColor
