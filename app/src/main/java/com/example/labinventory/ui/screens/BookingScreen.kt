@@ -21,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,20 +39,18 @@ import com.example.labinventory.data.model.InChargeInfo
 import com.example.labinventory.data.model.ProductInfo
 import com.example.labinventory.data.model.Status
 import com.example.labinventory.data.model.TabItem
-import com.example.labinventory.ui.components.AppCircularIcon
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.darkTextColor
-import com.example.labinventory.ui.theme.headerColor
 import com.example.labinventory.ui.theme.highlightColor
 import com.example.labinventory.ui.theme.someGrayColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
-import com.example.labinventory.viewmodel.InfoTabsViewModel
+import com.example.labinventory.viewmodel.BookingScreenViewmodel
 
 
 @Composable
-fun BookingScreen(viewModel: InfoTabsViewModel) {
+fun BookingScreen(viewModel: BookingScreenViewmodel) {
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),

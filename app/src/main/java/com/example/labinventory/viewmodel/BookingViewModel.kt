@@ -14,7 +14,7 @@ import com.example.labinventory.data.model.Status
 import com.example.labinventory.data.model.TabItem
 
 
-class InfoTabsViewModel : ViewModel() {
+class BookingScreenViewmodel : ViewModel() {
 
     private val _tabs = mutableStateListOf(
         TabItem(BookingTab.Booking_Requests, "Product", R.drawable.ic_booking_pending, true),

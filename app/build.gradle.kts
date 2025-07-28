@@ -77,6 +77,7 @@ dependencies {
     implementation("io.ktor:ktor-client-android:2.3.9")
 
 
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
