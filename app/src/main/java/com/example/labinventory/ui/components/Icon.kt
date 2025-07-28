@@ -36,7 +36,8 @@ fun AppCircularIcon(
     boxBackgroundColor : Color = searchBarColor,
     iconPadding : Dp = pxToDp(11),
     iconSize : Dp = pxToDp(22),
-    onClick : () -> Unit = {}
+    onClick : () -> Unit = {},
+    tint : Color = labelColor
 ){
     Box(
         contentAlignment = Alignment.Center,
@@ -52,7 +53,7 @@ fun AppCircularIcon(
             modifier = Modifier
                 .padding(iconPadding)
                 .size(iconSize),
-            tint = labelColor
+            tint = tint
         )
     }
 }

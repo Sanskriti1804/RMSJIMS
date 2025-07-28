@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,16 +21,23 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,16 +47,20 @@ import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.AppCategoryIcon
 import com.example.labinventory.ui.components.AppCircularIcon
 import com.example.labinventory.ui.components.CustomLabel
+import com.example.labinventory.ui.components.CustomTopBar
 import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.highlightColor
+import com.example.labinventory.ui.theme.whiteColor
+import com.example.labinventory.util.pxToDp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import kotlinx.coroutines.delay
 
 
+
 @Composable
-fun ProdDescScreen(modifier: Modifier = Modifier){
+fun ProdDescScreen() {
     val productImage = listOf(
         R.drawable.temp,
         R.drawable.temp,
@@ -56,335 +68,432 @@ fun ProdDescScreen(modifier: Modifier = Modifier){
     )
 
     val pagerState = rememberPagerState(pageCount = { productImage.size })
-
-    val pagerInteractionSource = remember { MutableInteractionSource() }         //remember new interaction source - like user gestures
+    val pagerInteractionSource = remember { MutableInteractionSource() }
     val pagerIsPressed by pagerInteractionSource.collectIsPressedAsState()
     val pagerIsDragged by pagerState.interactionSource.collectIsDraggedAsState()
-
-    val autoAdvance = !pagerIsDragged && !pagerIsPressed        //auto advancing when pager is not dragged or advancing
+    val autoAdvance = !pagerIsDragged && !pagerIsPressed
 
     LaunchedEffect(autoAdvance) {
-        if (autoAdvance){
-            while (true){
+        if (autoAdvance) {
+            while (true) {
                 delay(2000)
-                val nextPage = (pagerState.currentPage + 1)  % productImage.size        // % productImage.size- 0 if on last page
+                val nextPage = (pagerState.currentPage + 1) % productImage.size
                 pagerState.animateScrollToPage(page = nextPage)
             }
         }
     }
 
-    Column(
-        modifier = Modifier.padding(5.dp)
-    ) {
+    Scaffold(
+        topBar = {
+            CustomTopBar(title = "Camera")
+        },
+        containerColor = whiteColor
+    ) { paddingValues ->
+        Spacer(modifier = Modifier.height(pxToDp(40)))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(pxToDp(16)),
+            verticalArrangement = Arrangement.spacedBy(pxToDp(12))
+        ) {
+            ProductCarousel(
+                images = productImage,
+                pageInteractionSource = pagerInteractionSource,
+                pagerState = pagerState
+            )
 
-        ProductCarousel(
-            images = productImage,
-            pageInteractionSource = pagerInteractionSource,
-            pagerState = pagerState, // Pass the pagerState here
-        )
+            ProductDescriptionCard(modifier = Modifier)
 
-        ProductDescriptionCard()
-        InChargeCard()
-        CollapsingCard()
-        AppButton(
-            onClick = {},
-            buttonText = "BOOK NOW"
-        )
+            InChargeCard()
+            AdditionalInfoCard()
+            UseCard()
+
+            AppButton(
+                onClick = {},
+                buttonText = "BOOK NOW"
+            )
+        }
     }
 }
+
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ProductCarousel(
     images : List<Int>,
     imageDescription : String = "Equipment images",
     contentScale: ContentScale = ContentScale.Crop,
-    pagerState: PagerState, // Add PagerState as a parameter
+    pagerState: PagerState,
     pageInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     backgroundColor : Color = cardColor,
     inactiveColor : Color = Color.DarkGray,
     activeColor : Color = highlightColor,
     indicatorShape: Shape = CircleShape,
-    cardPadding : Dp = 5.dp,
-    prodPadding : Dp = 4.dp,
-    indicatorSize : Dp = 2.dp
+    indicatorSize : Dp = pxToDp(6)
 ){
-    Column (
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(cardPadding)
-            .background(backgroundColor)
+            .height(pxToDp(200)),
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor
+        )
     ){
-        HorizontalPager(
-            state = pagerState, // Use the passed pagerState
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .align(Alignment.CenterHorizontally)
-                .padding(top = prodPadding)
-                .clickable(
-                    // interactionSource allows observing and controlling the visual state of the pager (e.g., pressed, hovered).
-                    interactionSource = pageInteractionSource,
-                    // indication provides visual feedback for interactions (e.g., ripples on click). LocalIndication.current uses the default indication provided by the theme.
-                    indication = LocalIndication.current
-                ){
-
-                }
+                .padding(pxToDp(16))
         ) {
-            page ->
-            AsyncImage(
-                model = images[page],
-                contentDescription = imageDescription,
-                contentScale = contentScale,
+            HorizontalPager(
+                state = pagerState, // Use the passed pagerState
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clickable(
+                        // interactionSource allows observing and controlling the visual state of the pager (e.g., pressed, hovered).
+                        interactionSource = pageInteractionSource,
+                        // indication provides visual feedback for interactions (e.g., ripples on click). LocalIndication.current uses the default indication provided by the theme.
+                        indication = LocalIndication.current
+                    ){}
+            ) {
+                    page ->
+                AsyncImage(
+                    model = images[page],
+                    contentDescription = imageDescription,
+                    contentScale = contentScale,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
+            Spacer(modifier = Modifier.height(pxToDp(16)))
+            HorizontalPagerIndicator(
+                pagerState = pagerState, // Use the passed pagerState
+                pageCount = images.size,
+                inactiveColor = inactiveColor,
+                activeColor = activeColor,
+                indicatorShape = indicatorShape,
+                modifier = Modifier
+                    .size(indicatorSize)
             )
+            Spacer(modifier = Modifier.height(pxToDp(3)))
         }
-        HorizontalPagerIndicator(
-            pagerState = pagerState, // Use the passed pagerState
-            pageCount = images.size,
-            inactiveColor = inactiveColor,
-            activeColor = activeColor,
-            indicatorShape = indicatorShape,
-            modifier = Modifier
-//                .align(Alignment.BottomCenter as Alignment.Horizontal)
-                .padding(prodPadding)
-                .size(indicatorSize)
+
+    }
+}
+
+@Composable
+fun ProductDescriptionCard(
+    modifier: Modifier,
+    shape: Shape = RectangleShape,
+    cardContainerColor: Color = cardColor
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(pxToDp(190)),
+        shape = shape,
+        colors = CardDefaults.cardColors(
+            containerColor = cardContainerColor
         )
-    }
-}
-
-@Composable
-fun ProductDescriptionCard(){
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(pxToDp(16))
         ) {
-            CustomLabel(
-                header = "Canon EOS R50 V",
-                headerColor = darkTextColor,
+            Column(
                 modifier = Modifier
-            )
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(pxToDp(16))
+            ) {
+                CustomLabel(
+                    header = "Canon EOS R50 V",
+                    headerColor = darkTextColor,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                )
+                Spacer(modifier = Modifier.height(pxToDp(5)))
+                InfoRow(label = "Brand", value = "Canon")
+                InfoRow(label = "Model", value = "EOS R5 Mark II")
+                InfoRow(label = "Location", value = "IDC School of Design")
+                InfoRow(label = "Timing", value = "Mon-Fri 09:00am - 05:30pm")
 
+            }
             AppCategoryIcon(
                 painter = painterResource(R.drawable.ic_favorite),
                 iconDescription = "Save Icon",
-                modifier = Modifier.padding(1.dp)
+                modifier = Modifier
+                    .padding(pxToDp(2))
+                    .align(Alignment.TopEnd)
             )
         }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(3.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(22.dp)
-                    .padding(end = 3.dp, bottom = 5.dp)
-            ){
-                CustomLabel(
-                    header = "Brand",
-                    headerColor = darkTextColor.copy(alpha = 0.5f),
-                    modifier = Modifier,
-                    fontSize = 14.sp
-                )
-
-                CustomLabel(
-                    header = "Canon",
-                    headerColor = darkTextColor.copy(alpha = 0.8f),
-                    modifier = Modifier,
-                    fontSize = 14.sp
-                )
-            }
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(3.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(22.dp)
-                    .padding(end = 3.dp, bottom = 5.dp)
-            ){
-                CustomLabel(
-                    header = "Model",
-                    headerColor = darkTextColor.copy(alpha = 0.5f),
-                    modifier = Modifier,
-                    fontSize = 14.sp
-                )
-
-                CustomLabel(
-                    header = "EOS R5 Mark II",
-                    headerColor = darkTextColor.copy(alpha = 0.8f),
-                    modifier = Modifier,
-                    fontSize = 14.sp
-                )
-            }
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(3.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(22.dp)
-                    .padding(end = 3.dp, bottom = 5.dp)
-            ){
-                CustomLabel(
-                    header = "Location",
-                    headerColor = darkTextColor.copy(alpha = 0.5f),
-                    modifier = Modifier,
-                    fontSize = 14.sp
-                )
-
-                CustomLabel(
-                    header = "IDC School of Design",
-                    headerColor = darkTextColor.copy(alpha = 0.8f),
-                    modifier = Modifier,
-                    fontSize = 14.sp
-                )
-            }
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(3.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(22.dp)
-                    .padding(end = 3.dp, bottom = 6.dp)
-            ){
-                CustomLabel(
-                    header = "Timing",
-                    headerColor = darkTextColor.copy(alpha = 0.5f),
-                    modifier = Modifier,
-                    fontSize = 14.sp
-                )
-
-                CustomLabel(
-                    header = "Mon-Fri    09:00am - 05:30pm",
-                    headerColor = darkTextColor.copy(alpha = 0.8f),
-                    modifier = Modifier,
-                    fontSize = 14.sp
-                )
-            }
-        }
-
     }
 }
 
-
-@Composable
-fun InChargeCard(){
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 5.dp, bottom = 6.dp, start = 5.dp, end = 5.dp)
-    ) {
+    @Composable
+    fun InfoRow(label: String, value: String) {
         Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(bottom = 7.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(pxToDp(12)),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             CustomLabel(
-                header = "InCharge",
-                headerColor = darkTextColor.copy(0.9f),
-                modifier = Modifier
+                header = label,
+                modifier = Modifier.weight(0.2f),
+                headerColor = darkTextColor.copy(alpha = 0.5f),
+                fontSize = 14.sp
             )
+            CustomLabel(
+                header = value,
+                modifier = Modifier.weight(1f),
+                headerColor = darkTextColor.copy(alpha = 0.8f),
+                fontSize = 14.sp
+            )
+        }
+    }
+
+
+@Composable
+fun InChargeCard(
+    modifier: Modifier = Modifier,
+    containerColor : Color = cardColor
+) {
+    var expanded by remember { mutableStateOf(true) }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { expanded = !expanded }, // collapsible behavior
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(pxToDp(16))
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CustomLabel(
+                    header = "InCharge",
+                    headerColor = darkTextColor.copy(0.9f),
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                )
+                Spacer(modifier = Modifier.height(pxToDp(5)))
+
+                if (expanded) {
+                    InChargeRow(label = "Prof.", name = "Sumant Rao")
+                    InChargeRow(
+                        label = "Asst.",
+                        name = "Akash Kumar Swami",
+                        icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
+                    )
+                }
+            }
 
             AppCategoryIcon(
-                painter = painterResource(R.drawable.ic_favorite),
-                iconDescription = "Save Icon",
-                modifier = Modifier.padding(1.dp)
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Box(
+                painter = painterResource(
+                    if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+                ),
+                iconDescription = "Expand Icon",
+                tint = darkTextColor,
+                iconSize = pxToDp(20),
                 modifier = Modifier
-                    .width(22.dp)
-                    .padding(end = 3.dp, bottom = 5.dp)
-            ){
-                CustomLabel(
-                    header = "Prof.",
-                    headerColor = darkTextColor.copy(alpha = 0.5f),
-                    modifier = Modifier,
-                    fontSize = 14.sp
-                )
-            }
-            Spacer(modifier = Modifier.width(3.dp))
-            CustomLabel(
-                header = "Sumant Rao",
-                headerColor = darkTextColor.copy(alpha = 0.8f),
-                modifier = Modifier,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            AppCircularIcon(
-                painter = painterResource(R.drawable.ic_mail),
-                boxSize = 9.dp,
-                iconPadding = 1.dp
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(22.dp)
-                    .padding(end = 3.dp, bottom = 5.dp)
-            ){
-                CustomLabel(
-                    header = "Asst.",
-                    headerColor = darkTextColor.copy(alpha = 0.5f),
-                    modifier = Modifier,
-                    fontSize = 14.sp
-                )
-            }
-            Spacer(modifier = Modifier.width(3.dp))
-            CustomLabel(
-                header = "Akash Kumar Swami",
-                headerColor = darkTextColor.copy(alpha = 0.8f),
-                modifier = Modifier,
-                fontSize = 14.sp
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            AppCircularIcon(
-                painter = painterResource(R.drawable.ic_mail),
-                boxSize = 9.dp,
-                iconPadding = 1.dp
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            AppCircularIcon(
-                painter = painterResource(R.drawable.ic_call),
-                boxSize = 9.dp,
-                iconPadding = 1.dp
+                    .align(Alignment.TopEnd)
+                    .padding(pxToDp(4))
             )
         }
     }
 }
 
 @Composable
-fun CollapsingCard(){
+fun InChargeRow(
+    label: String,
+    name: String,
+    icons: List<Int> = listOf(R.drawable.ic_mail)
+) {
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 6.dp, bottom = 6.dp, start = 5.dp, end = 7.dp)
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxWidth()
     ) {
         CustomLabel(
-            header = "Additional Information",
+            header = label,
+            headerColor = darkTextColor.copy(alpha = 0.5f),
             fontSize = 14.sp,
-            headerColor = darkTextColor.copy(0.9f),
+            modifier = Modifier.weight(0.2f)
+        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(pxToDp(16)),
             modifier = Modifier
-        )
+                .weight(0.9f)
+        ) {
+            CustomLabel(
+                header = name,
+                headerColor = darkTextColor.copy(alpha = 0.8f),
+                fontSize = 14.sp,
+                modifier = Modifier.padding(pxToDp(10))
+            )
 
-        AppCategoryIcon(
-            painter = painterResource(R.drawable.ic_arrow_down),
-            iconDescription = "Expand Icon"
-        )
+            icons.forEach {
+                AppCircularIcon(
+                    painter = painterResource(it),
+                    boxSize = pxToDp(28),
+                    iconPadding = pxToDp(4),
+                    iconSize = pxToDp(20),
+                    tint = highlightColor
+
+                )
+            }
+        }
+
     }
 }
+
+
+@Composable
+fun AdditionalInfoCard(
+    modifier: Modifier = Modifier,
+    containerColor : Color = cardColor
+) {
+    var expanded by remember { mutableStateOf(true) }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { expanded = !expanded }, // collapsible behavior
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(pxToDp(16))
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CustomLabel(
+                    header = "Additional Info",
+                    headerColor = darkTextColor.copy(0.9f),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                )
+                Spacer(modifier = Modifier.height(pxToDp(5)))
+
+                if (expanded) {
+//                    InChargeRow(label = "Prof.", name = "Sumant Rao")
+//                    InChargeRow(
+//                        label = "Asst.",
+//                        name = "Akash Kumar Swami",
+//                        icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
+//                    )
+                }
+            }
+
+            AppCategoryIcon(
+                painter = painterResource(
+                    if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+                ),
+                iconDescription = "Expand Icon",
+                tint = darkTextColor,
+                iconSize = pxToDp(20),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+            )
+        }
+    }
+}
+
+
+@Composable
+fun UseCard(
+    modifier: Modifier = Modifier,
+    containerColor : Color = cardColor
+) {
+    var expanded by remember { mutableStateOf(true) }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { expanded = !expanded }, // collapsible behavior
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(pxToDp(16))
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CustomLabel(
+                    header = "Additional Info",
+                    headerColor = darkTextColor.copy(0.9f),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                )
+                Spacer(modifier = Modifier.height(pxToDp(5)))
+
+                if (expanded) {
+//                    InChargeRow(label = "Prof.", name = "Sumant Rao")
+//                    InChargeRow(
+//                        label = "Asst.",
+//                        name = "Akash Kumar Swami",
+//                        icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
+//                    )
+                }
+            }
+
+            AppCategoryIcon(
+                painter = painterResource(
+                    if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+                ),
+                iconDescription = "Expand Icon",
+                tint = darkTextColor,
+                iconSize = pxToDp(20),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+            )
+        }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun ProductCarouselPreview() {
+    val productImage = listOf(
+        R.drawable.temp,
+        R.drawable.temp,
+        R.drawable.temp
+    )
+    val pagerState = rememberPagerState(pageCount = { productImage.size })
+//    ProductCarousel(
+//        images = productImage,
+//        pagerState = pagerState
+//    )
+    ProdDescScreen()
+//    InChargeCard()
+//    ProductDescriptionCard(modifier = Modifier)
+}
+//  ProdDescScreen()
+//  ProductCarousel(
+//      images = productImage,
+//      pagerState = pagerState
+//  )
+
+
+//  CollapsingCard()
+//}

@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.labinventory.ui.screens.EquipmentScreen
 import com.example.labinventory.ui.screens.HomeScreen
 import com.example.labinventory.ui.screens.ProdDescScreen
+import com.example.labinventory.ui.screens.ProductDescriptionCard
 import com.example.labinventory.ui.screens.ProjectInfoScreen
 import com.example.labinventory.ui.theme.LabInventoryTheme
 
@@ -22,9 +23,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            HomeScreen()
+//            ProductDescriptionCard()
+//            HomeScreen()
 //            EquipmentScreen()
-//            ProdDescScreen()
+            ProdDescScreen()
 //            ProjectInfoScreen()
 //            LabInventoryTheme {
 //            }
