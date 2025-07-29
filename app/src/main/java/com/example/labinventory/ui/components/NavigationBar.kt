@@ -18,14 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.labinventory.navigation.bottomNavItems
 import com.example.labinventory.ui.theme.highlightColor
 import com.example.labinventory.ui.theme.navLabelColor
+import com.example.labinventory.ui.theme.someGrayColor
+import com.example.labinventory.ui.theme.someOtherGrayColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 
@@ -33,31 +34,42 @@ import com.example.labinventory.util.pxToDp
 fun CustomNavigationBar(
     bottomBarColor: Color = whiteColor,
     badgeColor: Color = highlightColor,
-    contentColor: Color = whiteColor,
-    selected: Boolean = false,
+    selectedColor: Color = highlightColor,
+    contentColor: Color = navLabelColor,
+    dividerColor: Color = someOtherGrayColor,
     navController: NavHostController
 ) {
+    val navBackStackEntry = navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry.value?.destination?.route
+
     Column(modifier = Modifier.fillMaxWidth()) {
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(0.5f.dp)
-                .background(Color(0xFFE0E0E0)) // light gray divider
+                .background(dividerColor)
         )
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(pxToDp(101)) // Total height as before
+            .height(pxToDp(101))
             .padding(horizontal = 0.dp)
             .background(bottomBarColor),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         bottomNavItems.forEach { item ->
+            val isSelected = currentRoute == item.route
             Column(
                 modifier = Modifier
                     .clickable{
-                        navController.navigate(item.route)
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
                     .padding(
                         top = pxToDp(23),
@@ -70,10 +82,10 @@ fun CustomNavigationBar(
                 Box(modifier = Modifier) {
                     AppNavIcon(
                         painter = painterResource(id = item.iconResId),
-                        iconSize = pxToDp(24)
+                        iconSize = pxToDp(24),
+                        tint = if (isSelected) selectedColor else contentColor
                     )
 
-                    // Badge on top end
                     if (item.badgeCount != null || item.hasNews) {
                         Box(
                             modifier = Modifier
@@ -85,7 +97,7 @@ fun CustomNavigationBar(
                             if (item.badgeCount != null) {
                                 Text(
                                     text = item.badgeCount.toString(),
-                                    color = contentColor,
+                                    color = if (isSelected) selectedColor else contentColor,
                                     fontSize = 10.sp
                                 )
                             }
@@ -97,7 +109,7 @@ fun CustomNavigationBar(
 
                 CustomSmallLabel(
                     header = item.label,
-                    headerColor = navLabelColor,
+                    headerColor =  if (isSelected) selectedColor else contentColor,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(top = 3.dp)
                 )
@@ -107,10 +119,3 @@ fun CustomNavigationBar(
         }
     }
 }
-
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun CustomNavigationBarPreview() {
-//    CustomNavigationBar()
-//}

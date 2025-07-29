@@ -13,6 +13,7 @@ val Pink40 = Color(0xFF7D5260)
 
 // temp color
 val searchBarColor = Color(0xFFF7F7F8)
+val circularBoxColor = Color(0xFFD9D9D9)
 
 val navBackColor = Color(0xFF2A2A2A)
 val chipColor = Color(0xFFC7C7C7)
@@ -20,6 +21,7 @@ val weekendColor = Color(0xFFE64646)
 val daysColor = Color(0xFFACACAC)
 val aiColor = Color(0xFFB9B9B9)
 val someGrayColor = Color(0xFFB0AFB4)
+val someOtherGrayColor = Color(0xFFD4D4D4)
 val selectedchipColor = Color(0xFFFFDDC3)
 val selectedChipTextColor = Color(0xFF262626)
 val labelColor = Color(0xFF706F70)

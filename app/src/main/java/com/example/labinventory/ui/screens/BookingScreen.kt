@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Scaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,6 +43,7 @@ import com.example.labinventory.data.model.ProductInfo
 import com.example.labinventory.data.model.Status
 import com.example.labinventory.data.model.TabItem
 import com.example.labinventory.ui.components.CustomLabel
+import com.example.labinventory.ui.components.CustomTopBar
 import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.highlightColor
@@ -57,23 +59,31 @@ fun BookingScreen(
 //    navController: NavHostController,
     viewModel: BookingScreenViewmodel = koinViewModel()
 ) {
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+    Scaffold(
+        topBar = {
+            CustomTopBar(title = "Bookings")
+        }
+    ) {paddingValues ->
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .padding(paddingValues)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
 
-            InfoCard(
-                productInfo = viewModel.productInfo,
-                inChargeInfo = viewModel.inCharge,
-                bookingDates = viewModel.bookingDates,
-                onEditBooking = {}
-            )
+                InfoCard(
+                    productInfo = viewModel.productInfo,
+                    inChargeInfo = viewModel.inCharge,
+                    bookingDates = viewModel.bookingDates,
+                    onEditBooking = {}
+                )
+            }
         }
     }
+
 }
 
 

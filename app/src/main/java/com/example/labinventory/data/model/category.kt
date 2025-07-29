@@ -4,16 +4,17 @@ import androidx.annotation.DrawableRes
 import com.example.labinventory.R
 
 data class EquipmentCategory(
+    val id : Int,
     @DrawableRes val categoryImage: Int,
     val label : String
 )
 
 
 val categories = listOf(
-    EquipmentCategory(R.drawable.ic_vector, "All"),
-    EquipmentCategory(R.drawable.ic_camera, "Camera"),
-    EquipmentCategory(R.drawable.ic_lens, "Lens"),
-    EquipmentCategory(R.drawable.ic_light, "Light"),
-    EquipmentCategory(R.drawable.ic_storage, "Storage"),
-    EquipmentCategory(R.drawable.ic_tripod, "Tripod"),
+    EquipmentCategory(1,R.drawable.ic_vector, "All"),
+    EquipmentCategory(2,R.drawable.ic_camera, "Camera"),
+    EquipmentCategory(3,R.drawable.ic_lens, "Lens"),
+    EquipmentCategory(4,R.drawable.ic_light, "Light"),
+    EquipmentCategory(5,R.drawable.ic_storage, "Storage"),
+    EquipmentCategory(6,R.drawable.ic_tripod, "Tripod"),
 )

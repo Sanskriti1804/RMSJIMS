@@ -33,7 +33,7 @@ fun AppCircularIcon(
     iconDescription : String = "Circular Icon",
     boxSize : Dp = pxToDp(46),
     boxShape : Shape = CircleShape,
-    boxBackgroundColor : Color = searchBarColor,
+    boxColor : Color = searchBarColor,
     iconPadding : Dp = pxToDp(11),
     iconSize : Dp = pxToDp(22),
     onClick : () -> Unit = {},
@@ -44,7 +44,7 @@ fun AppCircularIcon(
         modifier = Modifier
             .size(boxSize)
             .clip(boxShape)
-            .background(boxBackgroundColor)
+            .background(boxColor)
             .clickable { onClick() }
     ){
         Icon(

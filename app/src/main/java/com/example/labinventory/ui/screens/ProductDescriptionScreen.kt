@@ -51,6 +51,7 @@ import com.example.labinventory.ui.components.AppCircularIcon
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomTopBar
 import com.example.labinventory.ui.theme.cardColor
+import com.example.labinventory.ui.theme.circularBoxColor
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.highlightColor
 import com.example.labinventory.ui.theme.whiteColor
@@ -217,7 +218,7 @@ fun ProductDescriptionCard(
                     fontSize = 16.sp,
                     modifier = Modifier
                 )
-                Spacer(modifier = Modifier.height(pxToDp(5)))
+                Spacer(modifier = Modifier.height(pxToDp(3)))
                 InfoRow(label = "Brand", value = "Canon")
                 InfoRow(label = "Model", value = "EOS R5 Mark II")
                 InfoRow(label = "Location", value = "IDC School of Design")
@@ -229,7 +230,8 @@ fun ProductDescriptionCard(
                 iconDescription = "Save Icon",
                 modifier = Modifier
                     .padding(pxToDp(2))
-                    .align(Alignment.TopEnd)
+                    .align(Alignment.TopEnd),
+                iconSize = pxToDp(20)
             )
         }
     }
@@ -261,36 +263,39 @@ fun ProductDescriptionCard(
 @Composable
 fun InChargeCard(
     modifier: Modifier = Modifier,
-    containerColor : Color = cardColor
+    containerColor : Color = cardColor,
+    shape: Shape = RectangleShape
 ) {
     var expanded by remember { mutableStateOf(true) }
+    val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
 
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { expanded = !expanded }, // collapsible behavior
+            .clickable { expanded = !expanded },
         colors = CardDefaults.cardColors(
             containerColor = containerColor
-        )
+        ),
+        shape = shape
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(pxToDp(16))
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                CustomLabel(
-                    header = "InCharge",
-                    headerColor = darkTextColor.copy(0.9f),
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                )
-                Spacer(modifier = Modifier.height(pxToDp(5)))
+            if (expanded) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    CustomLabel(
+                        header = "InCharge",
+                        headerColor = darkTextColor.copy(0.9f),
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                    )
+                    Spacer(modifier = Modifier.height(pxToDp(5)))
 
-                if (expanded) {
                     InChargeRow(label = "Prof.", name = "Sumant Rao")
                     InChargeRow(
                         label = "Asst.",
@@ -298,7 +303,22 @@ fun InChargeCard(
                         icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
                     )
                 }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(pxToDp(52)),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    CustomLabel(
+                        header = "InCharge",
+                        headerColor = darkTextColor.copy(0.9f),
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                    )
+                }
             }
+
 
             AppCategoryIcon(
                 painter = painterResource(
@@ -308,7 +328,7 @@ fun InChargeCard(
                 tint = darkTextColor,
                 iconSize = pxToDp(20),
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
+                    .align(iconAlignment)
                     .padding(pxToDp(4))
             )
         }
@@ -350,7 +370,8 @@ fun InChargeRow(
                     boxSize = pxToDp(28),
                     iconPadding = pxToDp(4),
                     iconSize = pxToDp(20),
-                    tint = highlightColor
+                    tint = highlightColor,
+                    boxColor = circularBoxColor
 
                 )
             }
@@ -366,6 +387,7 @@ fun AdditionalInfoCard(
     containerColor : Color = cardColor
 ) {
     var expanded by remember { mutableStateOf(true) }
+    val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
 
     Card(
         modifier = modifier
@@ -380,25 +402,21 @@ fun AdditionalInfoCard(
                 .fillMaxWidth()
                 .padding(pxToDp(16))
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                CustomLabel(
-                    header = "Additional Info",
-                    headerColor = darkTextColor.copy(0.9f),
-                    fontSize = 14.sp,
+            if (expanded) {
+//                    //WHEN EXPANDED
+            } else {
+                Box(
                     modifier = Modifier
-                )
-                Spacer(modifier = Modifier.height(pxToDp(5)))
-
-                if (expanded) {
-//                    InChargeRow(label = "Prof.", name = "Sumant Rao")
-//                    InChargeRow(
-//                        label = "Asst.",
-//                        name = "Akash Kumar Swami",
-//                        icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
-//                    )
+                        .fillMaxWidth()
+                        .height(pxToDp(52)),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    CustomLabel(
+                        header = "Additional Information",
+                        headerColor = darkTextColor.copy(0.9f),
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                    )
                 }
             }
 
@@ -410,7 +428,7 @@ fun AdditionalInfoCard(
                 tint = darkTextColor,
                 iconSize = pxToDp(20),
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
+                    .align(iconAlignment)
             )
         }
     }
@@ -423,6 +441,7 @@ fun UseCard(
     containerColor : Color = cardColor
 ) {
     var expanded by remember { mutableStateOf(true) }
+    val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
 
     Card(
         modifier = modifier
@@ -437,27 +456,24 @@ fun UseCard(
                 .fillMaxWidth()
                 .padding(pxToDp(16))
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                CustomLabel(
-                    header = "Additional Info",
-                    headerColor = darkTextColor.copy(0.9f),
-                    fontSize = 14.sp,
+            if (expanded) {
+//                    //WHEN EXPANDED
+            } else {
+                Box(
                     modifier = Modifier
-                )
-                Spacer(modifier = Modifier.height(pxToDp(5)))
-
-                if (expanded) {
-//                    InChargeRow(label = "Prof.", name = "Sumant Rao")
-//                    InChargeRow(
-//                        label = "Asst.",
-//                        name = "Akash Kumar Swami",
-//                        icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
-//                    )
+                        .fillMaxWidth()
+                        .height(pxToDp(52)), // Adjust height to your design
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    CustomLabel(
+                        header = "How to use",
+                        headerColor = darkTextColor.copy(0.9f),
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                    )
                 }
             }
+
 
             AppCategoryIcon(
                 painter = painterResource(
@@ -467,7 +483,7 @@ fun UseCard(
                 tint = darkTextColor,
                 iconSize = pxToDp(20),
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
+                    .align(iconAlignment)
             )
         }
     }

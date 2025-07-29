@@ -40,6 +40,7 @@ fun CustomTopBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = pxToDp(15))
                 .background(containerColor),
             verticalAlignment = Alignment.Top
         ) {
@@ -48,7 +49,6 @@ fun CustomTopBar(
                     .padding(start = pxToDp(17), end = pxToDp(11), top = pxToDp(20))
                     .align(Alignment.CenterVertically)
             ).also {
-                // clickable manually since no IconButton
                 if (onNavigationClick != null) {
                     Box(modifier = Modifier
                         .padding(end = 8.dp)
@@ -59,7 +59,7 @@ fun CustomTopBar(
             CustomLabel(
                 header = title,
                 headerColor = titleColor,
-                fontSize = 24.sp,
+                fontSize = 25.sp,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .padding(top = pxToDp(17))

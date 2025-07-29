@@ -19,19 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppCategoryImage
 import com.example.labinventory.ui.components.AppCircularIcon
 import com.example.labinventory.ui.components.AppSearchBar
-
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomNavigationBar
 import com.example.labinventory.ui.theme.cardColor
+import com.example.labinventory.ui.theme.categoryColor
 import com.example.labinventory.ui.theme.titleColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
@@ -99,7 +97,6 @@ fun AppCategoryCard(
             .aspectRatio(192f/109f),
         onClick = onClick,
         shape = shape,
-//        elevation = elevation,
         colors = CardDefaults.cardColors(
             containerColor = containerColor
         )
@@ -107,12 +104,15 @@ fun AppCategoryCard(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(pxToDp(16))
         ){
 
             CustomLabel(
                 header =title,
                 modifier = Modifier
-                    .align(Alignment.TopStart)
+                    .align(Alignment.TopStart),
+                fontSize = 16.sp,
+                headerColor = categoryColor
             )
 
             AppCategoryImage(
