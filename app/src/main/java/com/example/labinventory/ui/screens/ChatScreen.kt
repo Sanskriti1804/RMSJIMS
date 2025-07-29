@@ -11,12 +11,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -26,8 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -36,6 +30,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
 import com.example.labinventory.R
 import com.example.labinventory.ui.theme.aiColor
 import com.example.labinventory.ui.theme.navBackColor
@@ -44,17 +41,16 @@ import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.SearchViewModel
 
 @Composable
-fun SearchBottomSheet(
-    viewModel: SearchViewModel,
-    onClose: () -> Unit,
-    modifier: Modifier = Modifier
+fun ChatBottomSheet(
+//    navController: NavHostController,
+    viewModel: SearchViewModel
 ) {
     val query by viewModel.query
 
     Surface(
         shape = RoundedCornerShape(topStart = pxToDp(30), topEnd = pxToDp(30)),
         color = navBackColor,
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = pxToDp(880))
     ) {
@@ -75,7 +71,7 @@ fun SearchBottomSheet(
                 )
 
                 IconButton(
-                    onClick = onClose,
+                    onClick = {},
                     modifier = Modifier.align(Alignment.TopEnd)
                 ) {
                     Icon(
@@ -139,13 +135,13 @@ fun SearchInputField(
     )
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun SearchBottomSheetPreview() {
-    val viewModel = remember { SearchViewModel() }
-    SearchBottomSheet(
-        viewModel = viewModel,
-        onClose = {}
-    )
-}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun SearchBottomSheetPreview() {
+//    val viewModel = remember { SearchViewModel() }
+//    ChatBottomSheet(
+//        viewModel = viewModel,
+//        onClose = {}
+//    )
+//}

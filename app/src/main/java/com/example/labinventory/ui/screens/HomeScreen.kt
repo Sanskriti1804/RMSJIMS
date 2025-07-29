@@ -22,6 +22,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppCategoryImage
 import com.example.labinventory.ui.components.AppCircularIcon
 import com.example.labinventory.ui.components.AppSearchBar
@@ -34,9 +37,11 @@ import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavHostController) {
     Scaffold(
-        bottomBar = { CustomNavigationBar() },
+        bottomBar = { CustomNavigationBar(
+            navController = navController
+        ) },
         containerColor = whiteColor
     ) {paddingValues ->
         Column(
@@ -73,7 +78,8 @@ fun HomeScreen() {
             )
 
             AppCategoryCard(
-                title = "Film"
+                title = "Film",
+                onClick = {navController.navigate(Screen.EquipmentScreen.route)}
             )
         }
     }
@@ -178,10 +184,10 @@ fun AppCategoryCard(
 //    }
 //}
 
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen()
-}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun HomeScreenPreview() {
+//    HomeScreen()
+//}
 

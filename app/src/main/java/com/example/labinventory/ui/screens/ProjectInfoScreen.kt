@@ -18,6 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.AppDropDownTextField
 import com.example.labinventory.ui.components.AppTextField

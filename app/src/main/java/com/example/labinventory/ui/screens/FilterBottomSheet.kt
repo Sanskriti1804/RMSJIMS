@@ -20,6 +20,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.labinventory.R
 import com.example.labinventory.data.model.FilterChip
 import com.example.labinventory.data.model.FilterTab
@@ -39,7 +41,9 @@ import com.example.labinventory.viewmodel.FilterSortViewModel
 
 
 @Composable
-fun FilterSortBottomSheet(viewModel: FilterSortViewModel) {
+fun FilterSortBottomSheet(
+    viewModel: FilterSortViewModel
+) {
     val tabs by viewModel.tabs.collectAsState()
     val filters by viewModel.filters.collectAsState()
     val sortOptions by viewModel.sort.collectAsState()

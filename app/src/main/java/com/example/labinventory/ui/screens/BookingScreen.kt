@@ -32,6 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.labinventory.R
 import com.example.labinventory.data.model.BookingDates
 import com.example.labinventory.data.model.BookingTab
@@ -50,7 +52,10 @@ import com.example.labinventory.viewmodel.BookingScreenViewmodel
 
 
 @Composable
-fun BookingScreen(viewModel: BookingScreenViewmodel) {
+fun BookingScreen(
+//    navController: NavHostController,
+    viewModel: BookingScreenViewmodel
+) {
     Card(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),

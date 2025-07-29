@@ -41,6 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.labinventory.R
 import com.example.labinventory.ui.components.AppButton
@@ -60,7 +62,8 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun ProdDescScreen() {
+fun ProdDescScreen(
+) {
     val productImage = listOf(
         R.drawable.temp,
         R.drawable.temp,
@@ -484,7 +487,7 @@ fun ProductCarouselPreview() {
 //        images = productImage,
 //        pagerState = pagerState
 //    )
-    ProdDescScreen()
+//    ProdDescScreen()
 //    InChargeCard()
 //    ProductDescriptionCard(modifier = Modifier)
 }

@@ -1,6 +1,7 @@
 package com.example.labinventory.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,23 +21,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.labinventory.navigation.bottomNavItems
 import com.example.labinventory.ui.theme.highlightColor
 import com.example.labinventory.ui.theme.navLabelColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 
-/*
-* errors:
-* The value 'null' can't be assigned to a parameter of type '@Composable () -> Unit'
-* */
-
 @Composable
 fun CustomNavigationBar(
     bottomBarColor: Color = whiteColor,
     badgeColor: Color = highlightColor,
     contentColor: Color = whiteColor,
-    selected: Boolean = false
+    selected: Boolean = false,
+    navController: NavHostController
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -57,6 +56,9 @@ fun CustomNavigationBar(
         bottomNavItems.forEach { item ->
             Column(
                 modifier = Modifier
+                    .clickable{
+                        navController.navigate(item.route)
+                    }
                     .padding(
                         top = pxToDp(23),
                         bottom = pxToDp(29),
@@ -106,8 +108,9 @@ fun CustomNavigationBar(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CustomNavigationBarPreview() {
-    CustomNavigationBar()
-}
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun CustomNavigationBarPreview() {
+//    CustomNavigationBar()
+//}

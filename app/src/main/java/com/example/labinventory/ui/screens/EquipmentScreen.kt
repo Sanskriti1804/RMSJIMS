@@ -37,9 +37,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.labinventory.R
 import com.example.labinventory.data.model.EquipmentCategory
 import com.example.labinventory.data.model.categories
+import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppCategoryIcon
 import com.example.labinventory.ui.components.AppCategoryImage
 import com.example.labinventory.ui.components.AppCircularIcon
@@ -58,7 +61,9 @@ import com.example.labinventory.util.pxToDp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EquipmentScreen(){
+fun EquipmentScreen(
+    navController: NavHostController
+){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -69,7 +74,9 @@ fun EquipmentScreen(){
         },
         containerColor = whiteColor,
         bottomBar = {
-            CustomNavigationBar()
+            CustomNavigationBar(
+                navController = navController
+            )
         },
     ){
         LazyVerticalGrid(
@@ -108,7 +115,7 @@ fun EquipmentScreen(){
 
             item {
                 EquipmentCard(
-                    onClick = {}
+                    onClick = {navController.navigate(Screen.ProductDescriptionScreen.route)}
                 )
             }
         }
@@ -242,7 +249,7 @@ fun EquipmentCard(
 @Preview(showBackground = true)
 @Composable
 fun EquipmentScreenPreview() {
-    EquipmentScreen()
+//    EquipmentScreen()
 //    EquipmentCard()
 //    CategoryRow(categories = categories)
 }

@@ -44,6 +44,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.labinventory.R
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.theme.cardColor
@@ -62,7 +64,10 @@ import java.time.format.TextStyle
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CalendarScreen(viewModel: CalendarViewModel =  CalendarViewModel()) {
+fun CalendarScreen(
+//    navController: NavHostController,
+    viewModel: CalendarViewModel =  CalendarViewModel()
+) {
     val selectedDate = viewModel.selectedDate
     val currentMonth = viewModel.currentMonth
     val dates = viewModel.getMonthDates()

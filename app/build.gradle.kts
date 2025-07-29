@@ -71,12 +71,13 @@ dependencies {
 
     // Koin for DI
     implementation("io.insert-koin:koin-android:3.5.3")
+    implementation("io.insert-koin:koin-androidx-compose:3.5.0")
     //serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     //ktor
     implementation("io.ktor:ktor-client-android:2.3.9")
 
-
+    implementation ("androidx.navigation:navigation-compose:2.7.7")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
