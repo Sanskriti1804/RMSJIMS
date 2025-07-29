@@ -49,12 +49,13 @@ import com.example.labinventory.ui.theme.someGrayColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.BookingScreenViewmodel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun BookingScreen(
 //    navController: NavHostController,
-    viewModel: BookingScreenViewmodel
+    viewModel: BookingScreenViewmodel = koinViewModel()
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),

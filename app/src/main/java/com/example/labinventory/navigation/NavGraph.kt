@@ -43,10 +43,10 @@ fun AppNavGraph(navController: NavHostController){
         composable(Screen.EquipmentScreen.route) {
             EquipmentScreen(navController)
         }
-//        composable(Screen.BookingsScreen.route) {
-//            val bookingViewModel : BookingScreenViewmodel = koinViewModel()
-//            BookingScreen( bookingViewModel)
-//        }
+        composable(Screen.BookingsScreen.route) {
+            val bookingViewModel : BookingScreenViewmodel = koinViewModel()
+            BookingScreen( bookingViewModel)
+        }
         composable(Screen.CalendarScreen.route) {
             val calendarViewModel : CalendarViewModel = koinViewModel()
             CalendarScreen( calendarViewModel)

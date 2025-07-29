@@ -38,11 +38,12 @@ import com.example.labinventory.ui.theme.selectedchipColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.FilterSortViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun FilterSortBottomSheet(
-    viewModel: FilterSortViewModel
+    viewModel: FilterSortViewModel = koinViewModel()
 ) {
     val tabs by viewModel.tabs.collectAsState()
     val filters by viewModel.filters.collectAsState()

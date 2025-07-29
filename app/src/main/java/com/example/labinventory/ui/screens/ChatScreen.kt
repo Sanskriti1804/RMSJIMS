@@ -39,11 +39,12 @@ import com.example.labinventory.ui.theme.navBackColor
 import com.example.labinventory.ui.theme.someGrayColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.SearchViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ChatBottomSheet(
 //    navController: NavHostController,
-    viewModel: SearchViewModel
+    viewModel: SearchViewModel = koinViewModel()
 ) {
     val query by viewModel.query
 

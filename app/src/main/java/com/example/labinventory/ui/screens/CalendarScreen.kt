@@ -56,6 +56,7 @@ import com.example.labinventory.ui.theme.weekendColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.CalendarViewModel
+import org.koin.androidx.compose.koinViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -66,7 +67,7 @@ import java.time.format.TextStyle
 @Composable
 fun CalendarScreen(
 //    navController: NavHostController,
-    viewModel: CalendarViewModel =  CalendarViewModel()
+    viewModel: CalendarViewModel = koinViewModel()
 ) {
     val selectedDate = viewModel.selectedDate
     val currentMonth = viewModel.currentMonth
