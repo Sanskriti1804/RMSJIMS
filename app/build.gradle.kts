@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-//    kotlin("plugin.serialization") version "2.0.21"
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 val localPropsFile = rootProject.file("local.properties")
@@ -66,8 +66,15 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.5.0")
 
     // Supabase
-//    implementation(platform("io.github.jan-tennert.supabase:bom:3.2.2"))
-//    implementation("io.github.jan-tennert.supabase:postgrest-kt:3.2.2")
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.0.0"))
+    implementation("io.github.jan-tennert.supabase:supabase-kt")        // Core + Auth included
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")       // Optional: Database operations
+
+    // Kotlinx Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // Ktor Client Engine (required by Supabase SDK)
+    implementation("io.ktor:ktor-client-okhttp:2.3.7") // ✅ use OkHttp or CIO, not [engine]
 
     // Koin for DI
     implementation("io.insert-koin:koin-android:3.5.3")
