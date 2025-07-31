@@ -19,12 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppCategoryImage
 import com.example.labinventory.ui.components.AppCircularIcon
+import com.example.labinventory.ui.components.AppFAB
 import com.example.labinventory.ui.components.AppSearchBar
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomNavigationBar
@@ -35,11 +38,16 @@ import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(
+    navController: NavHostController
+) {
     Scaffold(
         bottomBar = { CustomNavigationBar(
             navController = navController
         ) },
+        floatingActionButton = {
+            AppFAB()
+        },
         containerColor = whiteColor
     ) {paddingValues ->
         Column(
@@ -63,7 +71,9 @@ fun HomeScreen(navController: NavHostController) {
 
                 Spacer(modifier = Modifier.width(pxToDp(8)))
 
-                AppCircularIcon()
+                AppCircularIcon(
+                    onClick = {navController.navigate(Screen.FilterSortBottomSheet.route)}
+                )
             }
 
 
@@ -185,9 +195,11 @@ fun AppCategoryCard(
 //}
 
 //
-//@Preview(showBackground = true)
-//@Composable
-//fun HomeScreenPreview() {
-//    HomeScreen()
-//}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    val navController : NavHostController = rememberNavController()
+    HomeScreen(navController =  navController)
+}
 

@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.labinventory.R
 import com.example.labinventory.data.model.EquipmentCategory
 import com.example.labinventory.data.model.categories
@@ -274,7 +275,8 @@ fun EquipmentCard(
 @Preview(showBackground = true)
 @Composable
 fun EquipmentScreenPreview() {
-//    EquipmentScreen()
+    val navController : NavHostController = rememberNavController()
+    EquipmentScreen(navController)
 //    EquipmentCard()
 //    CategoryRow(categories = categories)
 }

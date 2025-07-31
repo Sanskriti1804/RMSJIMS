@@ -67,7 +67,7 @@ fun CustomLabel(
     fontWeight: FontWeight = FontWeight.Normal,
     fontSize : TextUnit = pxToDp(16).value.sp,
     fontFamily: FontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     maxLine: Int = 1
 ){
 

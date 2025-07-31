@@ -499,20 +499,18 @@ fun ProductCarouselPreview() {
         R.drawable.temp
     )
     val pagerState = rememberPagerState(pageCount = { productImage.size })
-//    ProductCarousel(
-//        images = productImage,
-//        pagerState = pagerState
-//    )
-//    ProdDescScreen()
-//    InChargeCard()
-//    ProductDescriptionCard(modifier = Modifier)
-}
-//  ProdDescScreen()
-//  ProductCarousel(
-//      images = productImage,
-//      pagerState = pagerState
-//  )
-
-
-//  CollapsingCard()
+////    ProductCarousel(
+////        images = productImage,
+////        pagerState = pagerState
+////    )
+    ProdDescScreen()
+////    InChargeCard()
+////    ProductDescriptionCard(modifier = Modifier)
 //}
+////  ProdDescScreen()
+////  ProductCarousel(
+////      images = productImage,
+////      pagerState = pagerState
+////  )
+////  CollapsingCard()
+}
