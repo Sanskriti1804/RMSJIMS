@@ -2,22 +2,41 @@ package com.example.labinventory.di
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.labinventory.data.remote.CategoryApiService
+import com.example.labinventory.data.remote.InventoryApiService
+import com.example.labinventory.data.remote.api.CategoryApi
+import com.example.labinventory.data.remote.api.InventoryImageApi
+import com.example.labinventory.repository.CategoryRepository
+import com.example.labinventory.repository.InventoryRepository
 import com.example.labinventory.viewmodel.BookingScreenViewmodel
 import com.example.labinventory.viewmodel.CalendarViewModel
+import com.example.labinventory.viewmodel.CategoryViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
+import com.example.labinventory.viewmodel.InventoryImageViewModel
 import com.example.labinventory.viewmodel.SearchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 @RequiresApi(Build.VERSION_CODES.O)
-val appModule = module{
+val appModule = module {
 
+    // API implementation
+    single<InventoryApiService> { InventoryImageApi(get()) }
+    single<CategoryApiService> { CategoryApi(get()) }
+
+    // Repository
+    single { InventoryRepository(get()) }
+    single { CategoryRepository(get()) }
+
+    // ViewModels
+    viewModel { CategoryViewModel(get()) }
+    viewModel { InventoryImageViewModel(get()) }
     viewModel { BookingScreenViewmodel() }
     viewModel { CalendarViewModel() }
     viewModel { FilterSortViewModel() }
     viewModel { SearchViewModel() }
-
 }
+
 
 
 // `single<InventoryApiService>` means that Koin will create only one instance of `InventoryApiService`

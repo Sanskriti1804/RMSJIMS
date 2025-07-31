@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,9 +25,11 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.labinventory.data.model.UiState
 import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppCategoryImage
 import com.example.labinventory.ui.components.AppCircularIcon
@@ -36,30 +42,44 @@ import com.example.labinventory.ui.theme.categoryColor
 import com.example.labinventory.ui.theme.titleColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.viewmodel.CategoryViewModel
+import com.example.labinventory.viewmodel.FilterSortViewModel
+import org.koin.androidx.compose.koinViewModel
+import org.koin.androidx.compose.viewModel
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    categoryViewModel: CategoryViewModel = koinViewModel(),
+    filterSortViewModel: FilterSortViewModel = koinViewModel()
 ) {
+    val categories = categoryViewModel.categoriesState
+
     Scaffold(
-        bottomBar = { CustomNavigationBar(
-            navController = navController
-        ) },
+        bottomBar = {
+            CustomNavigationBar(navController = navController)
+        },
         floatingActionButton = {
             AppFAB()
         },
         containerColor = whiteColor
-    ) {paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            // Top Search Row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = pxToDp(14), end = pxToDp(14), top = pxToDp(19), bottom = pxToDp(37))
-            ){
+                    .padding(
+                        start = pxToDp(14),
+                        end = pxToDp(14),
+                        top = pxToDp(19),
+                        bottom = pxToDp(37)
+                    )
+            ) {
                 AppSearchBar(
                     query = "",
                     onQueryChange = {},
@@ -72,23 +92,44 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.width(pxToDp(8)))
 
                 AppCircularIcon(
-                    onClick = {navController.navigate(Screen.FilterSortBottomSheet.route)}
+                    onClick = { navController.navigate(Screen.FilterSortBottomSheet.route) }
                 )
             }
-
 
             CustomLabel(
                 "Explore by Category",
                 fontSize = 20.sp,
                 modifier = Modifier
-                    .padding(start = pxToDp(16), bottom =pxToDp(13)),
+                    .padding(start = pxToDp(16), bottom = pxToDp(13)),
                 headerColor = titleColor
             )
 
-            AppCategoryCard(
-                title = "Film",
-                onClick = {navController.navigate(Screen.EquipmentScreen.route)}
-            )
+            when (categories) {
+                is UiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+                }
+
+                is UiState.Success -> {
+                    LazyColumn {
+                        items(categories.data) { item ->
+                            AppCategoryCard(
+                                title = item.name,
+                                onClick = { navController.navigate(Screen.EquipmentScreen.route) }
+                            )
+                        }
+                    }
+                }
+
+                is UiState.Error -> {
+                    Text(
+                        text = "Error loading categories",
+                        color = Color.Red,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
         }
     }
 }

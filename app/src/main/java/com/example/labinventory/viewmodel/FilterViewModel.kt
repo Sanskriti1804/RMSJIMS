@@ -1,5 +1,7 @@
 package com.example.labinventory.viewmodel
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.labinventory.data.model.FilterChip
 import com.example.labinventory.data.model.FilterGroup
@@ -13,6 +15,18 @@ import kotlinx.coroutines.flow.update
 import kotlin.collections.listOf
 
 class FilterSortViewModel : ViewModel(){
+
+    private val _isSheetVisible = mutableStateOf(false)
+    val isSheetVisible : MutableState<Boolean> = _isSheetVisible
+
+
+    fun showSheet(){
+        _isSheetVisible.value = true
+    }
+
+    fun hideSheet(){
+        _isSheetVisible.value = false
+    }
 
     private val _tabs = MutableStateFlow(
         listOf(

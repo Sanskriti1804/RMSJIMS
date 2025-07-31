@@ -74,15 +74,17 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // Ktor Client Engine (required by Supabase SDK)
-    implementation("io.ktor:ktor-client-okhttp:2.3.7") // ✅ use OkHttp or CIO, not [engine]
+    implementation("io.ktor:ktor-client-okhttp:2.3.9") // ✅ use OkHttp or CIO, not [engine]
+    implementation("io.ktor:ktor-client-android:2.3.9")
+    // Ktor core
+//    implementation("io.ktor:ktor-client-core:2.3.9")
+//    implementation("io.ktor:ktor-client-content-negotiation:2.3.9")
+//    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.9")
+//    implementation("io.ktor:ktor-client-logging:2.3.9")
 
     // Koin for DI
     implementation("io.insert-koin:koin-android:3.5.3")
     implementation("io.insert-koin:koin-androidx-compose:3.5.0")
-    //serialization
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
-    //ktor
-    implementation("io.ktor:ktor-client-android:2.3.9")
 
     implementation ("androidx.navigation:navigation-compose:2.7.7")
 

@@ -41,6 +41,7 @@ import com.example.labinventory.viewmodel.FilterSortViewModel
 import org.koin.androidx.compose.koinViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterSortBottomSheet(
     viewModel: FilterSortViewModel = koinViewModel()
@@ -49,66 +50,87 @@ fun FilterSortBottomSheet(
     val filters by viewModel.filters.collectAsState()
     val sortOptions by viewModel.sort.collectAsState()
 
-    Column(modifier = Modifier.fillMaxWidth().padding(pxToDp(16))) {
-        Spacer(modifier = Modifier.height(pxToDp(18)))
+    val isSheetVisible by viewModel.isSheetVisible
 
-        FilterSortTabs(tabs = tabs, onTabSelected = viewModel::selectTab)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val coroutineScope = rememberCoroutineScope()
 
-        Spacer(modifier = Modifier.height(pxToDp(14)))
+    LaunchedEffect(isSheetVisible) {
+        if (isSheetVisible &&  !sheetState.isVisible){
+            sheetState.show()
+        }
+        else if (!isSheetVisible && sheetState.isVisible){
+            sheetState.hide()
+        }
+    }
 
-        // Content based on selected tab
-        val selectedTab = tabs.find { it.isSelected }?.tab ?: FilterTab.Filter
-        when (selectedTab) {
-            FilterTab.Filter -> {
-                filters.forEach { group ->
-                    Text(
-                        text = group.section.name.lowercase().replaceFirstChar(Char::titlecase),
-                        color = selectedChipTextColor,
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
-                        modifier = Modifier.padding(vertical = pxToDp(14))
+    ModalBottomSheet(
+        onDismissRequest = { viewModel.hideSheet() },
+        sheetState = sheetState,
+        shape = RoundedCornerShape(pxToDp(10)),
+        containerColor = whiteColor
+    ) {
+        Column(modifier = Modifier.fillMaxWidth().padding(pxToDp(16))) {
+            Spacer(modifier = Modifier.height(pxToDp(18)))
+
+            FilterSortTabs(tabs = tabs, onTabSelected = viewModel::selectTab)
+
+            Spacer(modifier = Modifier.height(pxToDp(14)))
+
+            // Content based on selected tab
+            val selectedTab = tabs.find { it.isSelected }?.tab ?: FilterTab.Filter
+            when (selectedTab) {
+                FilterTab.Filter -> {
+                    filters.forEach { group ->
+                        Text(
+                            text = group.section.name.lowercase().replaceFirstChar(Char::titlecase),
+                            color = selectedChipTextColor,
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
+                            modifier = Modifier.padding(vertical = pxToDp(14))
+                        )
+                        ChipGroup(
+                            chips = group.chips,
+                            onChipToggle = { label -> viewModel.toggleFilterChip(group.section, label) }
+                        )
+                        Spacer(Modifier.height(pxToDp(16)))
+                    }
+                }
+                FilterTab.Sort_by -> {
+                    SortList(
+                        options = sortOptions,
+                        onOptionSelected = viewModel::selectSortOption
                     )
-                    ChipGroup(
-                        chips = group.chips,
-                        onChipToggle = { label -> viewModel.toggleFilterChip(group.section, label) }
-                    )
-                    Spacer(Modifier.height(pxToDp(16)))
                 }
             }
-            FilterTab.Sort_by -> {
-                SortList(
-                    options = sortOptions,
-                    onOptionSelected = viewModel::selectSortOption
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Bottom Buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                AppButton(
+                    modifier = Modifier.weight(1f).padding(end = 8.dp),
+                    buttonText = "Reset",
+                    containerColor = Color.LightGray,
+                    contentColor = Color.Black,
+                    onClick = {
+                        viewModel.resetFilters()
+                        viewModel.selectSortOption("") // Deselect all
+                    }
+                )
+                AppButton(
+                    modifier = Modifier.weight(1f),
+                    buttonText = "Apply Filter",
+                    onClick = {
+                        // TODO: trigger filtering logic or pop bottom sheet
+                    }
                 )
             }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Bottom Buttons
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            AppButton(
-                modifier = Modifier.weight(1f).padding(end = 8.dp),
-                buttonText = "Reset",
-                containerColor = Color.LightGray,
-                contentColor = Color.Black,
-                onClick = {
-                    viewModel.resetFilters()
-                    viewModel.selectSortOption("") // Deselect all
-                }
-            )
-            AppButton(
-                modifier = Modifier.weight(1f),
-                buttonText = "Apply Filter",
-                onClick = {
-                    // TODO: trigger filtering logic or pop bottom sheet
-                }
-            )
-        }
-    }
+   }
 }
 
 @Composable

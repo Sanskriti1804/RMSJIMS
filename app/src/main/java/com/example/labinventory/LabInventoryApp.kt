@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.labinventory.util.config
 import com.example.labinventory.di.appModule
+import com.example.labinventory.di.supabaseModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -20,17 +21,11 @@ class LabInventoryApp : Application() {
         startKoin {
             androidContext(this@LabInventoryApp)        // Supplies the app-level context for DI —
             modules(    //Registers your DI modules
-                appModule
-                )
-
+                 appModule,
+                               supabaseModule(
+                config.SUPABASE_URL,
+                config.SUPABASE_KEY)
+            )
         }
     }
 }
-
-//modules(    //Registers your DI modules
-//appModule,
-//supabaseModule(
-//config.SUPABASE_URL,
-//config.SUPABASE_KEY
-//)
-//)
