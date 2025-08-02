@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Scaffold
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -36,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -47,7 +49,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.labinventory.R
+import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.CustomLabel
+import com.example.labinventory.ui.components.CustomTopBar
 import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.daysColor
@@ -85,47 +89,56 @@ fun CalendarScreen(
             DayOfWeek.SATURDAY
         )
     }
-
-
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-
-        MonthTabRow(
-            months = months,
-            currentMonth = currentMonth,
-            onMonthSelected = { viewModel.setMonth(it) }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        DaysOfWeekHeader(daysOfWeek = daysOfWeek)
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Calendar Grid
-        CalendarGrid(
-            dates = dates,
-            selectedDate = selectedDate,
-            today = LocalDate.now(),
-            onDateClick = viewModel::selectDate
-        )
-
-        // Status summary card
-        StatusCard(
-            holidayCount = viewModel.getHolidayCount(),
-            bookedDate = viewModel.bookedDate,
-            availableDate = viewModel.availableDate,
-            bookOnDate = viewModel.bookOnDate,
-            today = LocalDate.now()
-        )
-
-        // Action Button
-        Button(
-            onClick = { /* TODO: Booking action */ },
+    Scaffold(
+        topBar = {
+            CustomTopBar(
+                title = "Booking Dates"
+            )
+        }
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-        ) {
-            Text("Book Now")
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(pxToDp(20))
+           ) {
+
+            Spacer(modifier = Modifier.height(pxToDp(20)))
+
+            MonthTabRow(
+                months = months,
+                currentMonth = currentMonth,
+                onMonthSelected = { viewModel.setMonth(it) }
+            )
+            Spacer(modifier = Modifier.height(pxToDp(20)))
+
+            DaysOfWeekHeader(daysOfWeek = daysOfWeek)
+
+            Spacer(modifier = Modifier.height(pxToDp(20)))
+
+            // Calendar Grid
+            CalendarGrid(
+                dates = dates,
+                selectedDate = selectedDate,
+                today = LocalDate.now(),
+                onDateClick = viewModel::selectDate
+            )
+
+            // Status summary card
+            StatusCard(
+                holidayCount = viewModel.getHolidayCount(),
+                bookedDate = viewModel.bookedDate,
+                availableDate = viewModel.availableDate,
+                bookOnDate = viewModel.bookOnDate,
+                today = LocalDate.now()
+            )
+
+            // Action Button
+            AppButton(
+                buttonText = "CONFIRM",
+                onClick = { }
+            )
         }
     }
 }
@@ -150,12 +163,13 @@ fun MonthTabRow(
                     .clip(RoundedCornerShape(pxToDp(4)))
                     .background(if (isSelected) highlightColor else cardColor)
                     .clickable { onMonthSelected(month) }
-                    .padding(horizontal = pxToDp(46), vertical = pxToDp(12))
+                    .padding(horizontal = pxToDp(12))
             ) {
                 CustomLabel(
                     header = month.month.name.lowercase().replaceFirstChar { it.uppercase() },
                     headerColor = if (isSelected) whiteColor.copy(alpha = 0.9f) else darkTextColor.copy(alpha = 0.9f),
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .padding(horizontal = pxToDp(45), vertical = pxToDp(12)),
                     fontSize = 14.sp
                 )
             }
@@ -270,7 +284,8 @@ fun StatusCard(
     Card(
         colors = CardDefaults
             .cardColors(containerColor = cardColor),
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth(),
+        shape = RectangleShape
     ) {
         Row(
             modifier = Modifier

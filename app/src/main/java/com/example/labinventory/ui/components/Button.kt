@@ -1,6 +1,7 @@
 package com.example.labinventory.ui.components
 
 import android.R.attr.padding
+import android.graphics.drawable.Icon
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -15,7 +16,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -63,6 +66,8 @@ import com.example.labinventory.ui.theme.Dimensions
 import com.example.labinventory.ui.theme.Shapes
 import com.example.labinventory.ui.theme.app_llComponent
 import com.example.labinventory.ui.theme.app_ltext
+import com.example.labinventory.ui.theme.darkTextColor
+import com.example.labinventory.ui.theme.headerColor
 import com.example.labinventory.ui.theme.highlightColor
 import com.example.labinventory.ui.theme.navBackColor
 import com.example.labinventory.ui.theme.whiteColor
@@ -102,12 +107,53 @@ fun AppButton(
     )
 }
 
+@Composable
+fun EditButton(
+    onClick : () -> Unit = {},
+    containerColor: Color = darkTextColor.copy(0.08f),
+    contentColor : Color = highlightColor,
+    buttonText: String = "Edit",
+    icon: Painter = painterResource(R.drawable.ic_edit),
+    iconSize: Dp = pxToDp(12),
+    shape: Shape = RoundedCornerShape(pxToDp(20)),
+    modifier: Modifier = Modifier
+){
+  Button(
+      onClick = onClick,
+      modifier = Modifier.defaultMinSize(minHeight = 0.dp),
+      colors = ButtonDefaults.buttonColors(
+          containerColor = containerColor,
+          contentColor = contentColor
+      ),
+      contentPadding = PaddingValues(0.dp),
+      shape = shape,
+  ) {
+      Row(
+          modifier = Modifier.padding(horizontal = pxToDp(10), vertical = pxToDp(0)),
+          horizontalArrangement = Arrangement.spacedBy(pxToDp(6)),
+      ) {
+          Icon(
+              painter = icon,
+              contentDescription = "Edit Icon",
+              tint = contentColor,
+              modifier = Modifier.size(iconSize)
+          )
+          CustomLabel(
+              header = buttonText,
+              headerColor = contentColor,
+              fontSize = 10.sp
+          )
+      }
+  }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun AppButtonPreview() {
-    AppButton(
-        buttonText = "Sample Button"
-    )
+//    AppButton(
+//        buttonText = "Sample Button"
+//    )
+    EditButton()
 }
 
 @OptIn(ExperimentalAnimationApi::class)

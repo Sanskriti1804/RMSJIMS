@@ -34,7 +34,7 @@ fun MainApp(){
 fun AppNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.HomeScreen.route
+        startDestination = Screen.ProjectInfoScreen.route
     ) {
 
         composable(Screen.HomeScreen.route) {
@@ -45,7 +45,7 @@ fun AppNavGraph(navController: NavHostController){
         }
         composable(Screen.BookingsScreen.route) {
             val bookingViewModel : BookingScreenViewmodel = koinViewModel()
-            BookingScreen( bookingViewModel)
+            BookingScreen( navController, bookingViewModel)
         }
         composable(Screen.CalendarScreen.route) {
             val calendarViewModel : CalendarViewModel = koinViewModel()

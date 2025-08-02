@@ -42,7 +42,6 @@ import com.example.labinventory.ui.theme.categoryColor
 import com.example.labinventory.ui.theme.titleColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
-import com.example.labinventory.viewmodel.CategoryViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.viewModel
@@ -50,10 +49,10 @@ import org.koin.androidx.compose.viewModel
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    categoryViewModel: CategoryViewModel = koinViewModel(),
+//    categoryViewModel: CategoryViewModel = koinViewModel(),
     filterSortViewModel: FilterSortViewModel = koinViewModel()
 ) {
-    val categories = categoryViewModel.categoriesState
+//    val categories = categoryViewModel.categoriesState
 
     Scaffold(
         bottomBar = {
@@ -104,32 +103,37 @@ fun HomeScreen(
                 headerColor = titleColor
             )
 
-            when (categories) {
-                is UiState.Loading -> {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                    }
-                }
+            AppCategoryCard(
+                title = "hii",
+                onClick = { navController.navigate(Screen.EquipmentScreen.route) }
+            )
 
-                is UiState.Success -> {
-                    LazyColumn {
-                        items(categories.data) { item ->
-                            AppCategoryCard(
-                                title = item.name,
-                                onClick = { navController.navigate(Screen.EquipmentScreen.route) }
-                            )
-                        }
-                    }
-                }
-
-                is UiState.Error -> {
-                    Text(
-                        text = "Error loading categories",
-                        color = Color.Red,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
+//            when (categories) {
+//                is UiState.Loading -> {
+//                    Box(modifier = Modifier.fillMaxSize()) {
+//                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+//                    }
+//                }
+//
+//                is UiState.Success -> {
+//                    LazyColumn {
+//                        items(categories.data) { item ->
+//                            AppCategoryCard(
+//                                title = item.name,
+//                                onClick = { navController.navigate(Screen.EquipmentScreen.route) }
+//                            )
+//                        }
+//                    }
+//                }
+//
+//                is UiState.Error -> {
+//                    Text(
+//                        text = "Error loading categories",
+//                        color = Color.Red,
+//                        modifier = Modifier.padding(16.dp)
+//                    )
+//                }
+//            }
         }
     }
 }

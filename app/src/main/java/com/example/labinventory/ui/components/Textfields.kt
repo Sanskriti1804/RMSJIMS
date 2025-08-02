@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,20 +19,22 @@ import androidx.compose.ui.unit.dp
 import com.example.labinventory.R
 import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.darkTextColor
+import com.example.labinventory.util.pxToDp
 
 @Composable
 fun AppTextField(
+    modifier: Modifier = Modifier.fillMaxWidth(),
     value : String,
     onValueChange : (String) -> Unit,
-    shape: Shape = RoundedCornerShape(1.dp),
+    shape: Shape = RoundedCornerShape(pxToDp(4)),
     placeholder: String,
     textColor : Color = darkTextColor.copy(alpha = 0.7f),
     containercolor : Color = cardColor,
     maxlines : Int = 1,
     visualTransformation : VisualTransformation = VisualTransformation.None
 ){
-    OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+    TextField(
+        modifier = modifier,
         value = value,
         onValueChange = onValueChange,
         shape = shape,
@@ -44,9 +48,14 @@ fun AppTextField(
         colors = TextFieldDefaults.colors(
             focusedTextColor = textColor,
             unfocusedTextColor = textColor,
-            focusedContainerColor = containercolor,
-            unfocusedContainerColor = containercolor,
-            focusedIndicatorColor = textColor
+            disabledTextColor = textColor,
+            focusedContainerColor = containerColor,
+            unfocusedContainerColor = containerColor,
+            disabledContainerColor = containerColor,
+            cursorColor = textColor,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
         ),
         visualTransformation = visualTransformation,
         maxLines = maxlines
@@ -57,6 +66,7 @@ fun AppTextField(
 
 @Composable
 fun AppDropDownTextField(
+    modifier : Modifier,
     value : String,
     onValueChange : (String) -> Unit,
     shape: Shape = RoundedCornerShape(1.dp),
@@ -67,7 +77,7 @@ fun AppDropDownTextField(
     visualTransformation : VisualTransformation = VisualTransformation.None
 ){
     OutlinedTextField(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         value = value,
         onValueChange = onValueChange,
         shape = shape,
