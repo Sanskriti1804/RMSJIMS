@@ -30,7 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.labinventory.data.model.UiState
+import com.example.labinventory.data.model.UserRole
 import com.example.labinventory.navigation.Screen
+import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.AppCategoryImage
 import com.example.labinventory.ui.components.AppCircularIcon
 import com.example.labinventory.ui.components.AppFAB
@@ -43,6 +45,7 @@ import com.example.labinventory.ui.theme.titleColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.FilterSortViewModel
+import com.example.labinventory.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.viewModel
 
@@ -50,8 +53,11 @@ import org.koin.androidx.compose.viewModel
 fun HomeScreen(
     navController: NavHostController,
 //    categoryViewModel: CategoryViewModel = koinViewModel(),
-    filterSortViewModel: FilterSortViewModel = koinViewModel()
+    filterSortViewModel: FilterSortViewModel = koinViewModel(),
+    sessionViewModel: UserSessionViewModel = koinViewModel()
 ) {
+    val userRole = sessionViewModel.userRole
+
 //    val categories = categoryViewModel.categoriesState
 
     Scaffold(
@@ -59,7 +65,9 @@ fun HomeScreen(
             CustomNavigationBar(navController = navController)
         },
         floatingActionButton = {
-            AppFAB()
+            if (userRole == UserRole.USER){
+                AppFAB()
+            }
         },
         containerColor = whiteColor
     ) { paddingValues ->
@@ -107,6 +115,17 @@ fun HomeScreen(
                 title = "hii",
                 onClick = { navController.navigate(Screen.EquipmentScreen.route) }
             )
+
+            if (userRole == UserRole.LAB_INCHARGE) {
+                AppButton(
+                    buttonText = "Manage Lab",
+                    onClick = { },
+                    modifier = Modifier
+                        .padding(horizontal = pxToDp(16), vertical = pxToDp(16))
+                        .fillMaxWidth()
+                )
+            }
+
 
 //            when (categories) {
 //                is UiState.Loading -> {

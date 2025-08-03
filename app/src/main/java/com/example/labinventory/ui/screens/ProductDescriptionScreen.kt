@@ -45,26 +45,33 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.labinventory.R
+import com.example.labinventory.data.model.UserRole
 import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.AppCategoryIcon
 import com.example.labinventory.ui.components.AppCircularIcon
+import com.example.labinventory.ui.components.AppFAB
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomTopBar
 import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.circularBoxColor
 import com.example.labinventory.ui.theme.darkTextColor
+import com.example.labinventory.ui.theme.editCardTextColor
 import com.example.labinventory.ui.theme.highlightColor
+import com.example.labinventory.ui.theme.weekendColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.viewmodel.UserSessionViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPagerIndicator
 import kotlinx.coroutines.delay
-
-
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProdDescScreen(
+    sessionViewModel: UserSessionViewModel = koinViewModel()
 ) {
+    val userRole = sessionViewModel.userRole
+
     val productImage = listOf(
         R.drawable.temp,
         R.drawable.temp,
@@ -91,6 +98,21 @@ fun ProdDescScreen(
         topBar = {
             CustomTopBar(title = "Camera")
         },
+        bottomBar = {
+            if (userRole == UserRole.USER){
+                AppButton(
+                    onClick = {},
+                    buttonText = "BOOK NOW"
+                )
+            }
+            else{
+                ActionCard(
+                    onEditClick = {},
+                    onDeleteClick = {},
+                    onBookClick = {}
+                )
+            }
+        },
         containerColor = whiteColor
     ) { paddingValues ->
         Spacer(modifier = Modifier.height(pxToDp(40)))
@@ -112,11 +134,6 @@ fun ProdDescScreen(
             InChargeCard()
             AdditionalInfoCard()
             UseCard()
-
-            AppButton(
-                onClick = {},
-                buttonText = "BOOK NOW"
-            )
         }
     }
 }
@@ -484,6 +501,45 @@ fun UseCard(
                 iconSize = pxToDp(20),
                 modifier = Modifier
                     .align(iconAlignment)
+            )
+        }
+    }
+}
+
+@Composable
+fun ActionCard(
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onBookClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+    ) {
+        Column() {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(pxToDp(18))
+            ) {
+                AppButton(
+                    onClick = onEditClick,
+                    containerColor = cardColor,
+                    contentColor = editCardTextColor,
+                    buttonText = "EDIT"
+                )
+                AppButton(
+                    onClick = onDeleteClick,
+                    containerColor = cardColor,
+                    contentColor = weekendColor,
+                    buttonText = "DELETE"
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            AppButton(
+                onClick = onBookClick,
+                buttonText = "BOOK"
             )
         }
     }

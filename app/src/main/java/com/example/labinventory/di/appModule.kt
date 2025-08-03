@@ -2,10 +2,12 @@ package com.example.labinventory.di
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.labinventory.data.remote.SessionManager
 import com.example.labinventory.viewmodel.BookingScreenViewmodel
 import com.example.labinventory.viewmodel.CalendarViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import com.example.labinventory.viewmodel.SearchViewModel
+import com.example.labinventory.viewmodel.UserSessionViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -23,6 +25,10 @@ val appModule = module {
 //    // ViewModels
 //    viewModel { CategoryViewModel(get()) }
 //    viewModel { InventoryImageViewModel(get()) }
+
+    single { SessionManager(get()) }
+    viewModel { UserSessionViewModel(get()) }
+
     viewModel { BookingScreenViewmodel() }
     viewModel { CalendarViewModel() }
     viewModel { FilterSortViewModel() }
