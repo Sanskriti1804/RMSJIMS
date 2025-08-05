@@ -318,24 +318,6 @@ fun PreviewBookingScreen() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewInfoCard() {
-    InfoCard(
-        productInfo = ProductInfo(
-            title = "3D Printer",
-            code = "EQP-002",
-            location = "Lab A1",
-            imageRes = R.drawable.ic_mail,
-            status = Status.PENDING,
-        ),
-        inChargeInfo = InChargeInfo(
-            profName = "Dr. Mehta",
-            asstName = "Priya Singh",
-            asstIcons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
-        ),
-        bookingDates = BookingDates(
-            fromDate = "12 Aug 2025",
-            toDate = "16 Aug 2025"
-        ),
-        onEditBooking = {}
-    )
+//
 }
 

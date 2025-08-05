@@ -2,6 +2,7 @@ package com.example.labinventory.ui.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
@@ -25,6 +27,7 @@ import androidx.compose.material3.Card
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,27 +41,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.labinventory.R
+import com.example.labinventory.data.model.BookingDates
+import com.example.labinventory.data.model.InChargeInfo
+import com.example.labinventory.data.model.ProductInfo
+import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomTopBar
+import com.example.labinventory.ui.components.EditButton
 import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.daysColor
 import com.example.labinventory.ui.theme.highlightColor
+import com.example.labinventory.ui.theme.someGrayColor
 import com.example.labinventory.ui.theme.weekendColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.viewmodel.BookingScreenViewmodel
 import com.example.labinventory.viewmodel.CalendarViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.time.DayOfWeek
@@ -70,8 +83,9 @@ import java.time.format.TextStyle
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarScreen(
-//    navController: NavHostController,
-    viewModel: CalendarViewModel = koinViewModel()
+    navController: NavHostController,
+    viewModel: CalendarViewModel = koinViewModel(),
+    bookingViewmodel: BookingScreenViewmodel
 ) {
     val selectedDate = viewModel.selectedDate
     val currentMonth = viewModel.currentMonth
@@ -93,6 +107,14 @@ fun CalendarScreen(
         topBar = {
             CustomTopBar(
                 title = "Booking Dates"
+            )
+        },
+        bottomBar = {
+            AppButton(
+                buttonText = "CONFIRM",
+                onClick = {
+                    navController.navigate(Screen.ProjectInfoScreen.route)
+                }
             )
         }
     ) { paddingValues ->
@@ -134,11 +156,11 @@ fun CalendarScreen(
                 today = LocalDate.now()
             )
 
-            // Action Button
-            AppButton(
-                buttonText = "CONFIRM",
-                onClick = { }
+            //EquipCard
+            EquipBookingCard(
+                productInfo = bookingViewmodel.productInfo,
             )
+
         }
     }
 }
@@ -365,6 +387,69 @@ fun StatusLabel(
             color = darkTextColor,
             fontSize = 14.sp
         )
+    }
+}
+
+@Composable
+fun EquipBookingCard(
+    productInfo: ProductInfo,
+    cardShape: Shape = RectangleShape,
+    containerColor : Color = cardColor,
+    cardPadding : Dp = pxToDp(20)
+) {
+    Card(
+        shape = cardShape,
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        )
+    ) {
+        Column(modifier = Modifier.padding(cardPadding)) {
+
+            Row {
+                Image(
+                    painter = painterResource(R.drawable.temp),
+                    contentDescription = "Product Image",
+
+                    modifier = Modifier
+                        .size(pxToDp(76))
+                )
+                Spacer(modifier = Modifier.width(pxToDp(30)))
+                Column(
+                    modifier = Modifier.weight(0.8f),
+                    verticalArrangement = Arrangement.spacedBy(pxToDp(9))
+                ) {
+                    EquipBookingItem("Item", "Canon EOS R50 V")
+                    EquipBookingItem("Location", "IDC School of Design")
+                    EquipBookingItem("Timing", "(09:00am - 05:30pm)", highlightColor)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EquipBookingItem(
+    label : String,
+    value : String,
+    headerColor: Color = darkTextColor
+){
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+       CustomLabel(
+           header = label,
+           headerColor = darkTextColor.copy(0.5f),
+           fontSize = 14.sp
+       )
+       CustomLabel(
+           header = value,
+           headerColor = headerColor,
+           fontSize = 14.sp
+       )
     }
 }
 

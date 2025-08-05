@@ -13,9 +13,9 @@ import java.time.YearMonth
 @RequiresApi(Build.VERSION_CODES.O)
 class CalendarViewModel() : ViewModel() {
 
-    val bookedDate = LocalDate.now().plusDays(2)
-    val availableDate = LocalDate.now().plusDays(4)
-    val bookOnDate = LocalDate.now().plusDays(6)
+    val bookedDate = LocalDate.now().plusDays(10)
+    val availableDate = LocalDate.now().plusDays(10)
+    val bookOnDate = LocalDate.now().plusDays(10)
 
     @RequiresApi(Build.VERSION_CODES.O)
     private val today = LocalDate.now()

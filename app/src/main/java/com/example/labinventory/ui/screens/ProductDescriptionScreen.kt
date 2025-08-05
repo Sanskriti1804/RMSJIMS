@@ -46,6 +46,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.labinventory.R
 import com.example.labinventory.data.model.UserRole
+import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.AppCategoryIcon
 import com.example.labinventory.ui.components.AppCircularIcon
@@ -68,7 +69,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProdDescScreen(
-    sessionViewModel: UserSessionViewModel = koinViewModel()
+    sessionViewModel: UserSessionViewModel = koinViewModel(),
+    navController: NavHostController
 ) {
     val userRole = sessionViewModel.userRole
 
@@ -101,7 +103,9 @@ fun ProdDescScreen(
         bottomBar = {
             if (userRole == UserRole.USER){
                 AppButton(
-                    onClick = {},
+                    onClick = {
+                        navController.navigate(Screen.CalendarScreen.route)
+                    },
                     buttonText = "BOOK NOW"
                 )
             }
@@ -151,7 +155,8 @@ fun ProductCarousel(
     inactiveColor : Color = Color.DarkGray,
     activeColor : Color = highlightColor,
     indicatorShape: Shape = CircleShape,
-    indicatorSize : Dp = pxToDp(6)
+    indicatorSize : Dp = pxToDp(6),
+    isFav : Boolean = false
 ){
     Card(
         modifier = Modifier
@@ -248,7 +253,7 @@ fun ProductDescriptionCard(
                 modifier = Modifier
                     .padding(pxToDp(2))
                     .align(Alignment.TopEnd),
-                iconSize = pxToDp(20)
+                iconSize = pxToDp(20),
             )
         }
     }
@@ -414,39 +419,38 @@ fun AdditionalInfoCard(
             containerColor = containerColor
         )
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(pxToDp(16))
+                .then(
+                    if (!expanded) Modifier.height(52.dp) else Modifier
+                )
+                .padding(horizontal = pxToDp(16), vertical = pxToDp(8)),
+            verticalArrangement = Arrangement.spacedBy(pxToDp(8))
         ) {
-            if (expanded) {
-//                    //WHEN EXPANDED
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(pxToDp(52)),
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    CustomLabel(
-                        header = "Additional Information",
-                        headerColor = darkTextColor.copy(0.9f),
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                    )
-                }
-            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CustomLabel(
+                    header = "Additional Information",
+                    headerColor = darkTextColor.copy(0.9f),
+                    fontSize = 16.sp,
+                    modifier = Modifier.weight(1f)
+                )
 
-            AppCategoryIcon(
-                painter = painterResource(
-                    if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
-                ),
-                iconDescription = "Expand Icon",
-                tint = darkTextColor,
-                iconSize = pxToDp(20),
-                modifier = Modifier
-                    .align(iconAlignment)
-            )
+                AppCategoryIcon(
+                    painter = painterResource(
+                        if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+                    ),
+                    iconDescription = "Expand Icon",
+                    tint = darkTextColor,
+                    iconSize = pxToDp(20),
+                    modifier = Modifier.padding(pxToDp(4))
+                )
+            }
+            if (expanded) {
+            }
         }
     }
 }
@@ -468,40 +472,44 @@ fun UseCard(
             containerColor = containerColor
         )
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(pxToDp(16))
+                .then(
+                    if (!expanded) Modifier.height(52.dp) else Modifier
+                )
+                .padding(horizontal = pxToDp(16), vertical = pxToDp(8)),
+            verticalArrangement = Arrangement.spacedBy(pxToDp(8))
         ) {
-            if (expanded) {
-//                    //WHEN EXPANDED
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(pxToDp(52)), // Adjust height to your design
-                    contentAlignment = Alignment.CenterStart
-                ) {
-                    CustomLabel(
-                        header = "How to use",
-                        headerColor = darkTextColor.copy(0.9f),
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                    )
-                }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CustomLabel(
+                    header = "How to use",
+                    headerColor = darkTextColor.copy(0.9f),
+                    fontSize = 16.sp,
+                    modifier = Modifier.weight(1f)
+                )
+
+                AppCategoryIcon(
+                    painter = painterResource(
+                        if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+                    ),
+                    iconDescription = "Expand Icon",
+                    tint = darkTextColor,
+                    iconSize = pxToDp(20),
+                    modifier = Modifier.padding(pxToDp(4))
+                )
             }
 
-
-            AppCategoryIcon(
-                painter = painterResource(
-                    if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
-                ),
-                iconDescription = "Expand Icon",
-                tint = darkTextColor,
-                iconSize = pxToDp(20),
-                modifier = Modifier
-                    .align(iconAlignment)
-            )
+            if (expanded) {
+                CustomLabel(
+                    header = "This is additional information content.",
+                    headerColor = darkTextColor,
+                    fontSize = 14.sp
+                )
+            }
         }
     }
 }
@@ -559,7 +567,7 @@ fun ProductCarouselPreview() {
 ////        images = productImage,
 ////        pagerState = pagerState
 ////    )
-    ProdDescScreen()
+//    ProdDescScreen()
 ////    InChargeCard()
 ////    ProductDescriptionCard(modifier = Modifier)
 //}

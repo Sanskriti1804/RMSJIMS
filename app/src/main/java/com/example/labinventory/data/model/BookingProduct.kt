@@ -10,7 +10,8 @@ data class ProductInfo(
     val title: String,
     val code: String,
     val location: String,
-    val status: Status
+    val status: Status,
+    val timing : String? = null,
 )
 
 enum class Status(val label: String, val color: Color) {

@@ -19,6 +19,7 @@ import com.example.labinventory.viewmodel.BookingScreenViewmodel
 import com.example.labinventory.viewmodel.CalendarViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import com.example.labinventory.viewmodel.SearchViewModel
+import com.example.labinventory.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -50,10 +51,12 @@ fun AppNavGraph(navController: NavHostController){
         }
         composable(Screen.CalendarScreen.route) {
             val calendarViewModel : CalendarViewModel = koinViewModel()
-            CalendarScreen( calendarViewModel)
+            val bookingViewModel : BookingScreenViewmodel = koinViewModel()
+            CalendarScreen( navController,calendarViewModel, bookingViewModel)
         }
         composable(Screen.ProductDescriptionScreen.route) {
-            ProdDescScreen()
+            val sessionViewModel : UserSessionViewModel = koinViewModel()
+            ProdDescScreen(navController = navController, sessionViewModel = sessionViewModel)
         }
         composable(Screen.ProjectInfoScreen.route) {
             ProjectInfoScreen()
