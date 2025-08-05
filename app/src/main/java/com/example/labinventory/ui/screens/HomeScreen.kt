@@ -44,6 +44,7 @@ import com.example.labinventory.ui.theme.categoryColor
 import com.example.labinventory.ui.theme.titleColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.viewmodel.CategoryViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import com.example.labinventory.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -52,7 +53,7 @@ import org.koin.androidx.compose.viewModel
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-//    categoryViewModel: CategoryViewModel = koinViewModel(),
+    categoryViewModel: CategoryViewModel = koinViewModel(),
     filterSortViewModel: FilterSortViewModel = koinViewModel(),
     sessionViewModel: UserSessionViewModel = koinViewModel()
 ) {

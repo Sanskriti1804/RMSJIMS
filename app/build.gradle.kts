@@ -65,22 +65,20 @@ dependencies {
     implementation ("com.google.accompanist:accompanist-pager-indicators:0.34.0")
     implementation("io.coil-kt:coil-compose:2.5.0")
 
-    // Supabase
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.0.0"))
-    implementation("io.github.jan-tennert.supabase:supabase-kt")        // Core + Auth included
-    implementation("io.github.jan-tennert.supabase:postgrest-kt")       // Optional: Database operations
+    // Supabase with downgraded BOM version for better compatibility
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.6.0"))
+    implementation("io.github.jan-tennert.supabase:supabase-kt")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
 
     // Kotlinx Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
-    // Ktor Client Engine (required by Supabase SDK)
-    implementation("io.ktor:ktor-client-okhttp:2.3.9") // ✅ use OkHttp or CIO, not [engine]
-    implementation("io.ktor:ktor-client-android:2.3.9")
-    // Ktor core
-//    implementation("io.ktor:ktor-client-core:2.3.9")
-//    implementation("io.ktor:ktor-client-content-negotiation:2.3.9")
-//    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.9")
-//    implementation("io.ktor:ktor-client-logging:2.3.9")
+    // Ktor Client - Use explicit versions that work with older Supabase
+    implementation("io.ktor:ktor-client-core:2.3.7")
+    implementation("io.ktor:ktor-client-cio:2.3.7") // CIO engine is more stable
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.7")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7")
+    implementation("io.ktor:ktor-client-logging:2.3.7")
 
     // Koin for DI
     implementation("io.insert-koin:koin-android:3.5.3")
