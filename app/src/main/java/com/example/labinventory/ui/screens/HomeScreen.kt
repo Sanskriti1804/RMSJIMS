@@ -18,6 +18,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +46,7 @@ import com.example.labinventory.ui.theme.titleColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.FilterSortViewModel
+import com.example.labinventory.viewmodel.SearchViewModel
 import com.example.labinventory.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.viewModel
@@ -54,8 +56,12 @@ fun HomeScreen(
     navController: NavHostController,
 //    categoryViewModel: CategoryViewModel = koinViewModel(),
     filterSortViewModel: FilterSortViewModel = koinViewModel(),
-    sessionViewModel: UserSessionViewModel = koinViewModel()
+    sessionViewModel: UserSessionViewModel = koinViewModel(),
+    searchViewModel: SearchViewModel = koinViewModel()
 ) {
+    val isFilterSheetVisible by filterSortViewModel.isSheetVisible
+    val isAiChatSheetVisible by searchViewModel.isChatSheetVisible
+
     val userRole = sessionViewModel.userRole
 
 //    val categories = categoryViewModel.categoriesState
@@ -66,7 +72,9 @@ fun HomeScreen(
         },
         floatingActionButton = {
             if (userRole == UserRole.USER){
-                AppFAB()
+                AppFAB(
+                    onClick = {searchViewModel.showChatSheet()}
+                )
             }
         },
         containerColor = whiteColor
@@ -99,7 +107,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.width(pxToDp(8)))
 
                 AppCircularIcon(
-                    onClick = { navController.navigate(Screen.FilterSortBottomSheet.route) }
+                    onClick = { filterSortViewModel.showSheet() }
                 )
             }
 
@@ -124,6 +132,14 @@ fun HomeScreen(
                         .padding(horizontal = pxToDp(16), vertical = pxToDp(16))
                         .fillMaxWidth()
                 )
+            }
+
+            if (isFilterSheetVisible) {
+                FilterSortBottomSheet(viewModel = filterSortViewModel)
+            }
+
+            if (isAiChatSheetVisible){
+                ChatBottomSheet(viewModel = searchViewModel)
             }
 
 

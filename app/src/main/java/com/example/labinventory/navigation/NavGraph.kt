@@ -41,7 +41,8 @@ fun AppNavGraph(navController: NavHostController){
            HomeScreen(navController)
         }
         composable(Screen.EquipmentScreen.route) {
-            EquipmentScreen(navController)
+            val filterSortViewModel : FilterSortViewModel = koinViewModel()
+            EquipmentScreen(navController, filterSortViewModel)
         }
         composable(Screen.BookingsScreen.route) {
             val bookingViewModel : BookingScreenViewmodel = koinViewModel()
@@ -50,14 +51,6 @@ fun AppNavGraph(navController: NavHostController){
         composable(Screen.CalendarScreen.route) {
             val calendarViewModel : CalendarViewModel = koinViewModel()
             CalendarScreen( calendarViewModel)
-        }
-        composable(Screen.ChatBottomSheet.route) {
-            val chatViewmodel : SearchViewModel = koinViewModel()
-            ChatBottomSheet( chatViewmodel)
-        }
-        composable(Screen.FilterSortBottomSheet.route) {
-            val filterSortViewModel : FilterSortViewModel = koinViewModel()
-            FilterSortBottomSheet( filterSortViewModel)
         }
         composable(Screen.ProductDescriptionScreen.route) {
             ProdDescScreen()

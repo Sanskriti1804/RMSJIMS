@@ -66,19 +66,27 @@ import com.example.labinventory.ui.theme.lightTextColor
 import com.example.labinventory.ui.theme.navLabelColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.viewmodel.FilterSortViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EquipmentScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    filterSortViewModel: FilterSortViewModel
 ){
+    var isFilterSheetVisible by filterSortViewModel.isSheetVisible
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    var isSaved by remember { mutableStateOf(false) }
+
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CustomTopBar(
                 title = "Film",
+                onNavigationClick = {
+                    navController.popBackStack()
+                }
            )
         },
         containerColor = whiteColor,
@@ -112,7 +120,11 @@ fun EquipmentScreen(
 
                     Spacer(modifier = Modifier.width(pxToDp(8)))
 
-                    AppCircularIcon()
+                    AppCircularIcon(
+                        onClick = {
+                            filterSortViewModel.showSheet()
+                        }
+                    )
                 }
             }
 
@@ -124,9 +136,17 @@ fun EquipmentScreen(
 
             item {
                 EquipmentCard(
-                    onClick = {navController.navigate(Screen.ProductDescriptionScreen.route)}
+                    isSaved = isSaved,
+                    onClick = {navController.navigate(Screen.ProductDescriptionScreen.route)},
+                    saveClick = {
+                        isSaved = !isSaved
+                    }
                 )
             }
+        }
+
+        if (isFilterSheetVisible){
+            FilterSortBottomSheet(viewModel = filterSortViewModel)
         }
     }
 
@@ -135,15 +155,18 @@ fun EquipmentScreen(
 @Composable
 fun CategoryItem(
     category: EquipmentCategory,
-    modifier: Modifier = Modifier,
     isSelected : Boolean = false,
     selectedIconColor: Color = highlightColor,
     iconColor: Color = categoryIconColor,
     selectedLabelColor: Color = categoryColor,
-    labelColor: Color = darkTextColor.copy(0.4f)
+    labelColor: Color = darkTextColor.copy(0.4f),
+    onClick: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable{
+            onClick()
+        }
     ) {
         AppCategoryIcon(
             painter = painterResource(id = category.categoryImage),
@@ -175,7 +198,7 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
             CategoryItem(
                 category = category,
                 isSelected = category.id == selectedCategoryId,
-                modifier = Modifier.clickable {
+                onClick = {
                     selectedCategoryId = category.id
                 }
                 )
@@ -188,6 +211,8 @@ fun EquipmentCard(
     shape: Shape = RectangleShape,
     imageHeight: Dp = pxToDp(191),
     detailHeight: Dp = pxToDp(69),
+    isSaved : Boolean = false,
+    saveClick : () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
@@ -215,10 +240,13 @@ fun EquipmentCard(
                     painter = painterResource(R.drawable.ic_save),
                     iconDescription = "Save icon",
                     iconSize = pxToDp(18),
-                    tint = navLabelColor,
+                    tint = if (isSaved) highlightColor else navLabelColor,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(pxToDp(8))
+                        .clickable{
+                            saveClick()
+                        }
                 )
             }
 
@@ -276,7 +304,7 @@ fun EquipmentCard(
 @Composable
 fun EquipmentScreenPreview() {
     val navController : NavHostController = rememberNavController()
-    EquipmentScreen(navController)
+//    EquipmentScreen(navController)
 //    EquipmentCard()
 //    CategoryRow(categories = categories)
 }

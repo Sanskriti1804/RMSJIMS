@@ -82,14 +82,14 @@ fun AppNavIcon(
     iconDescription : String = "Navigation Icon",
     modifier: Modifier = Modifier,
     iconSize : Dp = pxToDp(24),
-    tint : Color = navLabelColor
+    tint : Color = navLabelColor,
 ){
     Icon(
         painter = painter,
         contentDescription = iconDescription,
         modifier = modifier
             .size(iconSize),
-        tint = tint
+        tint = tint,
     )
 }
 
@@ -99,13 +99,17 @@ fun AppNavBackIcon(
     iconDescription : String = "Navigation Icon",
     modifier: Modifier = Modifier,
     size : Dp = pxToDp(24),
-    tint : Color = navBackColor
+    tint : Color = navBackColor,
+    onClick: () -> Unit
 ){
     Icon(
         painter = painter,
         contentDescription = iconDescription,
         modifier = modifier
-            .size(size),
+            .size(size)
+            .clickable{
+                onClick
+            },
         tint = tint
     )
 }

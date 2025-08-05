@@ -44,16 +44,15 @@ fun CustomTopBar(
                 .background(containerColor),
             verticalAlignment = Alignment.Top
         ) {
-            AppNavBackIcon(
-                modifier = Modifier
-                    .padding(start = pxToDp(17), end = pxToDp(11), top = pxToDp(20))
-                    .align(Alignment.CenterVertically)
-            ).also {
-                if (onNavigationClick != null) {
-                    Box(modifier = Modifier
-                        .padding(end = 8.dp)
-                        .clickable { onNavigationClick() })
-                }
+            if (onNavigationClick != null) {
+                AppNavBackIcon(
+                    onClick = onNavigationClick,
+                    modifier = Modifier
+                        .padding(start = pxToDp(17), end = pxToDp(11), top = pxToDp(20))
+                        .align(Alignment.CenterVertically)
+
+                )
+
             }
 
             CustomLabel(

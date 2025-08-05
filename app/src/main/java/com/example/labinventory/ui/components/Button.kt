@@ -170,11 +170,7 @@ fun AppFAB(
     var showLabel by rememberSaveable { mutableStateOf(showIntro) }
 
     val ai_chatIcon = painterResource(R.drawable.ic_aichat)
-    val gradientBrush = Brush.linearGradient(
-        colors = listOf(Color(0xFFE67824), Color(0xFFE64646)),
-        start = Offset(100f, 0f),
-        end = Offset(0f, 100f)
-    )
+
 
     LaunchedEffect(showLabel) {
         delay(delay.toLong())
@@ -193,7 +189,7 @@ fun AppFAB(
         AnimatedContent(
             targetState = showLabel,
             transitionSpec = {
-                fadeIn(tween(300)) + scaleIn() with fadeOut(tween(300)) + scaleOut()
+                fadeIn(tween(3000)) + scaleIn() with fadeOut(tween(3000)) + scaleOut()
             },
             label = "FAB animation"
         ) {targetState ->
