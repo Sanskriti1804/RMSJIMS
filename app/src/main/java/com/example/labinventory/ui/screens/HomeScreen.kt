@@ -1,7 +1,9 @@
 package com.example.labinventory.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -9,8 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -65,7 +71,7 @@ fun HomeScreen(
 
     val userRole = sessionViewModel.userRole
 
-//    val categories = categoryViewModel.categoriesState
+    val categories = categoryViewModel.categoriesState
 
     Scaffold(
         bottomBar = {
@@ -120,11 +126,6 @@ fun HomeScreen(
                 headerColor = titleColor
             )
 
-            AppCategoryCard(
-                title = "hii",
-                onClick = { navController.navigate(Screen.EquipmentScreen.route) }
-            )
-
             if (userRole == UserRole.LAB_INCHARGE) {
                 AppButton(
                     buttonText = "Manage Lab",
@@ -144,32 +145,37 @@ fun HomeScreen(
             }
 
 
-//            when (categories) {
-//                is UiState.Loading -> {
-//                    Box(modifier = Modifier.fillMaxSize()) {
-//                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-//                    }
-//                }
-//
-//                is UiState.Success -> {
-//                    LazyColumn {
-//                        items(categories.data) { item ->
-//                            AppCategoryCard(
-//                                title = item.name,
-//                                onClick = { navController.navigate(Screen.EquipmentScreen.route) }
-//                            )
-//                        }
-//                    }
-//                }
-//
-//                is UiState.Error -> {
-//                    Text(
-//                        text = "Error loading categories",
-//                        color = Color.Red,
-//                        modifier = Modifier.padding(16.dp)
-//                    )
-//                }
-//            }
+            when (categories) {
+                is UiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+                }
+
+                is UiState.Success -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(horizontal = pxToDp(16)),
+                        verticalArrangement = Arrangement.spacedBy(pxToDp(13)),
+                        horizontalArrangement = Arrangement.spacedBy(pxToDp(13)),
+                    ) {
+                        items(categories.data) { item ->
+                            AppCategoryCard(
+                                title = item.name,
+                                onClick = { navController.navigate(Screen.EquipmentScreen.route) }
+                            )
+                        }
+                    }
+                }
+
+                is UiState.Error -> {
+                    Text(
+                        text = "Error loading categories",
+                        color = Color.Red,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
+            }
         }
     }
 }
@@ -178,14 +184,12 @@ fun HomeScreen(
 fun AppCategoryCard(
     onClick: () -> Unit = {},
     title : String,
-    padding : Dp = pxToDp(16),
     containerColor: Color = cardColor,
     shape: Shape = RectangleShape
 ){
     Card(
         modifier = Modifier
-            .padding(padding)
-            .aspectRatio(192f/109f),
+            .height(pxToDp(110)),
         onClick = onClick,
         shape = shape,
         colors = CardDefaults.cardColors(
@@ -199,83 +203,23 @@ fun AppCategoryCard(
         ){
 
             CustomLabel(
-                header =title,
+                header = title,
                 modifier = Modifier
-                    .align(Alignment.TopStart),
+                    .align(Alignment.TopStart)
+                    .fillMaxWidth(0.8f),
                 fontSize = 16.sp,
                 headerColor = categoryColor
             )
 
             AppCategoryImage(
-                modifier = Modifier.align(Alignment.BottomEnd),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .fillMaxWidth(0.4f)
+                    .aspectRatio(1f)
             )
         }
     }
 }
-
-
-//    LazyVerticalGrid(
-//        columns = GridCells.Fixed(2)
-//    ) {
-//        item(
-//            span = { GridItemSpan(2) }) {
-//            Column(
-//                modifier = Modifier.padding(8.dp)
-//            ) {
-//                //            CustomSearch()
-////                CustomButton()
-//            }
-//        }
-//
-//        item(
-//            span = { GridItemSpan(2) }) {
-//            CustomLabel(header = "Explore by Category")
-//        }
-//        item {
-//            CustomCard() {
-//                Box(modifier = Modifier.fillMaxSize()) {
-//                    Text(
-//                        text = "Film",
-//                        modifier = Modifier
-//                            .align(Alignment.TopStart)
-//                            .padding(8.dp)
-//                    )
-//                    Image(
-//                        painter = painterResource(id = R.drawable.ic_launcher_background), // Replace with your image resource
-//                        contentDescription = "Film Image",
-//                        modifier = Modifier
-//                            .align(Alignment.BottomEnd)
-//                            .padding(8.dp)
-//                    )
-//                }
-//            }
-//        }
-
-//    }
-//}
-
-//@Composable
-//fun CategoryGrid(
-//    items: List<Pair<String, Painter>>
-//) {
-//    LazyVerticalGrid(
-//        columns = GridCells.Fixed(2),
-//        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-//        verticalArrangement = Arrangement.spacedBy(16.dp),
-//        horizontalArrangement = Arrangement.spacedBy(16.dp),
-//        modifier = Modifier.fillMaxSize()
-//    ) {
-//        items(items) { (title, painter) ->
-//            CustomCategoryCard(
-//                title = "helloo",
-////                imagePainter = ,
-//                onClick = {},
-//            )
-//        }
-//    }
-//}
-
-//
 
 @Preview(showBackground = true)
 @Composable

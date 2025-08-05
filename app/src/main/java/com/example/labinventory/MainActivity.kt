@@ -27,8 +27,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MainApp()
-//            ProductDescriptionCard()
+                MainApp()
+//            DescriptionCard()
 //            HomeScreen()
 //            EquipmentScreen()
 //            ProdDescScreen()

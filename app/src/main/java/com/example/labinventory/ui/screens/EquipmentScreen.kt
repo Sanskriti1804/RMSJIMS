@@ -1,30 +1,30 @@
 package com.example.labinventory.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -33,25 +33,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.labinventory.R
 import com.example.labinventory.data.model.EquipmentCategory
+import com.example.labinventory.data.model.UiState
 import com.example.labinventory.data.model.categories
 import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppCategoryIcon
-import com.example.labinventory.ui.components.AppCategoryImage
 import com.example.labinventory.ui.components.AppCircularIcon
 import com.example.labinventory.ui.components.AppSearchBar
 import com.example.labinventory.ui.components.CustomLabel
@@ -67,17 +67,22 @@ import com.example.labinventory.ui.theme.navLabelColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.FilterSortViewModel
+import com.example.labinventory.viewmodel.ItemsViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EquipmentScreen(
     navController: NavHostController,
-    filterSortViewModel: FilterSortViewModel
+    filterSortViewModel: FilterSortViewModel = koinViewModel(),
+    itemViewModel: ItemsViewModel = koinViewModel()
 ){
     var isFilterSheetVisible by filterSortViewModel.isSheetVisible
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var isSaved by remember { mutableStateOf(false) }
+
+    val items = itemViewModel.itemsState
 
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -95,53 +100,79 @@ fun EquipmentScreen(
                 navController = navController
             )
         },
-    ){
-        LazyVerticalGrid(
-            contentPadding = it,
-            columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize()
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
         ) {
-            item(
-                span = {GridItemSpan(2)}
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = pxToDp(17), end = pxToDp(16), top = pxToDp(16), bottom = pxToDp(12))
-                ){
-                    AppSearchBar(
-                        query = "",
-                        onQueryChange = {},
-                        modifier = Modifier
-                            .height(pxToDp(46))
-                            .weight(1f),
-                        placeholder = "Equipments, Tools, Supplies, etc..."
+            // Top Search Row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = pxToDp(14),
+                        end = pxToDp(14),
+                        top = pxToDp(19),
+                        bottom = pxToDp(37)
                     )
+            ) {
+                AppSearchBar(
+                    query = "",
+                    onQueryChange = {},
+                    modifier = Modifier
+                        .height(pxToDp(46))
+                        .weight(1f),
+                    placeholder = "Equipments, Tools, Supplies, etc..."
+                )
 
-                    Spacer(modifier = Modifier.width(pxToDp(8)))
+                Spacer(modifier = Modifier.width(pxToDp(8)))
 
-                    AppCircularIcon(
-                        onClick = {
-                            filterSortViewModel.showSheet()
+                AppCircularIcon(
+                    onClick = { filterSortViewModel.showSheet() }
+                )
+            }
+
+            CategoryRow(categories = categories)
+
+            when (items) {
+                is UiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+                }
+
+                is UiState.Success -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(horizontal = pxToDp(16)),
+                        verticalArrangement = Arrangement.spacedBy(pxToDp(13)),
+                        horizontalArrangement = Arrangement.spacedBy(pxToDp(13)),
+                    ) {
+                        items(items.data) { item ->
+                            EquipmentCard(
+                                image = item.image_url,
+                                equipName = item.name,
+                                available = if (item.is_available == true) "Available" else "Not Available",
+                                onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                                saveClick = {
+                                    isSaved = !isSaved
+                                }
+                            )
                         }
+                    }
+                }
+
+                is UiState.Error -> {
+                    val errorMessage = items.exception.localizedMessage ?: "Something went wrong"
+                    Log.e("EquipmentScreen", "Error loading items", items.exception)
+
+                    Text(
+                        text = "Error loading items: $errorMessage",
+                        color = Color.Red,
+                        modifier = Modifier.padding(16.dp)
                     )
                 }
-            }
-
-            item(
-                span = {GridItemSpan(2)}
-            ) {
-                CategoryRow(categories = categories)
-            }
-
-            item {
-                EquipmentCard(
-                    isSaved = isSaved,
-                    onClick = {navController.navigate(Screen.ProductDescriptionScreen.route)},
-                    saveClick = {
-                        isSaved = !isSaved
-                    }
-                )
             }
         }
 
@@ -149,7 +180,6 @@ fun EquipmentScreen(
             FilterSortBottomSheet(viewModel = filterSortViewModel)
         }
     }
-
 }
 
 @Composable
@@ -207,6 +237,9 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
 }
 @Composable
 fun EquipmentCard(
+    image : Any,
+    available : String,
+    equipName : String,
     onClick: () -> Unit = {},
     shape: Shape = RectangleShape,
     imageHeight: Dp = pxToDp(191),
@@ -217,7 +250,6 @@ fun EquipmentCard(
     Card(
         modifier = Modifier
             .padding(top = pxToDp(12), bottom = pxToDp(17), start = pxToDp(17), end = pxToDp(12)),
-//            .height(cardHeight),
         onClick = onClick,
         shape = shape
     ) {
@@ -228,13 +260,13 @@ fun EquipmentCard(
                     .height(imageHeight)
                     .fillMaxWidth()
             ) {
-                AppCategoryImage(
-                    painter = painterResource(R.drawable.temp),
+                AsyncImage(
+                    model = image,
+                    contentDescription = "Equipment Image",
                     modifier = Modifier
-                        .size(pxToDp(33))
                         .align(Alignment.Center)
-                        .padding(top = pxToDp(13), bottom = pxToDp(13)),
-                    contentScale = ContentScale.FillBounds
+                        .padding(horizontal = pxToDp(12), vertical = pxToDp(12)),
+                    contentScale = ContentScale.Crop
                 )
                 AppCategoryIcon(
                     painter = painterResource(R.drawable.ic_save),
@@ -259,14 +291,14 @@ fun EquipmentCard(
                 horizontalAlignment = Alignment.Start
             ) {
                 CustomLabel(
-                    header = "Canon EOS 1DX Mark III",
+                    header = equipName,
                     headerColor = darkTextColor,
                     fontSize = pxToDp(12).value.sp,
                     modifier = Modifier.padding(top = pxToDp(2))
                 )
 
                 CustomLabel(
-                    header = "Available",
+                    header =  available,
                     headerColor = highlightColor,
                     fontSize = pxToDp(12).value.sp,
                     modifier = Modifier.padding(top = pxToDp(3), bottom = pxToDp(3))
