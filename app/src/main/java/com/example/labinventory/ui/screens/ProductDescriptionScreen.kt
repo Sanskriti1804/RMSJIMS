@@ -98,7 +98,12 @@ fun ProdDescScreen(
 
     Scaffold(
         topBar = {
-            CustomTopBar(title = "Camera")
+            CustomTopBar(
+                title = "Camera",
+                onNavigationClick = {
+                    navController.popBackStack()
+                }
+            )
         },
         bottomBar = {
             if (userRole == UserRole.USER){
@@ -106,20 +111,21 @@ fun ProdDescScreen(
                     onClick = {
                         navController.navigate(Screen.CalendarScreen.route)
                     },
-                    buttonText = "BOOK NOW"
+                    buttonText = "BOOK NOW",
+                    modifier = Modifier.padding(pxToDp(16))
                 )
             }
             else{
                 ActionCard(
                     onEditClick = {},
                     onDeleteClick = {},
-                    onBookClick = {}
+                    onBookClick = {},
+                    modifier = Modifier.padding(pxToDp(16))
                 )
             }
         },
         containerColor = whiteColor
     ) { paddingValues ->
-        Spacer(modifier = Modifier.height(pxToDp(40)))
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -127,6 +133,7 @@ fun ProdDescScreen(
                 .padding(pxToDp(16)),
             verticalArrangement = Arrangement.spacedBy(pxToDp(12))
         ) {
+            Spacer(modifier = Modifier.height(pxToDp(20)))
             ProductCarousel(
                 images = productImage,
                 pageInteractionSource = pagerInteractionSource,
@@ -504,11 +511,7 @@ fun UseCard(
             }
 
             if (expanded) {
-                CustomLabel(
-                    header = "This is additional information content.",
-                    headerColor = darkTextColor,
-                    fontSize = 14.sp
-                )
+
             }
         }
     }
@@ -518,7 +521,8 @@ fun UseCard(
 fun ActionCard(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onBookClick: () -> Unit
+    onBookClick: () -> Unit,
+    modifier: Modifier
 ) {
     Card(
         modifier = Modifier

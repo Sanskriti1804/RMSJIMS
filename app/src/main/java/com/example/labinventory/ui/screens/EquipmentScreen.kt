@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,6 +20,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,6 +73,7 @@ import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import com.example.labinventory.viewmodel.ItemsViewModel
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -218,23 +224,50 @@ fun CategoryItem(
 @Composable
 fun CategoryRow(categories: List<EquipmentCategory>) {
     var selectedCategoryId by remember { mutableIntStateOf(categories.first().id) }
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     LazyRow(
-        contentPadding = PaddingValues(start = pxToDp(28), end = pxToDp(28), top = pxToDp(12), bottom = pxToDp(8)),
+        state = listState,
+        contentPadding = PaddingValues(
+            start = pxToDp(28), end = pxToDp(28),
+            top = pxToDp(12), bottom = pxToDp(8)
+        ),
         horizontalArrangement = Arrangement.spacedBy(pxToDp(37)),
         modifier = Modifier.height(pxToDp(64))
     ) {
-        items(categories) { category ->
-            CategoryItem(
-                category = category,
-                isSelected = category.id == selectedCategoryId,
-                onClick = {
+        itemsIndexed(categories) { index, category ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.clickable {
                     selectedCategoryId = category.id
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(index)
+                    }
                 }
+            ) {
+                CategoryItem(
+                    category = category,
+                    isSelected = category.id == selectedCategoryId,
+                    onClick = {  }
                 )
+
+                Spacer(modifier = Modifier.height(pxToDp(8)))
+
+                if (category.id == selectedCategoryId) {
+                    Box(
+                        Modifier
+                            .width(pxToDp(30))
+                            .height(pxToDp(1))
+                            .background(categoryColor)
+                    )
+                }
+            }
         }
     }
 }
+
+
 @Composable
 fun EquipmentCard(
     image : Any,

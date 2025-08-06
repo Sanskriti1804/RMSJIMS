@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,6 +45,7 @@ import com.example.labinventory.data.model.TabItem
 import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppNavIcon
 import com.example.labinventory.ui.components.CustomLabel
+import com.example.labinventory.ui.components.CustomNavigationBar
 import com.example.labinventory.ui.components.CustomTopBar
 import com.example.labinventory.ui.components.EditButton
 import com.example.labinventory.ui.theme.cardColor
@@ -66,18 +68,23 @@ fun BookingScreen(
     Scaffold(
         topBar = {
             CustomTopBar(title = "Bookings")
-        }
+        },
+        bottomBar = {
+            CustomNavigationBar(navController = navController)
+        },
     ) { paddingValues ->
 
         Column(modifier = Modifier
             .fillMaxWidth()
+            .padding(pxToDp(16))
             .padding(paddingValues)) {
+            Spacer(modifier = Modifier.height(pxToDp(27)))
 
             BookingTabSelector(
                 tabs = listOf(
                     TabItem(BookingTab.Booking_Requests, "Booking Requests", R.drawable.ic_booking_pending, isSelected = true),
-                    TabItem(BookingTab.Verified_Bookings, "Approved", R.drawable.ic_booking_verified, isSelected = false),
-                    TabItem(BookingTab.Canceled_Bookings, "Rejected", R.drawable.ic_booking_canceled, isSelected = false),
+                    TabItem(BookingTab.Verified_Bookings, "Approved Bookings", R.drawable.ic_booking_verified, isSelected = false),
+                    TabItem(BookingTab.Canceled_Bookings, "Rejected Bookings", R.drawable.ic_booking_canceled, isSelected = false),
                 ),
                 onTabSelected = { selectedTab -> }
             )
@@ -100,32 +107,34 @@ fun BookingScreen(
 fun BookingTabSelector(tabs: List<TabItem>, onTabSelected: (BookingTab) -> Unit) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = pxToDp(25), end = pxToDp(25), top = pxToDp(4), bottom = pxToDp(12)),
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         tabs.forEach {
-            Column(
+            Box(
                 modifier = Modifier
-                    .clickable { onTabSelected(it.tab) }
                     .weight(1f)
-                    .background(if (it.isSelected) highlightColor.copy(0.2f) else Color.Transparent)
-                    .padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(pxToDp(10))
+                    .padding(8.dp) // apply padding here, outside the clickable column
+                    .clickable { onTabSelected(it.tab) }
             ) {
-                AppNavIcon(
-                    painter = painterResource(id = it.iconRes),
-                    iconDescription = it.label,
-                    iconSize = pxToDp(20),
-                    tint = if (it.isSelected) highlightColor else categoryIconColor
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(pxToDp(10))
+                ) {
+                    AppNavIcon(
+                        painter = painterResource(id = it.iconRes),
+                        iconDescription = it.label,
+                        iconSize = pxToDp(20),
+                        tint = if (it.isSelected) highlightColor else categoryIconColor
                     )
-                CustomLabel(
-                    header = it.label,
-                    fontSize = 12.sp,
-                    headerColor = if (it.isSelected) highlightColor else categoryIconColor
-                )
+                    CustomLabel(
+                        header = it.label,
+                        fontSize = 12.sp,
+                        headerColor = if (it.isSelected) highlightColor else categoryIconColor
+                    )
+                }
             }
+
         }
     }
 }
@@ -139,7 +148,6 @@ fun InfoCard(
     icons: List<Int> = listOf(R.drawable.ic_mail),
     cardShape: Shape = RectangleShape,
     containerColor : Color = cardColor,
-    cardPadding : Dp = pxToDp(20)
 ) {
     Card(
         shape = cardShape,
@@ -149,7 +157,11 @@ fun InfoCard(
             containerColor = containerColor
         )
     ) {
-        Column(modifier = Modifier.padding(cardPadding)) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = pxToDp(20), vertical = pxToDp(22)),
+            verticalArrangement = Arrangement.spacedBy(pxToDp(20))
+        ) {
 
             Row {
                 Image(
@@ -165,7 +177,7 @@ fun InfoCard(
                 ) {
                     CustomLabel(
                         header = productInfo.title,
-                        fontSize = 14.sp,
+                        fontSize = 16.sp,
                         modifier = Modifier,
                         headerColor = darkTextColor
                     )
@@ -190,11 +202,11 @@ fun InfoCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(pxToDp(20)))
+//            Spacer(modifier = Modifier.height(pxToDp(20)))
             Divider(thickness = pxToDp(1), color = someGrayColor)
-            Spacer(modifier = Modifier.height(pxToDp(20)))
+//            Spacer(modifier = Modifier.height(pxToDp(20)))
 
-            Column(verticalArrangement = Arrangement.spacedBy(pxToDp(18))) {
+            Column(verticalArrangement = Arrangement.spacedBy(pxToDp(16))) {
                 CustomLabel(
                     header = "InCharge",
                     headerColor = darkTextColor.copy(0.9f)
@@ -207,9 +219,9 @@ fun InfoCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+//            Spacer(modifier = Modifier.height(16.dp))
             Divider()
-            Spacer(modifier = Modifier.height(16.dp))
+//            Spacer(modifier = Modifier.height(16.dp))
             Column(verticalArrangement = Arrangement.spacedBy(pxToDp(18))) {
                 Row(
                     modifier = Modifier
@@ -280,14 +292,14 @@ fun DatesRow(label: String, name: String) {
         ) {
             CustomLabel(
                 header = "$label",
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 headerColor = darkTextColor.copy(0.5f),
                 modifier = Modifier
                     .width(80.dp)
             )
             CustomLabel(
                 header = name,
-                fontSize = 14.sp,
+                fontSize = 16.sp,
                 modifier = Modifier,
                 headerColor = darkTextColor.copy(0.8f)
 

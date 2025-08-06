@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.labinventory.R
+import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.AppDropDownTextField
 import com.example.labinventory.ui.components.AppTextField
@@ -37,18 +38,31 @@ import com.example.labinventory.util.pxToDp
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun ProjectInfoScreen(){
+fun ProjectInfoScreen(
+    navController: NavHostController
+){
 
     var value by remember { mutableStateOf("") }
-    val fontSize = 14.sp
 
     Scaffold(
         topBar = {
             CustomTopBar(
-                title = "Project Information"
+                title = "Project Information",
+                onNavigationClick = {
+                    navController.popBackStack()
+                }
             )
         },
-        containerColor = whiteColor
+        containerColor = whiteColor,
+        bottomBar = {
+            AppButton(
+                buttonText = "CONFIRM",
+                onClick = {
+                   navController.navigate(Screen.BookingsScreen.route)
+                },
+                modifier = Modifier.padding(pxToDp(16))
+            )
+        }
     ) {paddingValues ->
         Column(
             modifier = Modifier
@@ -58,6 +72,7 @@ fun ProjectInfoScreen(){
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(pxToDp(13))
         ){
+            Spacer(modifier = Modifier.height(pxToDp(20)))
             AppTextField(
                 value = value,
                 onValueChange = { value = it},
@@ -106,18 +121,14 @@ fun ProjectInfoScreen(){
             Text(
                 text = "Tell us about your project and where you’ll be using the equipment. Use the dropdown to select whether it’s a personal or course project.",
                 color = darkTextColor.copy(0.9f),
-                fontSize = fontSize,
+                fontSize = 16.sp,
                 modifier = Modifier.fillMaxWidth(),
-                lineHeight = fontSize * 1.3,
+                letterSpacing = 0.3.sp,
+                lineHeight = 20.sp,
                 softWrap = true,
                 fontFamily =  FontFamily(Font(R.font.font_alliance_regular_two)),
             )
-            AppButton(
-                buttonText = "BOOK",
-                onClick = {},
-                modifier = Modifier
-                    .padding(1.dp)
-            )
+
         }
     }
 }

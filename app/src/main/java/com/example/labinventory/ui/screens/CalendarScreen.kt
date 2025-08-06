@@ -106,7 +106,10 @@ fun CalendarScreen(
     Scaffold(
         topBar = {
             CustomTopBar(
-                title = "Booking Dates"
+                title = "Booking Dates",
+                onNavigationClick = {
+                    navController.popBackStack()
+                }
             )
         },
         bottomBar = {
@@ -114,7 +117,8 @@ fun CalendarScreen(
                 buttonText = "CONFIRM",
                 onClick = {
                     navController.navigate(Screen.ProjectInfoScreen.route)
-                }
+                },
+                modifier = Modifier.padding(pxToDp(16))
             )
         }
     ) { paddingValues ->
@@ -126,18 +130,14 @@ fun CalendarScreen(
             verticalArrangement = Arrangement.spacedBy(pxToDp(20))
            ) {
 
-            Spacer(modifier = Modifier.height(pxToDp(20)))
+            Spacer(modifier = Modifier.height(pxToDp(10)))
 
             MonthTabRow(
                 months = months,
                 currentMonth = currentMonth,
                 onMonthSelected = { viewModel.setMonth(it) }
             )
-            Spacer(modifier = Modifier.height(pxToDp(20)))
-
             DaysOfWeekHeader(daysOfWeek = daysOfWeek)
-
-            Spacer(modifier = Modifier.height(pxToDp(20)))
 
             // Calendar Grid
             CalendarGrid(
@@ -185,7 +185,6 @@ fun MonthTabRow(
                     .clip(RoundedCornerShape(pxToDp(4)))
                     .background(if (isSelected) highlightColor else cardColor)
                     .clickable { onMonthSelected(month) }
-                    .padding(horizontal = pxToDp(12))
             ) {
                 CustomLabel(
                     header = month.month.name.lowercase().replaceFirstChar { it.uppercase() },
@@ -394,7 +393,7 @@ fun StatusLabel(
 fun EquipBookingCard(
     productInfo: ProductInfo,
     cardShape: Shape = RectangleShape,
-    containerColor : Color = cardColor,
+    containerColor : Color = whiteColor,
     cardPadding : Dp = pxToDp(20)
 ) {
     Card(

@@ -30,6 +30,7 @@ fun AppTextField(
     placeholder: String,
     textColor : Color = darkTextColor.copy(alpha = 0.7f),
     containercolor : Color = cardColor,
+    minlines : Int = 1,
     maxlines : Int = 1,
     visualTransformation : VisualTransformation = VisualTransformation.None
 ){
@@ -58,6 +59,7 @@ fun AppTextField(
             disabledIndicatorColor = Color.Transparent
         ),
         visualTransformation = visualTransformation,
+        minLines = minlines,
         maxLines = maxlines
 
     )

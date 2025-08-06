@@ -59,7 +59,7 @@ fun AppNavGraph(navController: NavHostController){
             ProdDescScreen(navController = navController, sessionViewModel = sessionViewModel)
         }
         composable(Screen.ProjectInfoScreen.route) {
-            ProjectInfoScreen()
+            ProjectInfoScreen(navController)
         }
     }
 }

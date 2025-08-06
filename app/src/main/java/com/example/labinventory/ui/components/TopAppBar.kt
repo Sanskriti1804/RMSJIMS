@@ -58,7 +58,6 @@ fun CustomTopBar(
             else{
                 Spacer(modifier = Modifier.width(pxToDp(16)))
 
-
             }
 
             CustomLabel(
