@@ -4,18 +4,22 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.example.labinventory.data.remote.BranchesApiService
 import com.example.labinventory.data.remote.CategoryApiService
+import com.example.labinventory.data.remote.DepartmentApiService
 import com.example.labinventory.data.remote.ItemsApiService
 import com.example.labinventory.data.remote.SessionManager
 import com.example.labinventory.data.remote.api.BranchesApi
 import com.example.labinventory.data.remote.api.CategoryApi
+import com.example.labinventory.data.remote.api.DepartmentApi
 import com.example.labinventory.data.remote.api.ItemsApi
 import com.example.labinventory.repository.BranchRepository
 import com.example.labinventory.repository.CategoryRepository
+import com.example.labinventory.repository.DepartmentRepository
 import com.example.labinventory.repository.ItemsRepository
 import com.example.labinventory.viewmodel.BookingScreenViewmodel
 import com.example.labinventory.viewmodel.BranchViewModel
 import com.example.labinventory.viewmodel.CalendarViewModel
 import com.example.labinventory.viewmodel.CategoryViewModel
+import com.example.labinventory.viewmodel.DepartmentViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import com.example.labinventory.viewmodel.ItemsViewModel
 import com.example.labinventory.viewmodel.SearchViewModel
@@ -31,11 +35,13 @@ val appModule = module {
     single<CategoryApiService> { CategoryApi(get()) }
     single<ItemsApiService> { ItemsApi(get()) }
     single<BranchesApiService> { BranchesApi(get()) }
+    single<DepartmentApiService> { DepartmentApi(get()) }
 //    // Repository
 //    single { InventoryRepository(get()) }
     single { CategoryRepository(get()) }
     single { ItemsRepository(get()) }
     single { BranchRepository(get()) }
+    single { DepartmentRepository(get()) }
 //
 //    // ViewModels
     viewModel { CategoryViewModel(get()) }
@@ -50,6 +56,7 @@ val appModule = module {
     viewModel { FilterSortViewModel() }
     viewModel { SearchViewModel() }
     viewModel { BranchViewModel(get()) }
+    viewModel { DepartmentViewModel(get()) }
 }
 
 

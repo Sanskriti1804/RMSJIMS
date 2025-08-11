@@ -37,6 +37,7 @@ import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.BranchViewModel
+import com.example.labinventory.viewmodel.DepartmentViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("RememberReturnType")
@@ -45,12 +46,13 @@ fun ProjectInfoScreen(
     navController: NavHostController,
 
 ){
-    val viewModel : BranchViewModel = koinViewModel()
+    val branchViewModel : BranchViewModel = koinViewModel()
+    val departmentViewModel : DepartmentViewModel = koinViewModel()
 
     var value by remember { mutableStateOf("") }
     var selectedBranch by remember { mutableStateOf("") }
 
-    val branchList = viewModel.branchName
+    val branchList = branchViewModel.branchName
 
     Scaffold(
         topBar = {
@@ -118,7 +120,7 @@ fun ProjectInfoScreen(
                     placeholder = "Course Project",
                     items = listOf("Yes", "No")
                 )
-                when (viewModel.branchState) {
+                when (branchViewModel.branchState) {
                     is UiState.Loading -> AppDropDownTextField(
                         modifier = Modifier.weight(1f),
                         value = "",
