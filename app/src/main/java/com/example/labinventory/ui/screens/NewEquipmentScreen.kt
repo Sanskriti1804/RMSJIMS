@@ -122,13 +122,15 @@ fun NewEquipmentScreen() {
                     modifier = Modifier.weight(1f),
                     value = value,
                     onValueChange = { value = it },
-                    placeholder = "General Category"
+                    placeholder = "General Category",
+                    items = listOf("Yes", "No")
                 )
                 AppDropDownTextField(
                     modifier = Modifier.weight(1f),
                     value = value,
                     onValueChange = { value = it },
-                    placeholder = "Sub Category"
+                    placeholder = "Sub Category",
+                    items = listOf("Yes", "No")
                 )
             }
         }

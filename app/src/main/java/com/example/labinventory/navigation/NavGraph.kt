@@ -16,6 +16,7 @@ import com.example.labinventory.ui.screens.HomeScreen
 import com.example.labinventory.ui.screens.ProdDescScreen
 import com.example.labinventory.ui.screens.ProjectInfoScreen
 import com.example.labinventory.viewmodel.BookingScreenViewmodel
+import com.example.labinventory.viewmodel.BranchViewModel
 import com.example.labinventory.viewmodel.CalendarViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import com.example.labinventory.viewmodel.SearchViewModel
@@ -35,7 +36,7 @@ fun MainApp(){
 fun AppNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.HomeScreen.route
+        startDestination = Screen.ProjectInfoScreen.route
     ) {
 
         composable(Screen.HomeScreen.route) {

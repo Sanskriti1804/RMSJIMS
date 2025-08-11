@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.labinventory.R
+import com.example.labinventory.data.model.UiState
 import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.AppDropDownTextField
@@ -35,14 +36,21 @@ import com.example.labinventory.ui.components.CustomTopBar
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.viewmodel.BranchViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("RememberReturnType")
 @Composable
 fun ProjectInfoScreen(
-    navController: NavHostController
+    navController: NavHostController,
+
 ){
+    val viewModel : BranchViewModel = koinViewModel()
 
     var value by remember { mutableStateOf("") }
+    var selectedBranch by remember { mutableStateOf("") }
+
+    val branchList = viewModel.branchName
 
     Scaffold(
         topBar = {
@@ -107,15 +115,34 @@ fun ProjectInfoScreen(
                     modifier = Modifier.weight(1f),
                     value = value,
                     onValueChange = { value = it},
-                    placeholder = "Course Project"
+                    placeholder = "Course Project",
+                    items = listOf("Yes", "No")
                 )
-                AppDropDownTextField(
-                    modifier = Modifier.weight(1f),
-                    value = value,
-                    onValueChange = { value = it},
-                    placeholder = "B.des"
-                )
+                when (viewModel.branchState) {
+                    is UiState.Loading -> AppDropDownTextField(
+                        modifier = Modifier.weight(1f),
+                        value = "",
+                        onValueChange = {},
+                        placeholder = "Loading...",
+                        items = emptyList()
+                    )
+                    is UiState.Error -> AppDropDownTextField(
+                        modifier = Modifier.weight(1f),
+                        value = "",
+                        onValueChange = {},
+                        placeholder = "Error loading",
+                        items = emptyList()
+                    )
+                    is UiState.Success -> AppDropDownTextField(
+                        modifier = Modifier.weight(1f),
+                        value = selectedBranch,
+                        onValueChange = { selectedBranch = it },
+                        placeholder = "Branch",
+                        items = branchList
+                    )
+                }
             }
+
 
             Spacer(modifier = Modifier.height(13.dp))
             Text(

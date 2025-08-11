@@ -2,14 +2,18 @@ package com.example.labinventory.di
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.labinventory.data.remote.BranchesApiService
 import com.example.labinventory.data.remote.CategoryApiService
 import com.example.labinventory.data.remote.ItemsApiService
 import com.example.labinventory.data.remote.SessionManager
+import com.example.labinventory.data.remote.api.BranchesApi
 import com.example.labinventory.data.remote.api.CategoryApi
 import com.example.labinventory.data.remote.api.ItemsApi
+import com.example.labinventory.repository.BranchRepository
 import com.example.labinventory.repository.CategoryRepository
 import com.example.labinventory.repository.ItemsRepository
 import com.example.labinventory.viewmodel.BookingScreenViewmodel
+import com.example.labinventory.viewmodel.BranchViewModel
 import com.example.labinventory.viewmodel.CalendarViewModel
 import com.example.labinventory.viewmodel.CategoryViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
@@ -26,11 +30,12 @@ val appModule = module {
 //    single<InventoryApiService> { InventoryImageApi(get()) }
     single<CategoryApiService> { CategoryApi(get()) }
     single<ItemsApiService> { ItemsApi(get()) }
-
+    single<BranchesApiService> { BranchesApi(get()) }
 //    // Repository
 //    single { InventoryRepository(get()) }
     single { CategoryRepository(get()) }
     single { ItemsRepository(get()) }
+    single { BranchRepository(get()) }
 //
 //    // ViewModels
     viewModel { CategoryViewModel(get()) }
@@ -44,6 +49,7 @@ val appModule = module {
     viewModel { CalendarViewModel() }
     viewModel { FilterSortViewModel() }
     viewModel { SearchViewModel() }
+    viewModel { BranchViewModel(get()) }
 }
 
 

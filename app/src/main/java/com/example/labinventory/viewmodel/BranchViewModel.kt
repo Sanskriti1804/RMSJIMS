@@ -15,6 +15,15 @@ class BranchViewModel(
 ) : ViewModel() {
 
     var branchState by mutableStateOf<UiState<List<Branch>>>(UiState.Loading)
+        private set
+
+    //data - Access the data property of the UiState.Success object.
+    //.map { it.name } - If data is a list, map each element to its name(branch data class).
+    val branchName : List<String> get()
+            = when(val state = branchState){
+                is UiState.Success -> state.data.map { it.name }
+            else -> emptyList()
+            }
 
     init {
         getBranches()
