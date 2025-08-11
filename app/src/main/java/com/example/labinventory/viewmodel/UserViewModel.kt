@@ -15,9 +15,6 @@ class UserSessionViewModel(
     var userRole by mutableStateOf(UserRole.USER)
         private set
 
-
-
-
     init {
         viewModelScope.launch {
             userRole = sessionManager.getUserRole() // now using injected session manager

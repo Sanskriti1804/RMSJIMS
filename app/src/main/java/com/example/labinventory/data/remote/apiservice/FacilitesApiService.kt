@@ -1,4 +1,4 @@
-package com.example.labinventory.data.remote
+package com.example.labinventory.data.remote.apiservice
 
 import com.example.labinventory.data.schema.Facilities
 

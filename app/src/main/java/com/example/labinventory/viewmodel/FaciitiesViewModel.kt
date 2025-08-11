@@ -10,7 +10,7 @@ import com.example.labinventory.data.schema.Facilities
 import com.example.labinventory.repository.FacilitiesRepository
 import kotlinx.coroutines.launch
 
-class FaciitiesViewModel (
+class FacilitiesViewModel (
     private val facilitiesRepository: FacilitiesRepository
 ) : ViewModel(){
     var facilitiesState by mutableStateOf<UiState<List<Facilities>>>(UiState.Loading)

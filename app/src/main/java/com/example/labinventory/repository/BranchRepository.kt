@@ -1,7 +1,7 @@
 package com.example.labinventory.repository
 
 import com.example.labinventory.data.schema.Branch
-import com.example.labinventory.data.remote.BranchesApiService
+import com.example.labinventory.data.remote.apiservice.BranchesApiService
 
 class BranchRepository(
     private val branchesApiService: BranchesApiService

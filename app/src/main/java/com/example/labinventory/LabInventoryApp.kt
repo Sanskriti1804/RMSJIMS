@@ -21,10 +21,10 @@ class LabInventoryApp : Application() {
         startKoin {
             androidContext(this@LabInventoryApp)        // Supplies the app-level context for DI —
             modules(    //Registers your DI modules
-                 appModule,
-                               supabaseModule(
+                supabaseModule(
                 config.SUPABASE_URL,
-                config.SUPABASE_KEY)
+                config.SUPABASE_KEY),
+                appModule
             )
         }
     }

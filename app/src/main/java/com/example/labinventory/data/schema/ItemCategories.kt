@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Categories(
+data class ItemCategories(
     val id : Int,
     val name : String,
     @SerialName("created_at") val createdAt: String? = null

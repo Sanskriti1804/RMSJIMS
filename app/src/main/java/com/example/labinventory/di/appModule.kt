@@ -2,25 +2,38 @@ package com.example.labinventory.di
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.labinventory.data.remote.BranchesApiService
-import com.example.labinventory.data.remote.CategoryApiService
-import com.example.labinventory.data.remote.DepartmentApiService
-import com.example.labinventory.data.remote.ItemsApiService
+import com.example.labinventory.data.remote.apiservice.BranchesApiService
+import com.example.labinventory.data.remote.apiservice.ItemCategoriesApiService
+import com.example.labinventory.data.remote.apiservice.DepartmentApiService
+import com.example.labinventory.data.remote.apiservice.ItemsApiService
 import com.example.labinventory.data.remote.SessionManager
 import com.example.labinventory.data.remote.api.BranchesApi
-import com.example.labinventory.data.remote.api.CategoryApi
+import com.example.labinventory.data.remote.api.ItemCategoriesApi
 import com.example.labinventory.data.remote.api.DepartmentApi
+import com.example.labinventory.data.remote.api.FacilitiesApi
+import com.example.labinventory.data.remote.api.ItemImagesApi
+import com.example.labinventory.data.remote.api.ItemSubCategoriesApi
 import com.example.labinventory.data.remote.api.ItemsApi
+import com.example.labinventory.data.remote.apiservice.FacilitesApiService
+import com.example.labinventory.data.remote.apiservice.ItemImagesApiService
+import com.example.labinventory.data.remote.apiservice.ItemSubCategoriesApiService
+import com.example.labinventory.data.schema.ItemSubCategories
 import com.example.labinventory.repository.BranchRepository
-import com.example.labinventory.repository.CategoryRepository
+import com.example.labinventory.repository.ItemCategoriesRepository
 import com.example.labinventory.repository.DepartmentRepository
+import com.example.labinventory.repository.FacilitiesRepository
+import com.example.labinventory.repository.ItemImagesRepository
+import com.example.labinventory.repository.ItemSubCategoriesRepository
 import com.example.labinventory.repository.ItemsRepository
 import com.example.labinventory.viewmodel.BookingScreenViewmodel
 import com.example.labinventory.viewmodel.BranchViewModel
 import com.example.labinventory.viewmodel.CalendarViewModel
-import com.example.labinventory.viewmodel.CategoryViewModel
+import com.example.labinventory.viewmodel.ItemCategoriesViewModel
 import com.example.labinventory.viewmodel.DepartmentViewModel
+import com.example.labinventory.viewmodel.FacilitiesViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
+import com.example.labinventory.viewmodel.ItemImagesViewModel
+import com.example.labinventory.viewmodel.ItemSubCategoriesViewModel
 import com.example.labinventory.viewmodel.ItemsViewModel
 import com.example.labinventory.viewmodel.SearchViewModel
 import com.example.labinventory.viewmodel.UserSessionViewModel
@@ -30,32 +43,38 @@ import org.koin.dsl.module
 @RequiresApi(Build.VERSION_CODES.O)
 val appModule = module {
 
+    single { SessionManager(get()) }
+
     // API implementation
 //    single<InventoryApiService> { InventoryImageApi(get()) }
-    single<CategoryApiService> { CategoryApi(get()) }
+    single<ItemCategoriesApiService> { ItemCategoriesApi(get()) }
     single<ItemsApiService> { ItemsApi(get()) }
     single<BranchesApiService> { BranchesApi(get()) }
     single<DepartmentApiService> { DepartmentApi(get()) }
-//    // Repository
-//    single { InventoryRepository(get()) }
-    single { CategoryRepository(get()) }
+    single<FacilitesApiService> { FacilitiesApi(get()) }
+    single<ItemImagesApiService> { ItemImagesApi(get()) }
+    single<ItemSubCategoriesApiService> { ItemSubCategoriesApi(get()) }
+
+    single { BranchRepository (get()) }
+    single { ItemCategoriesRepository(get()) }
     single { ItemsRepository(get()) }
-    single { BranchRepository(get()) }
     single { DepartmentRepository(get()) }
-//
+    single { FacilitiesRepository(get()) }
+    single { ItemImagesRepository(get()) }
+    single { ItemSubCategoriesRepository(get()) }
+
 //    // ViewModels
-    viewModel { CategoryViewModel(get()) }
+    viewModel { ItemCategoriesViewModel(get()) }
     viewModel { ItemsViewModel(get()) }
-//    viewModel { InventoryImageViewModel(get()) }
-
-    single { SessionManager(get()) }
+    viewModel { ItemSubCategoriesViewModel(get()) }
+    viewModel { ItemImagesViewModel(get()) }
     viewModel { UserSessionViewModel(get()) }
-
     viewModel { BookingScreenViewmodel() }
     viewModel { CalendarViewModel() }
     viewModel { FilterSortViewModel() }
     viewModel { SearchViewModel() }
     viewModel { BranchViewModel(get()) }
+    viewModel { FacilitiesViewModel(get()) }
     viewModel { DepartmentViewModel(get()) }
 }
 

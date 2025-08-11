@@ -1,7 +1,7 @@
 package com.example.labinventory.repository
 
 import com.example.labinventory.data.schema.Department
-import com.example.labinventory.data.remote.DepartmentApiService
+import com.example.labinventory.data.remote.apiservice.DepartmentApiService
 
 class DepartmentRepository (
     private val departmentApiService: DepartmentApiService

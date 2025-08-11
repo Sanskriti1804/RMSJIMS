@@ -1,16 +1,16 @@
 package com.example.labinventory.data.remote.api
 
-import com.example.labinventory.data.schema.Categories
-import com.example.labinventory.data.remote.CategoryApiService
+import com.example.labinventory.data.schema.ItemCategories
+import com.example.labinventory.data.remote.apiservice.ItemCategoriesApiService
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
 
-class CategoryApi(
+class ItemCategoriesApi(
     private val supabaseClient: SupabaseClient
-): CategoryApiService {
+): ItemCategoriesApiService {
 
     private val table = supabaseClient.postgrest["item_categories"]
-    override suspend fun getCategories(): List<Categories> {
+    override suspend fun getCategories(): List<ItemCategories> {
         return table.select().decodeList()
     }
 

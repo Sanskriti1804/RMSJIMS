@@ -5,16 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.labinventory.data.schema.Categories
+import com.example.labinventory.data.schema.ItemCategories
 import com.example.labinventory.data.model.UiState
-import com.example.labinventory.repository.CategoryRepository
+import com.example.labinventory.repository.ItemCategoriesRepository
 import kotlinx.coroutines.launch
 
-class CategoryViewModel (
-    private val categoryRepository: CategoryRepository
+class ItemCategoriesViewModel (
+    private val categoryRepository: ItemCategoriesRepository
 ) : ViewModel(){
 
-    var categoriesState by mutableStateOf<UiState<List<Categories>>>(UiState.Loading)
+    var categoriesState by mutableStateOf<UiState<List<ItemCategories>>>(UiState.Loading)
         private set
 
     init {

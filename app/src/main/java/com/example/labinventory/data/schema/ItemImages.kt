@@ -3,7 +3,7 @@ package com.example.labinventory.data.schema
 import kotlinx.serialization.Serializable
 
 @Serializable       //Turning an object into a storable/sendable format (like text, JSON) automatically
-data class InventoryItemImages(
+data class ItemImages(
     val id : Int,
     val item_id : Int,
     val image_url : String,
