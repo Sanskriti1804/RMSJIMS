@@ -1,6 +1,6 @@
 package com.example.labinventory.repository
 
-import com.example.labinventory.data.model.Items
+import com.example.labinventory.data.schema.Items
 import com.example.labinventory.data.remote.ItemsApiService
 
 class ItemsRepository(

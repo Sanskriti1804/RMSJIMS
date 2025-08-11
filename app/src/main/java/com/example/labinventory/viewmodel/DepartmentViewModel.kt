@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.labinventory.data.model.Department
+import com.example.labinventory.data.schema.Department
 import com.example.labinventory.data.model.UiState
 import com.example.labinventory.repository.BranchRepository
 import com.example.labinventory.repository.DepartmentRepository

@@ -1,6 +1,6 @@
 package com.example.labinventory.data.remote
 
-import com.example.labinventory.data.model.InventoryItemImages
+import com.example.labinventory.data.schema.InventoryItemImages
 
 //what operations the data source must provide?
 interface InventoryApiService {

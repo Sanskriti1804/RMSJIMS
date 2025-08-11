@@ -1,4 +1,4 @@
-package com.example.labinventory.data.model
+package com.example.labinventory.data.schema
 
 import kotlinx.serialization.Serializable
 

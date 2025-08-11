@@ -2,7 +2,7 @@
 //
 //import androidx.lifecycle.ViewModel
 //import androidx.lifecycle.viewModelScope
-//import com.example.labinventory.data.model.InventoryItemImages
+//import com.example.labinventory.data.schema.InventoryItemImages
 //import com.example.labinventory.data.model.UiState
 //import com.example.labinventory.repository.InventoryRepository
 //import kotlinx.coroutines.flow.MutableStateFlow

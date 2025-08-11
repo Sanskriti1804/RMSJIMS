@@ -1,6 +1,6 @@
 //package com.example.labinventory.repository
 //
-//import com.example.labinventory.data.model.InventoryItemImages
+//import com.example.labinventory.data.schema.InventoryItemImages
 //import com.example.labinventory.data.remote.InventoryApiService
 //
 ////seperates the data source away from vm - directly implements

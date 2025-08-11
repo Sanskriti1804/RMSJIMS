@@ -1,6 +1,6 @@
 //package com.example.labinventory.data.remote.api
 //
-//import com.example.labinventory.data.model.InventoryItemImages
+//import com.example.labinventory.data.schema.InventoryItemImages
 //import com.example.labinventory.data.remote.InventoryApiService
 //import io.github.jan.supabase.SupabaseClient
 //import io.github.jan.supabase.postgrest.postgrest

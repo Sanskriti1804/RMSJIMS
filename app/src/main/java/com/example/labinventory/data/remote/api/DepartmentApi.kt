@@ -1,6 +1,6 @@
 package com.example.labinventory.data.remote.api
 
-import com.example.labinventory.data.model.Department
+import com.example.labinventory.data.schema.Department
 import com.example.labinventory.data.remote.DepartmentApiService
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
