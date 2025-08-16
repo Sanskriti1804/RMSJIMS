@@ -11,6 +11,8 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -76,6 +78,81 @@ fun AppTextField(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FilteredAppTextField(
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    value: String,
+    onValueChange: (String) -> Unit,
+    shape: Shape = RoundedCornerShape(pxToDp(4)),
+    placeholder: String,
+    textColor: Color = darkTextColor.copy(alpha = 0.7f),
+    containerColor: Color = cardColor,
+    minLines: Int = 1,
+    maxLines: Int = 1,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    items: List<String> = emptyList(),
+    onItemSelected: (String) -> Unit = {}
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded && items.isNotEmpty(),
+        onExpandedChange = { expanded = it },
+        modifier = modifier
+    ) {
+        TextField(
+            value = value,
+            onValueChange = {
+                onValueChange(it)
+                expanded = true
+            },
+            shape = shape,
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    modifier = Modifier.padding(4.dp)
+                )
+            },
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = textColor,
+                unfocusedTextColor = textColor,
+                disabledTextColor = textColor,
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
+                cursorColor = textColor,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
+            visualTransformation = visualTransformation,
+            minLines = minLines,
+            maxLines = maxLines,
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor() // dropdown positioning
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded && items.isNotEmpty(),
+            onDismissRequest = { expanded = false }
+        ) {
+            items.forEach { item ->
+                DropdownMenuItem(
+                    text = { Text(item) },
+                    onClick = {
+                        onItemSelected(item)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+
+
 
 @Composable
 fun AppDropDownTextField(
@@ -117,7 +194,7 @@ fun AppDropDownTextField(
                     contentDescription = "Drop Down Icon",
                     tint = textColor,
                     modifier = Modifier
-                        .clickable{
+                        .clickable {
                             expanded = !expanded
                         }
                         .padding(8.dp)

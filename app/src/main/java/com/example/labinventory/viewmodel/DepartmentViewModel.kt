@@ -19,6 +19,12 @@ class DepartmentViewModel (
     var departmentState by mutableStateOf<UiState<List<Department>>>(UiState.Loading)
         private set
 
+    var query by mutableStateOf("")
+        private set
+
+    var filteredDepartments by mutableStateOf<List<String>>(emptyList())
+        private set
+
     val departmentName : List<String> get() =
          when(val state = departmentState){
             is UiState.Success -> state.data.map {it.name}
@@ -40,5 +46,19 @@ class DepartmentViewModel (
                 departmentState = UiState.Error(e)
             }
         }
+    }
+
+    fun onQueryChange(newQuery : String){
+        query = newQuery
+        filteredDepartments = if (newQuery.isBlank()){
+            departmentName
+        }
+        else{
+            departmentName.filter { it.contains(newQuery, ignoreCase = true) }
+        }
+    }
+
+    fun onDepartmentSelected(department: String){
+        query = department
     }
 }

@@ -33,6 +33,7 @@ import com.example.labinventory.ui.components.AppDropDownTextField
 import com.example.labinventory.ui.components.AppTextField
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomTopBar
+import com.example.labinventory.ui.components.FilteredAppTextField
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
@@ -47,12 +48,13 @@ fun ProjectInfoScreen(
 
 ){
     val branchViewModel : BranchViewModel = koinViewModel()
-    val departmentViewModel : DepartmentViewModel = koinViewModel()
-
+    val branchList = branchViewModel.branchName
     var value by remember { mutableStateOf("") }
     var selectedBranch by remember { mutableStateOf("") }
 
-    val branchList = branchViewModel.branchName
+    val departmentViewModel : DepartmentViewModel = koinViewModel()
+    val query = departmentViewModel.query
+    val filteredDepartmentList = departmentViewModel.filteredDepartments
 
     Scaffold(
         topBar = {
@@ -102,11 +104,32 @@ fun ProjectInfoScreen(
                 maxlines = 3
             )
 
-            AppTextField(
-                value = value,
-                onValueChange = { value = it},
-                placeholder = "Department"
-            )
+
+            when (departmentViewModel.departmentState) {
+                is UiState.Loading -> FilteredAppTextField(
+                    modifier = Modifier.weight(1f),
+                    value = "",
+                    onValueChange = {},
+                    placeholder = "Loading..."
+                )
+                is UiState.Error -> FilteredAppTextField(
+                    modifier = Modifier.weight(1f),
+                    value = "",
+                    onValueChange = {},
+                    placeholder = "Error loading"
+                )
+                is UiState.Success -> FilteredAppTextField(
+                    modifier = Modifier.weight(1f),
+                    value = query,
+                    onValueChange = { departmentViewModel.onQueryChange(it)},
+                    placeholder = "Department",
+                    items = filteredDepartmentList,
+                    onItemSelected = {
+                        departmentViewModel.onDepartmentSelected(it)
+                    }
+                )
+            }
+
 
             Row(
                 modifier = Modifier
@@ -120,6 +143,8 @@ fun ProjectInfoScreen(
                     placeholder = "Course Project",
                     items = listOf("Yes", "No")
                 )
+
+
                 when (branchViewModel.branchState) {
                     is UiState.Loading -> AppDropDownTextField(
                         modifier = Modifier.weight(1f),
