@@ -85,7 +85,8 @@ fun EquipmentScreen(
     navController: NavHostController,
     filterSortViewModel: FilterSortViewModel = koinViewModel(),
     itemViewModel: ItemsViewModel = koinViewModel(),
-    facilitiesViewModel: FacilitiesViewModel = koinViewModel()
+    facilitiesViewModel: FacilitiesViewModel = koinViewModel(),
+    categoryName : String
 ){
     var isFilterSheetVisible by filterSortViewModel.isSheetVisible
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -98,7 +99,7 @@ fun EquipmentScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CustomTopBar(
-                title = "Film",
+                title = categoryName,
                 onNavigationClick = {
                     navController.popBackStack()
                 }

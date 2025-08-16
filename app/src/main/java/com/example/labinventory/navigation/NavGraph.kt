@@ -4,9 +4,11 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.labinventory.ui.screens.BookingScreen
 import com.example.labinventory.ui.screens.CalendarScreen
 import com.example.labinventory.ui.screens.ChatBottomSheet
@@ -18,7 +20,9 @@ import com.example.labinventory.ui.screens.ProjectInfoScreen
 import com.example.labinventory.viewmodel.BookingScreenViewmodel
 import com.example.labinventory.viewmodel.BranchViewModel
 import com.example.labinventory.viewmodel.CalendarViewModel
+import com.example.labinventory.viewmodel.FacilitiesViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
+import com.example.labinventory.viewmodel.ItemsViewModel
 import com.example.labinventory.viewmodel.SearchViewModel
 import com.example.labinventory.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -42,9 +46,16 @@ fun AppNavGraph(navController: NavHostController){
         composable(Screen.HomeScreen.route) {
            HomeScreen(navController)
         }
-        composable(Screen.EquipmentScreen.route) {
+        composable(
+            Screen.EquipmentScreen.route,
+            arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
+        ) {backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: "Equipments"
             val filterSortViewModel : FilterSortViewModel = koinViewModel()
-            EquipmentScreen(navController, filterSortViewModel)
+            val itemViewModel: ItemsViewModel = koinViewModel()
+            val facilitiesViewModel: FacilitiesViewModel = koinViewModel()
+
+            EquipmentScreen(navController, filterSortViewModel, itemViewModel, facilitiesViewModel, categoryName)
         }
         composable(Screen.BookingsScreen.route) {
             val bookingViewModel : BookingScreenViewmodel = koinViewModel()

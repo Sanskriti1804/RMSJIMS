@@ -157,7 +157,7 @@ fun HomeScreen(
                         items(categories.data) { item ->
                             AppCategoryCard(
                                 title = item.name,
-                                onClick = { navController.navigate(Screen.EquipmentScreen.route) }
+                                onClick = { navController.navigate(Screen.EquipmentScreen.createRoute(item.name) )}
                             )
                         }
                     }
