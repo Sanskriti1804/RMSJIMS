@@ -9,14 +9,14 @@ data class Facilities(
     val name : String,
     val department_id : Int,
     val type : String,
-    val loaction : String,
+    val location : String,
     val timings : String,
     val lab_incharge : String,
     val lab_incharge_phone : String,
-    val lab_incharge_email : String,
+    val lab_incharge_email : String ?= null,
     val prof_incharge : String,
     val prof_incharge_email : String,
-    val description : String,
+    val description : String? = null,
     @SerialName("created_at") val createdAt: String? = null,
     val branch_id : Int
 

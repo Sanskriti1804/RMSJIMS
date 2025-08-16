@@ -1,5 +1,6 @@
 package com.example.labinventory.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -27,6 +28,7 @@ class FacilitiesViewModel (
                 facilitiesState = UiState.Success(facilities)
             }
             catch (e : Exception){
+                Log.e("FacilitiesVM", "Failed to load facilities", e)
                 facilitiesState = UiState.Error(e)
             }
         }
