@@ -7,7 +7,7 @@ import kotlinx.serialization.json.JsonObject
 @Serializable
 data class Items(
     val id: Int,
-    val faciilty_id: Int? = null,
+    val facility_id: Int? = null,
     val parent_categoy_id: Int? = null,
     val category_id: Int? = null,
     val name: String,

@@ -55,6 +55,7 @@ import com.example.labinventory.R
 import com.example.labinventory.data.model.EquipmentCategory
 import com.example.labinventory.data.model.UiState
 import com.example.labinventory.data.model.categories
+import com.example.labinventory.data.schema.Facilities
 import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppCategoryIcon
 import com.example.labinventory.ui.components.AppCircularIcon
@@ -71,6 +72,7 @@ import com.example.labinventory.ui.theme.lightTextColor
 import com.example.labinventory.ui.theme.navLabelColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.viewmodel.FacilitiesViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import com.example.labinventory.viewmodel.ItemsViewModel
 import kotlinx.coroutines.launch
@@ -82,13 +84,15 @@ import org.koin.androidx.compose.koinViewModel
 fun EquipmentScreen(
     navController: NavHostController,
     filterSortViewModel: FilterSortViewModel = koinViewModel(),
-    itemViewModel: ItemsViewModel = koinViewModel()
+    itemViewModel: ItemsViewModel = koinViewModel(),
+    facilitiesViewModel: FacilitiesViewModel = koinViewModel()
 ){
     var isFilterSheetVisible by filterSortViewModel.isSheetVisible
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var isSaved by remember { mutableStateOf(false) }
 
     val items = itemViewModel.itemsState
+    val facilitiesState = facilitiesViewModel.facilitiesState
 
     Scaffold (
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -149,6 +153,9 @@ fun EquipmentScreen(
                 }
 
                 is UiState.Success -> {
+
+                    val facilities = (facilitiesState as? UiState.Success)?.data ?: emptyList()
+
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         contentPadding = PaddingValues(horizontal = pxToDp(16)),
@@ -163,7 +170,8 @@ fun EquipmentScreen(
                                 onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
                                 saveClick = {
                                     isSaved = !isSaved
-                                }
+                                },
+                                facilityName = itemViewModel.getFacilityNameForEquipment(item, facilities)
                             )
                         }
                     }
@@ -278,8 +286,11 @@ fun EquipmentCard(
     imageHeight: Dp = pxToDp(191),
     detailHeight: Dp = pxToDp(69),
     isSaved : Boolean = false,
-    saveClick : () -> Unit = {}
+    saveClick : () -> Unit = {},
+    facilityName : String
 ) {
+    val itemViewModel : ItemsViewModel = koinViewModel()
+
     Card(
         modifier = Modifier
             .padding(top = pxToDp(12), bottom = pxToDp(17), start = pxToDp(17), end = pxToDp(12)),
@@ -338,7 +349,7 @@ fun EquipmentCard(
                 )
 
                 CustomLabel(
-                    header = "Prof. Sumant Rao",
+                    header = facilityName,
                     headerColor = lightTextColor,
                     fontSize = pxToDp(12).value.sp,
                     modifier = Modifier.padding(bottom = pxToDp(3))

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.labinventory.data.schema.Items
 import com.example.labinventory.data.model.UiState
+import com.example.labinventory.data.schema.Facilities
 import com.example.labinventory.repository.ItemsRepository
 import kotlinx.coroutines.launch
 
@@ -31,5 +32,10 @@ class ItemsViewModel(
                 itemsState = UiState.Error(e)
             }
         }
+    }
+
+    fun getFacilityNameForEquipment(items: Items, facilities : List<Facilities>) : String{
+        val facility = facilities.find { it.id == items.facility_id }
+        return facility?.prof_incharge ?: "Unkown Facility"
     }
 }
