@@ -72,6 +72,7 @@ import com.example.labinventory.ui.theme.lightTextColor
 import com.example.labinventory.ui.theme.navLabelColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.viewmodel.FacilitiesViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import com.example.labinventory.viewmodel.ItemsViewModel
@@ -122,22 +123,22 @@ fun EquipmentScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = pxToDp(14),
-                        end = pxToDp(14),
-                        top = pxToDp(19),
-                        bottom = pxToDp(37)
+                        start = ResponsiveLayout.getHorizontalPadding(),
+                        end = ResponsiveLayout.getHorizontalPadding(),
+                        top = ResponsiveLayout.getVerticalPadding(),
+                        bottom = ResponsiveLayout.getVerticalPadding()
                     )
             ) {
                 AppSearchBar(
                     query = "",
                     onQueryChange = {},
                     modifier = Modifier
-                        .height(pxToDp(46))
+                        .height(ResponsiveLayout.getResponsiveSize(46.dp, 60.dp, 68.dp))
                         .weight(1f),
                     placeholder = "Equipments, Tools, Supplies, etc..."
                 )
 
-                Spacer(modifier = Modifier.width(pxToDp(8)))
+                Spacer(modifier = Modifier.width(ResponsiveLayout.getCardSpacing()))
 
                 AppCircularIcon(
                     onClick = { filterSortViewModel.showSheet() }
@@ -158,10 +159,10 @@ fun EquipmentScreen(
                     val facilities = (facilitiesState as? UiState.Success)?.data ?: emptyList()
 
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        contentPadding = PaddingValues(horizontal = pxToDp(16)),
-                        verticalArrangement = Arrangement.spacedBy(pxToDp(13)),
-                        horizontalArrangement = Arrangement.spacedBy(pxToDp(13)),
+                        columns = ResponsiveLayout.getGridColumns(),
+                        contentPadding = ResponsiveLayout.getContentPadding(),
+                        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+                        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
                     ) {
                         items(items.data) { item ->
                             EquipmentCard(
@@ -185,7 +186,7 @@ fun EquipmentScreen(
                     Text(
                         text = "Error loading items: $errorMessage",
                         color = Color.Red,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(ResponsiveLayout.getVerticalPadding())
                     )
                 }
             }

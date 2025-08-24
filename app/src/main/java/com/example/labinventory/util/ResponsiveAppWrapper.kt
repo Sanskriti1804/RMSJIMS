@@ -1,48 +1,73 @@
-//package com.example.labinventory.util
-//
-//import android.content.res.Configuration
-//import androidx.compose.foundation.layout.BoxWithConstraints
-//import androidx.compose.foundation.layout.fillMaxSize
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.CompositionLocalProvider
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.platform.LocalConfiguration
-//import androidx.compose.ui.unit.dp
-//import com.example.labinventory.data.model.ResponsiveLayout
-//import com.example.labinventory.data.remote.LocalResponsiveLayout
-//
-//@Composable
-//fun ResponsiveAppWrapper(
-//    content: @Composable () -> Unit
-//) {
-//    //gives access tp screen dimension
-//    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-//      //
-//        with(this) {
-//            val screenWidth = maxWidth
-//            val screenHeight = maxHeight
-//
-//            //get current device config - screen orientation, font scale, etc
-//            val configuration = LocalConfiguration.current
-//
-//            //instance of ResponsiveLayout
-//            val layoutInfo = ResponsiveLayout(
-//                screenWidth = screenWidth,
-//                screenHeight = screenHeight,
-//                topPadding = when {
-//                    screenWidth < 360.dp -> 8.dp
-//                    screenWidth < 600.dp -> 16.dp
-//                    else -> 24.dp
-//                },
-//                isTablet = screenWidth > 600.dp,
-//                //of the device is in potrait mode
-//                isPotrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-//            )
-//
-//            //it shares the layout info with everythign inside the app screen so any composable can use it
-//            CompositionLocalProvider(LocalResponsiveLayout provides layoutInfo) {
-//                content()
-//            }
-//        }
-//    }
-//}
+package com.example.labinventory.util
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
+import com.example.labinventory.ui.theme.DeviceType
+import com.example.labinventory.ui.theme.ResponsiveDimensions
+
+/**
+ * Responsive wrapper that adapts content based on screen size and orientation
+ */
+@Composable
+fun ResponsiveAppWrapper(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    val dimensions = ResponsiveDimensions.getResponsiveDimensions()
+    
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(
+                start = dimensions.horizontalPadding,
+                end = dimensions.horizontalPadding,
+                top = dimensions.verticalPadding,
+                bottom = dimensions.verticalPadding
+            ),
+        contentAlignment = Alignment.TopStart
+    ) {
+        content()
+    }
+}
+
+/**
+ * Responsive content wrapper with different behaviors for phone/tablet
+ */
+@Composable
+fun ResponsiveContentWrapper(
+    phoneContent: @Composable () -> Unit,
+    tabletContent: @Composable () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val dimensions = ResponsiveDimensions.getResponsiveDimensions()
+    
+    when (dimensions.deviceType) {
+        DeviceType.PHONE, DeviceType.LARGE_PHONE -> phoneContent()
+        DeviceType.TABLET, DeviceType.LARGE_TABLET -> tabletContent()
+    }
+}
+
+/**
+ * Responsive orientation wrapper
+ */
+@Composable
+fun ResponsiveOrientationWrapper(
+    portraitContent: @Composable () -> Unit,
+    landscapeContent: @Composable () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val dimensions = ResponsiveDimensions.getResponsiveDimensions()
+    
+    if (dimensions.isLandscape) {
+        landscapeContent()
+    } else {
+        portraitContent()
+    }
+}
