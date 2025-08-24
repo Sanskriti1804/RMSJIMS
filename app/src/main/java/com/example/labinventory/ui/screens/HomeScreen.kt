@@ -47,6 +47,7 @@ import com.example.labinventory.ui.theme.categoryColor
 import com.example.labinventory.ui.theme.titleColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.viewmodel.ItemCategoriesViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import com.example.labinventory.viewmodel.SearchViewModel
@@ -91,22 +92,22 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = pxToDp(14),
-                        end = pxToDp(14),
-                        top = pxToDp(19),
-                        bottom = pxToDp(37)
+                        start = ResponsiveLayout.getHorizontalPadding(),
+                        end = ResponsiveLayout.getHorizontalPadding(),
+                        top = ResponsiveLayout.getVerticalPadding(),
+                        bottom = ResponsiveLayout.getVerticalPadding()
                     )
             ) {
                 AppSearchBar(
                     query = "",
                     onQueryChange = {},
                     modifier = Modifier
-                        .height(pxToDp(46))
+                        .height(ResponsiveLayout.getResponsiveSize(46.dp, 60.dp, 68.dp))
                         .weight(1f),
                     placeholder = "Equipments, Tools, Supplies, etc..."
                 )
 
-                Spacer(modifier = Modifier.width(pxToDp(8)))
+                Spacer(modifier = Modifier.width(ResponsiveLayout.getCardSpacing()))
 
                 AppCircularIcon(
                     onClick = { filterSortViewModel.showSheet() }
@@ -115,9 +116,12 @@ fun HomeScreen(
 
             CustomLabel(
                 "Explore by Category",
-                fontSize = 20.sp,
+                fontSize = ResponsiveLayout.getResponsiveFontSize(20.sp, 24.sp, 28.sp),
                 modifier = Modifier
-                    .padding(start = pxToDp(16), bottom = pxToDp(13)),
+                    .padding(
+                        start = ResponsiveLayout.getHorizontalPadding(), 
+                        bottom = ResponsiveLayout.getVerticalPadding()
+                    ),
                 headerColor = titleColor
             )
 
@@ -126,7 +130,10 @@ fun HomeScreen(
                     buttonText = "Manage Lab",
                     onClick = { },
                     modifier = Modifier
-                        .padding(horizontal = pxToDp(16), vertical = pxToDp(16))
+                        .padding(
+                            horizontal = ResponsiveLayout.getHorizontalPadding(), 
+                            vertical = ResponsiveLayout.getVerticalPadding()
+                        )
                         .fillMaxWidth()
                 )
             }
@@ -139,7 +146,6 @@ fun HomeScreen(
                 ChatBottomSheet(viewModel = searchViewModel)
             }
 
-
             when (categories) {
                 is UiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize()) {
@@ -149,10 +155,10 @@ fun HomeScreen(
 
                 is UiState.Success -> {
                     LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        contentPadding = PaddingValues(horizontal = pxToDp(16)),
-                        verticalArrangement = Arrangement.spacedBy(pxToDp(13)),
-                        horizontalArrangement = Arrangement.spacedBy(pxToDp(13)),
+                        columns = ResponsiveLayout.getGridColumns(),
+                        contentPadding = ResponsiveLayout.getContentPadding(),
+                        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+                        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
                     ) {
                         items(categories.data) { item ->
                             AppCategoryCard(
@@ -167,7 +173,7 @@ fun HomeScreen(
                     Text(
                         text = "Error loading categories",
                         color = Color.Red,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(ResponsiveLayout.getVerticalPadding())
                     )
                 }
             }
@@ -184,7 +190,7 @@ fun AppCategoryCard(
 ){
     Card(
         modifier = Modifier
-            .height(pxToDp(110)),
+            .height(ResponsiveLayout.getResponsiveSize(110.dp, 160.dp, 200.dp)),
         onClick = onClick,
         shape = shape,
         colors = CardDefaults.cardColors(
@@ -194,7 +200,7 @@ fun AppCategoryCard(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(pxToDp(16))
+                .padding(ResponsiveLayout.getResponsivePadding(16.dp, 24.dp, 32.dp))
         ){
 
             CustomLabel(
@@ -202,7 +208,7 @@ fun AppCategoryCard(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .fillMaxWidth(0.8f),
-                fontSize = 16.sp,
+                fontSize = ResponsiveLayout.getResponsiveFontSize(16.sp, 18.sp, 20.sp),
                 headerColor = categoryColor
             )
 

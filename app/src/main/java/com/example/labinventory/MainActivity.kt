@@ -1,5 +1,6 @@
 package com.example.labinventory
 
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -27,14 +28,38 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            LabInventoryTheme {
                 MainApp()
-//            DescriptionCard()
-//            HomeScreen()
-//            EquipmentScreen()
-//            ProdDescScreen()
-//            ProjectInfoScreen()
-//            LabInventoryTheme {
-//            }
+            }
+        }
+    }
+    
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Handle configuration changes (orientation, screen size, etc.)
+        when (newConfig.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                // Handle landscape orientation
+            }
+            Configuration.ORIENTATION_PORTRAIT -> {
+                // Handle portrait orientation
+            }
+        }
+        
+        // Handle screen size changes
+        when (newConfig.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) {
+            Configuration.SCREENLAYOUT_SIZE_SMALL -> {
+                // Small screen
+            }
+            Configuration.SCREENLAYOUT_SIZE_NORMAL -> {
+                // Normal screen
+            }
+            Configuration.SCREENLAYOUT_SIZE_LARGE -> {
+                // Large screen (tablet)
+            }
+            Configuration.SCREENLAYOUT_SIZE_XLARGE -> {
+                // Extra large screen (large tablet)
+            }
         }
     }
 }

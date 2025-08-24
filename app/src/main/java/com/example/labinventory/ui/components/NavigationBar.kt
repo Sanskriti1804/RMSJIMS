@@ -29,6 +29,7 @@ import com.example.labinventory.ui.theme.someGrayColor
 import com.example.labinventory.ui.theme.someOtherGrayColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 
 @Composable
 fun CustomNavigationBar(
@@ -50,72 +51,83 @@ fun CustomNavigationBar(
                 .height(0.5f.dp)
                 .background(dividerColor)
         )
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(pxToDp(101))
-            .padding(horizontal = 0.dp)
-            .background(bottomBarColor),
-        horizontalArrangement = Arrangement.SpaceEvenly
-    ) {
-        bottomNavItems.forEach { item ->
-            val isSelected = currentRoute == item.route
-            Column(
-                modifier = Modifier
-                    .clickable{
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
+        
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(ResponsiveLayout.getResponsiveSize(101.dp, 120.dp, 140.dp))
+                .padding(horizontal = 0.dp)
+                .background(bottomBarColor),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            bottomNavItems.forEach { item ->
+                val isSelected = currentRoute == item.route
+                Column(
+                    modifier = Modifier
+                        .clickable{
+                            navController.navigate(item.route) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
+                        }
+                        .padding(
+                            top = ResponsiveLayout.getResponsivePadding(23.dp, 28.dp, 32.dp),
+                            bottom = ResponsiveLayout.getResponsivePadding(29.dp, 34.dp, 38.dp),
+                            start = ResponsiveLayout.getResponsivePadding(10.dp, 15.dp, 20.dp),
+                            end = ResponsiveLayout.getResponsivePadding(10.dp, 15.dp, 20.dp)
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier) {
+                        AppNavIcon(
+                            painter = painterResource(id = item.iconResId),
+                            iconSize = ResponsiveLayout.getResponsiveSize(24.dp, 28.dp, 32.dp),
+                            tint = if (isSelected) selectedColor else contentColor
+                        )
+
+                        if (item.badgeCount != null || item.hasNews) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .offset(
+                                        x = ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 14.dp), 
+                                        y = ResponsiveLayout.getResponsivePadding(-6.dp, -7.dp, -8.dp)
+                                    )
+                                    .background(badgeColor, shape = CircleShape)
+                                    .padding(
+                                        horizontal = ResponsiveLayout.getResponsivePadding(4.dp, 5.dp, 6.dp), 
+                                        vertical = ResponsiveLayout.getResponsivePadding(1.dp, 1.5.dp, 2.dp)
+                                    )
+                            ) {
+                                if (item.badgeCount != null) {
+                                    Text(
+                                        text = item.badgeCount.toString(),
+                                        color = if (isSelected) selectedColor else contentColor,
+                                        fontSize = ResponsiveLayout.getResponsiveFontSize(10.sp, 12.sp, 14.sp)
+                                    )
+                                } else {
+                                    Text(
+                                        text = "•",
+                                        color = if (isSelected) selectedColor else contentColor,
+                                        fontSize = ResponsiveLayout.getResponsiveFontSize(8.sp, 10.sp, 12.sp)
+                                    )
+                                }
+                            }
                         }
                     }
-                    .padding(
-                        top = pxToDp(23),
-                        bottom = pxToDp(29),
-                        start = pxToDp(10),
-                        end = pxToDp(10)
-                    ),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(modifier = Modifier) {
-                    AppNavIcon(
-                        painter = painterResource(id = item.iconResId),
-                        iconSize = pxToDp(24),
-                        tint = if (isSelected) selectedColor else contentColor
+
+                    Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)))
+
+                    Text(
+                        text = item.label,
+                        color = if (isSelected) selectedColor else contentColor,
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
                     )
-
-                    if (item.badgeCount != null || item.hasNews) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .offset(x = 10.dp, y = (-6).dp)
-                                .background(badgeColor, shape = CircleShape)
-                                .padding(horizontal = 4.dp, vertical = 1.dp)
-                        ) {
-                            if (item.badgeCount != null) {
-                                Text(
-                                    text = item.badgeCount.toString(),
-                                    color = if (isSelected) selectedColor else contentColor,
-                                    fontSize = 10.sp
-                                )
-                            }
-                        }
-                    }
                 }
-
-                Spacer(modifier = Modifier.height(pxToDp(8)))
-
-                CustomSmallLabel(
-                    header = item.label,
-                    headerColor =  if (isSelected) selectedColor else contentColor,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 3.dp)
-                )
             }
-        }
-
         }
     }
 }

@@ -74,7 +74,7 @@ fun AppSearchBar(
                 value = query,
                 onValueChange = onQueryChange,
                 singleLine = true,
-                textStyle = Typography.labelSmall.copy(
+                textStyle = Typography.labelSmall().copy(
                     color = labelColor,
                     fontSize =15.sp
                 ),
@@ -85,7 +85,7 @@ fun AppSearchBar(
                     if (query.isEmpty()) {
                         Text(
                             text = placeholder,
-                            style = Typography.labelSmall.copy(
+                            style = Typography.labelSmall().copy(
                                 color = labelColor,
                                 fontSize =15.sp
                             )

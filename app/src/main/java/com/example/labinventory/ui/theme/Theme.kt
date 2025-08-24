@@ -52,7 +52,10 @@ fun LabInventoryTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = androidx.compose.material3.Typography(
+            bodyLarge = Typography.bodyLarge(),
+            labelSmall = Typography.labelSmall()
+        ),
         content = content
     )
 }
