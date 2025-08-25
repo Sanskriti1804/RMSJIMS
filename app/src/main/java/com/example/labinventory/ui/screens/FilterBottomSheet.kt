@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,10 +57,9 @@ fun FilterSortBottomSheet(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(isSheetVisible) {
-        if (isSheetVisible &&  !sheetState.isVisible){
+        if (isSheetVisible && !sheetState.isVisible) {
             sheetState.show()
-        }
-        else if (!isSheetVisible && sheetState.isVisible){
+        } else if (!isSheetVisible && sheetState.isVisible) {
             sheetState.hide()
         }
     }
@@ -81,7 +81,7 @@ fun FilterSortBottomSheet(
             val selectedTab = tabs.find { it.isSelected }?.tab ?: FilterTab.Filter
             when (selectedTab) {
                 FilterTab.Filter -> {
-                    filters.forEach { group ->
+                    filters.forEachIndexed { index, group ->
                         Text(
                             text = group.section.name.lowercase().replaceFirstChar(Char::titlecase),
                             color = selectedChipTextColor,
@@ -89,11 +89,19 @@ fun FilterSortBottomSheet(
                             fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
                             modifier = Modifier.padding(vertical = pxToDp(14))
                         )
+
                         ChipGroup(
                             chips = group.chips,
                             onChipToggle = { label -> viewModel.toggleFilterChip(group.section, label) }
                         )
-                        Spacer(Modifier.height(pxToDp(16)))
+
+                        // Divider after each section except last
+                        if (index != filters.lastIndex) {
+                            Divider(
+                                modifier = Modifier.padding(vertical = 12.dp),
+                                color = Color.LightGray
+                            )
+                        }
                     }
                 }
                 FilterTab.Sort_by -> {
@@ -130,7 +138,7 @@ fun FilterSortBottomSheet(
                 )
             }
         }
-   }
+    }
 }
 
 @Composable
@@ -140,48 +148,38 @@ fun FilterSortTabs(
 ) {
     val selectedIndex = tabs.indexOfFirst { it.isSelected }
 
-    val indicator = @Composable { tabPositions: List<TabPosition> ->
-        val transition = updateTransition(targetState = selectedIndex, label = "Tab indicator transition")
-        val currentTabPosition by transition.animateDp(
-            transitionSpec = { tween(durationMillis = 250) },
-            label = "Indicator offset"
-        ) { index ->
-            tabPositions.getOrNull(index)?.left ?: 0.dp
-        }
-
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .wrapContentSize(Alignment.BottomStart)
-                .padding(start = pxToDp(16) , end = pxToDp(16))
-                .offset(x = currentTabPosition)
-                .width(tabPositions.getOrNull(selectedIndex)?.width ?: 0.dp)
-                .height(pxToDp(1))
-                .background(darkTextColor, shape = RoundedCornerShape(pxToDp(2)))
-        )
-    }
-
     TabRow(
         selectedTabIndex = selectedIndex.coerceAtLeast(0),
-        indicator = indicator,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[selectedIndex.coerceAtLeast(0)]),
+                color = highlightColor
+            )
+        },
         containerColor = whiteColor,
         contentColor = categoryIconColor,
-        divider = {}
+        divider = {},
+        modifier = Modifier.padding(top = 25.dp) // <-- spacing above tab text
     ) {
-        tabs.forEachIndexed { index, tab ->
-            Tab(
-                selected = tab.isSelected,
-                onClick = { onTabSelected(tab.tab) },
-                selectedContentColor = highlightColor,
-                unselectedContentColor = categoryIconColor,
-                text = {
-                    Text(
-                        text = tab.tab.name.replace("_", " "),
-                        fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
-                        fontSize = 20.sp
-                    )
-                }
-            )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start // <-- align left
+        ) {
+            tabs.forEach { tab ->
+                Tab(
+                    selected = tab.isSelected,
+                    onClick = { onTabSelected(tab.tab) },
+                    selectedContentColor = highlightColor,
+                    unselectedContentColor = categoryIconColor,
+                    text = {
+                        Text(
+                            text = tab.tab.name.replace("_", " "),
+                            fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
+                            fontSize = 20.sp
+                        )
+                    }
+                )
+            }
         }
     }
 }
@@ -193,8 +191,8 @@ fun ChipGroup(
     onChipToggle: (String) -> Unit
 ) {
     FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(pxToDp(12)),
-        verticalArrangement = Arrangement.spacedBy(pxToDp(12))
+        horizontalArrangement = Arrangement.spacedBy(6.dp), // <-- updated
+        verticalArrangement = Arrangement.spacedBy(12.dp)  // <-- updated
     ) {
         chips.forEach { chip ->
             FilterChipItem(chip = chip, onClick = { onChipToggle(chip.label) })
@@ -203,106 +201,55 @@ fun ChipGroup(
 }
 
 @Composable
-fun FilterChipItem(chip: FilterChip, onClick: () -> Unit) {
+fun FilterChipItem(
+    chip: FilterChip,
+    onClick: () -> Unit
+) {
     Surface(
         shape = RoundedCornerShape(pxToDp(4)),
         color = if (chip.isSelected) selectedchipColor else Color.Transparent,
-        border = BorderStroke(pxToDp(1), if (chip.isSelected) highlightColor else chipColor),
+        border = BorderStroke(
+            pxToDp(1),
+            if (chip.isSelected) highlightColor else chipColor
+        ),
         modifier = Modifier.clickable { onClick() }
     ) {
         Text(
             text = chip.label,
             color = selectedChipTextColor,
-            modifier = Modifier.padding(horizontal = pxToDp(9) , vertical = pxToDp(6) ),
+            modifier = Modifier.padding(
+                horizontal = pxToDp(9),
+                vertical = pxToDp(6)
+            ),
             fontSize = 12.sp,
             fontFamily = FontFamily(Font(R.font.font_alliance_regular_two))
         )
     }
 }
 
-
 @Composable
 fun SortList(
     options: List<SortOption>,
     onOptionSelected: (String) -> Unit
 ) {
-    Column(
-//        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    Column {
         options.forEachIndexed { index, option ->
             Text(
                 text = option.label,
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onOptionSelected(option.label) }
-                    .padding(vertical = pxToDp(26), horizontal = pxToDp(19)),
+                    .padding(
+                        vertical = pxToDp(26),
+                        horizontal = pxToDp(19)
+                    ),
                 color = if (option.isSelected) highlightColor else selectedChipTextColor,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.font_alliance_regular_two))
             )
-
             if (index != options.lastIndex) {
                 Divider(modifier = Modifier.padding(horizontal = pxToDp(16)))
             }
         }
     }
-}
-
-//@Preview(showBackground = true)
-//@Composable
-//fun FilterSortTabsPreview() {
-//    val tabs = listOf(
-//        TabGroup(FilterTab.Filter, true),
-//        TabGroup(FilterTab.Sort_by, false)
-//    )
-//    var selectedTab by remember { mutableStateOf(FilterTab.Filter) }
-//    FilterSortTabs(
-//        tabs = tabs.map { it.copy(isSelected = it.tab == selectedTab) },
-//        onTabSelected = { tab -> selectedTab = tab }
-//    )
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun ChipGroupPreview() {
-//    val chips = remember {
-//        mutableStateListOf(
-//            FilterChip("Location A", true),
-//            FilterChip("Location B", false),
-//            FilterChip("Location C", false),
-//            FilterChip("Type X", true),
-//            FilterChip("Type Y", false)
-//        )
-//    }
-//    ChipGroup(
-//        chips = chips,
-//        onChipToggle = { label ->
-//            val index = chips.indexOfFirst { it.label == label }
-//            if (index != -1) chips[index] = chips[index].copy(isSelected = !chips[index].isSelected)
-//        })
-//}
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun FilterChipItemPreview() {
-//    FilterChipItem(chip = FilterChip("Sample Chip", true), onClick = {})
-//    FilterChipItem(chip = FilterChip("Another Chip", false), onClick = {})
-//}
-//
-@Preview(showBackground = true)
-@Composable
-fun SortListPreview() {
-    val options = remember {
-        mutableStateListOf(
-            SortOption("Name (A-Z)", true),
-            SortOption("Name (Z-A)", false),
-            SortOption("Date Added (Newest)", false)
-        )
-    }
-    SortList(
-        options = options,
-        onOptionSelected = { label ->
-            options.replaceAll { it.copy(isSelected = it.label == label) }
-        }
-    )
 }

@@ -42,6 +42,18 @@ object ResponsiveLayout {
             DeviceType.LARGE_TABLET -> GridCells.Fixed(largeTabletColumns)
         }
     }
+
+    /**
+     * Get responsive search bar
+     */
+    fun getSearchBarHeight(deviceType: DeviceType): Dp {
+        return when (deviceType) {
+            DeviceType.PHONE -> 46.dp
+            DeviceType.LARGE_PHONE -> 52.dp
+            DeviceType.TABLET -> 60.dp
+            DeviceType.LARGE_TABLET -> 68.dp
+        }
+    }
     
     /**
      * Get responsive horizontal padding

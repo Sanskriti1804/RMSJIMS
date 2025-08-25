@@ -206,7 +206,7 @@ data class ResponsiveDimensionValues(
     }
     
     val categoryCardHeight: Dp get() = when (deviceType) {
-        DeviceType.PHONE -> 110.dp
+        DeviceType.PHONE -> 120.dp
         DeviceType.LARGE_PHONE -> 130.dp
         DeviceType.TABLET -> 160.dp
         DeviceType.LARGE_TABLET -> 200.dp

@@ -285,8 +285,8 @@ fun EquipmentCard(
     equipName : String,
     onClick: () -> Unit = {},
     shape: Shape = RectangleShape,
-    imageHeight: Dp = pxToDp(191),
-    detailHeight: Dp = pxToDp(69),
+    imageHeight: Dp = pxToDp(125),
+    detailHeight: Dp = pxToDp(75),
     isSaved : Boolean = false,
     saveClick : () -> Unit = {},
     facilityName : String
