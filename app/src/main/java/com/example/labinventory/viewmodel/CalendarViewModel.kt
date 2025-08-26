@@ -40,13 +40,29 @@ class CalendarViewModel() : ViewModel() {
         val firstDayOfMonth = currentMonth.atDay(1)
         val lastDayOfMonth = currentMonth.atEndOfMonth()
 
-        val startOfCalendar = firstDayOfMonth.with(DayOfWeek.SUNDAY)
-        val endOfCalendar = lastDayOfMonth.with(DayOfWeek.SATURDAY)
+        // How many days to show from previous month (0 = Sunday)
+        val startOffset = firstDayOfMonth.dayOfWeek.value % 7 // Sunday=0, Monday=1 ...
+        val dates = mutableListOf<LocalDate>()
 
-        return generateSequence(startOfCalendar) { it.plusDays(1) }
-            .takeWhile { !it.isAfter(endOfCalendar) }
-            .toList()
+        // Add previous month trailing days
+        for (i in startOffset downTo 1) {
+            dates.add(firstDayOfMonth.minusDays(i.toLong()))
+        }
+
+        // Add current month days
+        for (day in 1..lastDayOfMonth.dayOfMonth) {
+            dates.add(currentMonth.atDay(day))
+        }
+
+        // Add next month leading days to fill the last week
+        val endOffset = (7 - (dates.size % 7)) % 7
+        for (i in 1..endOffset) {
+            dates.add(lastDayOfMonth.plusDays(i.toLong()))
+        }
+
+        return dates
     }
+
 
     fun getMonths(): List<YearMonth> {
         val now = YearMonth.now()

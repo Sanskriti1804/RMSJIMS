@@ -320,47 +320,40 @@ fun InChargeCard(
     val facilitiesList = facilitiesViewModel.facilitiesState
 
     var expanded by remember { mutableStateOf(true) }
+    val collapsedHeight = pxToDp(52)
     val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
 
     Card(
         modifier = modifier
             .fillMaxWidth()
             .clickable { expanded = !expanded },
-        colors = CardDefaults.cardColors(
-            containerColor = containerColor
-        ),
+        colors = CardDefaults.cardColors(containerColor = containerColor),
         shape = shape
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .then(if (!expanded) Modifier.height(collapsedHeight) else Modifier)
                 .padding(pxToDp(16))
         ) {
             if (expanded) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(pxToDp(12)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     when(facilitiesList){
-                        is UiState.Loading -> {
-                            Text("Loading facilities")
-                        }
-                        is UiState.Error -> {
-                            Text("Error loading facilities")
-                        }
-                        is UiState.Success ->{
+                        is UiState.Loading -> Text("Loading facilities")
+                        is UiState.Error -> Text("Error loading facilities")
+                        is UiState.Success -> {
                             val currentFacility = facilitiesList.data.firstOrNull()
                             if (currentFacility != null){
                                 CustomLabel(
                                     header = "InCharge",
                                     headerColor = darkTextColor.copy(0.9f),
-                                    fontSize = 16.sp,
-                                    modifier = Modifier
+                                    fontSize = 16.sp
                                 )
                                 Spacer(modifier = Modifier.height(pxToDp(5)))
-
-                                InChargeRow(label = "Prof.",
-                                    name = currentFacility.prof_incharge)
+                                InChargeRow(label = "Prof.", name = currentFacility.prof_incharge)
                                 InChargeRow(
                                     label = "Asst.",
                                     name = currentFacility.lab_incharge,
@@ -372,20 +365,16 @@ fun InChargeCard(
                 }
             } else {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(pxToDp(52)),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     CustomLabel(
                         header = "InCharge",
                         headerColor = darkTextColor.copy(0.9f),
-                        fontSize = 16.sp,
-                        modifier = Modifier
+                        fontSize = 16.sp
                     )
                 }
             }
-
 
             AppCategoryIcon(
                 painter = painterResource(
@@ -394,13 +383,12 @@ fun InChargeCard(
                 iconDescription = "Expand Icon",
                 tint = darkTextColor,
                 iconSize = pxToDp(20),
-                modifier = Modifier
-                    .align(iconAlignment)
-                    .padding(pxToDp(4))
+                modifier = Modifier.align(iconAlignment).padding(pxToDp(4))
             )
         }
     }
 }
+
 
 @Composable
 fun InChargeRow(
@@ -432,11 +420,12 @@ fun InChargeRow(
             )
 
             icons.forEach {
+                val adjustedIconSize = if (it == R.drawable.ic_call) pxToDp(16) else pxToDp(20)
                 AppCircularIcon(
                     painter = painterResource(it),
                     boxSize = pxToDp(28),
                     iconPadding = pxToDp(4),
-                    iconSize = pxToDp(20),
+                    iconSize = adjustedIconSize,
                     tint = highlightColor,
                     boxColor = circularBoxColor
                 )
@@ -444,7 +433,6 @@ fun InChargeRow(
         }
     }
 }
-
 
 @Composable
 fun AdditionalInfoCard(
@@ -455,44 +443,38 @@ fun AdditionalInfoCard(
     val facilitiesList = facilitiesViewModel.facilitiesState
 
     var expanded by remember { mutableStateOf(true) }
+    val collapsedHeight = pxToDp(52)
     val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
 
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { expanded = !expanded }, // collapsible behavior
-        colors = CardDefaults.cardColors(
-            containerColor = containerColor
-        )
+            .clickable { expanded = !expanded },
+        colors = CardDefaults.cardColors(containerColor = containerColor)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .then(if (!expanded) Modifier.height(collapsedHeight) else Modifier)
                 .padding(pxToDp(16))
         ) {
             if (expanded) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(pxToDp(12)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     when(facilitiesList){
-                        is UiState.Loading -> {
-                            Text("Loading facilities")
-                        }
-                        is UiState.Error -> {
-                            Text("Error loading facilities")
-                        }
-                        is UiState.Success ->{
+                        is UiState.Loading -> Text("Loading facilities")
+                        is UiState.Error -> Text("Error loading facilities")
+                        is UiState.Success -> {
                             val currentFacility = facilitiesList.data.firstOrNull()
                             if (currentFacility != null){
                                 CustomLabel(
-                                    header = "InCharge",
+                                    header = "Additional Information",
                                     headerColor = darkTextColor.copy(0.9f),
-                                    fontSize = 16.sp,
-                                    modifier = Modifier
+                                    fontSize = 16.sp
                                 )
                                 Spacer(modifier = Modifier.height(pxToDp(5)))
-
                                 CustomLabel(
                                     header = currentFacility.description ?: "No Description found"
                                 )
@@ -502,20 +484,16 @@ fun AdditionalInfoCard(
                 }
             } else {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(pxToDp(52)),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     CustomLabel(
                         header = "Additional Information",
                         headerColor = darkTextColor.copy(0.9f),
-                        fontSize = 16.sp,
-                        modifier = Modifier
+                        fontSize = 16.sp
                     )
                 }
             }
-
 
             AppCategoryIcon(
                 painter = painterResource(
@@ -524,9 +502,7 @@ fun AdditionalInfoCard(
                 iconDescription = "Expand Icon",
                 tint = darkTextColor,
                 iconSize = pxToDp(20),
-                modifier = Modifier
-                    .align(iconAlignment)
-                    .padding(pxToDp(4))
+                modifier = Modifier.align(iconAlignment).padding(pxToDp(4))
             )
         }
     }
@@ -536,53 +512,60 @@ fun AdditionalInfoCard(
 @Composable
 fun UseCard(
     modifier: Modifier = Modifier,
-    containerColor : Color = cardColor
+    containerColor: Color = cardColor
 ) {
     var expanded by remember { mutableStateOf(true) }
+    val collapsedHeight = pxToDp(52)
     val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
 
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { expanded = !expanded }, // collapsible behavior
-        colors = CardDefaults.cardColors(
-            containerColor = containerColor
-        )
+            .clickable { expanded = !expanded },
+        colors = CardDefaults.cardColors(containerColor = containerColor)
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .then(
-                    if (!expanded) Modifier.height(52.dp) else Modifier
-                )
-                .padding(horizontal = pxToDp(16), vertical = pxToDp(8)),
-            verticalArrangement = Arrangement.spacedBy(pxToDp(8))
+                .then(if (!expanded) Modifier.height(collapsedHeight) else Modifier)
+                .padding(pxToDp(16))
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CustomLabel(
-                    header = "How to use",
-                    headerColor = darkTextColor.copy(0.9f),
-                    fontSize = 16.sp,
-                    modifier = Modifier.weight(1f)
-                )
-
-                AppCategoryIcon(
-                    painter = painterResource(
-                        if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
-                    ),
-                    iconDescription = "Expand Icon",
-                    tint = darkTextColor,
-                    iconSize = pxToDp(20),
-                    modifier = Modifier.padding(pxToDp(4))
-                )
-            }
-
             if (expanded) {
-
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(pxToDp(8)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    CustomLabel(
+                        header = "How to use",
+                        headerColor = darkTextColor.copy(0.9f),
+                        fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.height(pxToDp(5)))
+                    // Add the actual usage instructions here
+                    Text("No usage instructions available") // Placeholder
+                }
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    CustomLabel(
+                        header = "How to use",
+                        headerColor = darkTextColor.copy(0.9f),
+                        fontSize = 16.sp
+                    )
+                }
             }
+
+            AppCategoryIcon(
+                painter = painterResource(
+                    if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+                ),
+                iconDescription = "Expand Icon",
+                tint = darkTextColor,
+                iconSize = pxToDp(20),
+                modifier = Modifier.align(iconAlignment).padding(pxToDp(4))
+            )
         }
     }
 }

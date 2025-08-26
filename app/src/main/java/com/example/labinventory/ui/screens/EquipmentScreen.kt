@@ -97,7 +97,6 @@ fun EquipmentScreen(
     val facilitiesState = facilitiesViewModel.facilitiesState
 
     Scaffold (
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CustomTopBar(
                 title = categoryName,
@@ -118,7 +117,6 @@ fun EquipmentScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Top Search Row
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -294,8 +292,7 @@ fun EquipmentCard(
     val itemViewModel : ItemsViewModel = koinViewModel()
 
     Card(
-        modifier = Modifier
-            .padding(top = pxToDp(12), bottom = pxToDp(17), start = pxToDp(17), end = pxToDp(12)),
+        modifier = Modifier,
         onClick = onClick,
         shape = shape
     ) {

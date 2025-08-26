@@ -106,7 +106,6 @@ fun NewEquipmentScreen() {
                 value = value,
                 onValueChange = { value = it },
                 placeholder = "Additional Information",
-                maxlines = 3
             )
             AppTextField(
                 value = value,

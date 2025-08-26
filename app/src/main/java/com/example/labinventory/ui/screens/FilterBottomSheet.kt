@@ -36,6 +36,7 @@ import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.highlightColor
 import com.example.labinventory.ui.theme.selectedChipTextColor
 import com.example.labinventory.ui.theme.selectedchipColor
+import com.example.labinventory.ui.theme.sortDividerColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.FilterSortViewModel
@@ -68,14 +69,15 @@ fun FilterSortBottomSheet(
         onDismissRequest = { viewModel.hideSheet() },
         sheetState = sheetState,
         shape = RoundedCornerShape(pxToDp(10)),
-        containerColor = whiteColor
+        containerColor = whiteColor,
+        dragHandle = null,
+        contentWindowInsets = { WindowInsets(0, 0, 0, 0) }
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(pxToDp(16))) {
-            Spacer(modifier = Modifier.height(pxToDp(18)))
 
             FilterSortTabs(tabs = tabs, onTabSelected = viewModel::selectTab)
 
-            Spacer(modifier = Modifier.height(pxToDp(14)))
+            Spacer(modifier = Modifier.height(pxToDp(10)))
 
             // Content based on selected tab
             val selectedTab = tabs.find { it.isSelected }?.tab ?: FilterTab.Filter
@@ -98,8 +100,8 @@ fun FilterSortBottomSheet(
                         // Divider after each section except last
                         if (index != filters.lastIndex) {
                             Divider(
-                                modifier = Modifier.padding(vertical = 12.dp),
-                                color = Color.LightGray
+                                modifier = Modifier.padding(top = 15.dp),
+                                color = sortDividerColor
                             )
                         }
                     }
@@ -148,8 +150,9 @@ fun FilterSortTabs(
 ) {
     val selectedIndex = tabs.indexOfFirst { it.isSelected }
 
-    TabRow(
+    ScrollableTabRow(
         selectedTabIndex = selectedIndex.coerceAtLeast(0),
+        edgePadding = 0.dp, // so tabs start right at the left edge
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
                 modifier = Modifier.tabIndicatorOffset(tabPositions[selectedIndex.coerceAtLeast(0)]),
@@ -159,27 +162,22 @@ fun FilterSortTabs(
         containerColor = whiteColor,
         contentColor = categoryIconColor,
         divider = {},
-        modifier = Modifier.padding(top = 25.dp) // <-- spacing above tab text
+        modifier = Modifier.padding(top = 25.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start // <-- align left
-        ) {
-            tabs.forEach { tab ->
-                Tab(
-                    selected = tab.isSelected,
-                    onClick = { onTabSelected(tab.tab) },
-                    selectedContentColor = highlightColor,
-                    unselectedContentColor = categoryIconColor,
-                    text = {
-                        Text(
-                            text = tab.tab.name.replace("_", " "),
-                            fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
-                            fontSize = 20.sp
-                        )
-                    }
-                )
-            }
+        tabs.forEach { tab ->
+            Tab(
+                selected = tab.isSelected,
+                onClick = { onTabSelected(tab.tab) },
+                selectedContentColor = highlightColor,
+                unselectedContentColor = categoryIconColor,
+                text = {
+                    Text(
+                        text = tab.tab.name.replace("_", " "),
+                        fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
+                        fontSize = 20.sp
+                    )
+                }
+            )
         }
     }
 }
@@ -248,7 +246,10 @@ fun SortList(
                 fontFamily = FontFamily(Font(R.font.font_alliance_regular_two))
             )
             if (index != options.lastIndex) {
-                Divider(modifier = Modifier.padding(horizontal = pxToDp(16)))
+                Divider(
+                    thickness = 1.dp,
+                    color = sortDividerColor
+                )
             }
         }
     }

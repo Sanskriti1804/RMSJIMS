@@ -101,7 +101,7 @@ fun ProjectInfoScreen(
                 value = value,
                 onValueChange = { value = it},
                 placeholder = "Project Description",
-                maxlines = 3
+                height = 110.dp
             )
 
 
@@ -119,7 +119,6 @@ fun ProjectInfoScreen(
                     placeholder = "Error loading"
                 )
                 is UiState.Success -> FilteredAppTextField(
-                    modifier = Modifier.weight(1f),
                     value = query,
                     onValueChange = { departmentViewModel.onQueryChange(it)},
                     placeholder = "Department",

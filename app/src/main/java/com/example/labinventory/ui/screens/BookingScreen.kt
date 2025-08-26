@@ -220,7 +220,7 @@ fun InfoCard(
             }
 
 //            Spacer(modifier = Modifier.height(16.dp))
-            Divider()
+            Divider(thickness = pxToDp(1), color = someGrayColor)
 //            Spacer(modifier = Modifier.height(16.dp))
             Column(verticalArrangement = Arrangement.spacedBy(pxToDp(18))) {
                 Row(

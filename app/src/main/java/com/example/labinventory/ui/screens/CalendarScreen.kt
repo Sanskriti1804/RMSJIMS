@@ -113,24 +113,36 @@ fun CalendarScreen(
             )
         },
         bottomBar = {
-            AppButton(
-                buttonText = "CONFIRM",
-                onClick = {
-                    navController.navigate(Screen.ProjectInfoScreen.route)
-                },
-                modifier = Modifier.padding(pxToDp(16))
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Transparent)
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AppButton(
+                    buttonText = "CONFIRM",
+                    onClick = {
+                        navController.navigate(Screen.ProjectInfoScreen.route)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
+                .padding( start = 16.dp,
+                    end = 16.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 0.dp
+                ),
             verticalArrangement = Arrangement.spacedBy(pxToDp(20))
            ) {
 
-            Spacer(modifier = Modifier.height(pxToDp(10)))
+            Spacer(modifier = Modifier.height(pxToDp(6)))
 
             MonthTabRow(
                 months = months,
@@ -144,7 +156,8 @@ fun CalendarScreen(
                 dates = dates,
                 selectedDate = selectedDate,
                 today = LocalDate.now(),
-                onDateClick = viewModel::selectDate
+                onDateClick = viewModel::selectDate,
+                currentMonth = currentMonth,
             )
 
             // Status summary card
@@ -205,23 +218,26 @@ fun DaysOfWeekHeader(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(pxToDp(44))
+        modifier = modifier.fillMaxWidth()
     ) {
         daysOfWeek.forEach { day ->
             val isWeekend = day == DayOfWeek.SUNDAY || day == DayOfWeek.SATURDAY
-            Text(
-                text = day.name.first().toString(),
-                modifier = Modifier.weight(1f),
-                fontSize = 14.sp,
-                fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
-                textAlign = TextAlign.Center,
-                color = if (isWeekend) weekendColor else darkTextColor.copy(0.9f)
-            )
+            Box(
+                modifier = Modifier
+                    .weight(1f) ,// <-- same as CalendarGrid columns
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = day.name.first().toString(),
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
+                    textAlign = TextAlign.Center,
+                    color = if (isWeekend) weekendColor else darkTextColor.copy(0.9f)
+                )
+            }
         }
     }
 }
-
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -230,6 +246,7 @@ fun CalendarGrid(
     dates: List<LocalDate>, // Should be ordered from Sunday to Saturday in each week
     selectedDate: LocalDate,
     today: LocalDate,
+    currentMonth: YearMonth,
     onDateClick: (LocalDate) -> Unit
 ) {
     val weeks = dates.chunked(7)
@@ -252,7 +269,8 @@ fun CalendarGrid(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .weight(1f)
-                            .aspectRatio(1f)
+                            .width(pxToDp(48))
+                            .height(pxToDp(60))
                             .clip(RoundedCornerShape(pxToDp(4)))
                             .background(
                                 when {
@@ -310,7 +328,7 @@ fun StatusCard(
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(12.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically

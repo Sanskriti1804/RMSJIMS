@@ -84,7 +84,7 @@ fun AppButton(
     containerColor: Color = highlightColor,
     contentColor : Color = whiteColor,
     buttonText: String,
-    shape: Shape = RectangleShape,
+    shape: Shape = RoundedCornerShape(4.dp),
     modifier: Modifier = Modifier
 ){
     Button(
@@ -166,6 +166,7 @@ fun AppFAB(
     containerColor: Color = navBackColor,
     capsuleShape: Shape = RoundedCornerShape(pxToDp(30)),
     iconShape: Shape = CircleShape,
+    iconSize: Dp = 30.dp
 ){
     var showLabel by rememberSaveable { mutableStateOf(showIntro) }
 
@@ -216,7 +217,8 @@ fun AppFAB(
                 Icon(
                     painter = ai_chatIcon,
                     contentDescription = "FAB Icon",
-                    tint = Color.Unspecified
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(iconSize)
                 )
             }
         }

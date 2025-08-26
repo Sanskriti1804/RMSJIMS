@@ -113,14 +113,14 @@ fun HomeScreen(
                     onClick = { filterSortViewModel.showSheet() }
                 )
             }
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getVerticalPadding()))
 
             CustomLabel(
                 "Explore by Category",
                 fontSize = ResponsiveLayout.getResponsiveFontSize(20.sp, 24.sp, 28.sp),
                 modifier = Modifier
                     .padding(
-                        start = ResponsiveLayout.getHorizontalPadding(), 
-                        bottom = ResponsiveLayout.getVerticalPadding()
+                        start = ResponsiveLayout.getHorizontalPadding()
                     ),
                 headerColor = titleColor
             )
