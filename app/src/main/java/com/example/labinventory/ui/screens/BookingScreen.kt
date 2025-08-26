@@ -56,6 +56,7 @@ import com.example.labinventory.ui.theme.highlightColor
 import com.example.labinventory.ui.theme.someGrayColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.viewmodel.BookingScreenViewmodel
 import org.koin.androidx.compose.koinViewModel
 
@@ -76,9 +77,9 @@ fun BookingScreen(
 
         Column(modifier = Modifier
             .fillMaxWidth()
-            .padding(pxToDp(16))
+            .padding(ResponsiveLayout.getHorizontalPadding())
             .padding(paddingValues)) {
-            Spacer(modifier = Modifier.height(pxToDp(27)))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(27.dp, 32.dp, 38.dp)))
 
             BookingTabSelector(
                 tabs = listOf(
@@ -89,7 +90,7 @@ fun BookingScreen(
                 onTabSelected = { selectedTab -> }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)))
 
             InfoCard(
                 productInfo = viewModel.productInfo,

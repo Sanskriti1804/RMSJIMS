@@ -37,6 +37,7 @@ import com.example.labinventory.ui.components.FilteredAppTextField
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.viewmodel.BranchViewModel
 import com.example.labinventory.viewmodel.DepartmentViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -72,19 +73,19 @@ fun ProjectInfoScreen(
                 onClick = {
                    navController.navigate(Screen.BookingsScreen.route)
                 },
-                modifier = Modifier.padding(pxToDp(16))
+                modifier = Modifier.padding(ResponsiveLayout.getHorizontalPadding())
             )
         }
     ) {paddingValues ->
         Column(
             modifier = Modifier
-                .padding(pxToDp(16))
+                .padding(ResponsiveLayout.getHorizontalPadding())
                 .padding(paddingValues)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(pxToDp(13))
+            verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(13.dp, 16.dp, 20.dp))
         ){
-            Spacer(modifier = Modifier.height(pxToDp(20)))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)))
             AppTextField(
                 value = value,
                 onValueChange = { value = it},

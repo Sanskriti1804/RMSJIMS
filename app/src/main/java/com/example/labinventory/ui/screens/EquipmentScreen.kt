@@ -218,11 +218,11 @@ fun CategoryItem(
             tint = if (isSelected) selectedIconColor else iconColor
         )
 
-        Spacer(modifier = Modifier.height(pxToDp(8)))
+        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)))
 
         CustomLabel(
             header = category.label,
-            fontSize = 10.sp,
+            fontSize = ResponsiveLayout.getResponsiveFontSize(10.sp, 12.sp, 14.sp),
             modifier = Modifier,
             headerColor = if (isSelected) selectedLabelColor else labelColor
         )
@@ -238,11 +238,13 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
     LazyRow(
         state = listState,
         contentPadding = PaddingValues(
-            start = pxToDp(28), end = pxToDp(28),
-            top = pxToDp(12), bottom = pxToDp(8)
+            start = ResponsiveLayout.getHorizontalPadding(), 
+            end = ResponsiveLayout.getHorizontalPadding(),
+            top = ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp), 
+            bottom = ResponsiveLayout.getResponsivePadding(8.dp, 12.dp, 16.dp)
         ),
-        horizontalArrangement = Arrangement.spacedBy(pxToDp(37)),
-        modifier = Modifier.height(pxToDp(64))
+        horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(37.dp, 42.dp, 48.dp)),
+        modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(64.dp, 72.dp, 80.dp))
     ) {
         itemsIndexed(categories) { index, category ->
             Column(
@@ -260,13 +262,13 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
                     onClick = {  }
                 )
 
-                Spacer(modifier = Modifier.height(pxToDp(8)))
+                Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)))
 
                 if (category.id == selectedCategoryId) {
                     Box(
                         Modifier
-                            .width(pxToDp(30))
-                            .height(pxToDp(1))
+                            .width(ResponsiveLayout.getResponsiveSize(30.dp, 36.dp, 42.dp))
+                            .height(ResponsiveLayout.getResponsivePadding(1.dp, 1.5.dp, 2.dp))
                             .background(categoryColor)
                     )
                 }
@@ -283,8 +285,8 @@ fun EquipmentCard(
     equipName : String,
     onClick: () -> Unit = {},
     shape: Shape = RectangleShape,
-    imageHeight: Dp = pxToDp(125),
-    detailHeight: Dp = pxToDp(75),
+    imageHeight: Dp = ResponsiveLayout.getResponsiveSize(125.dp, 140.dp, 160.dp),
+    detailHeight: Dp = ResponsiveLayout.getResponsiveSize(75.dp, 85.dp, 95.dp),
     isSaved : Boolean = false,
     saveClick : () -> Unit = {},
     facilityName : String
@@ -308,17 +310,20 @@ fun EquipmentCard(
                     contentDescription = "Equipment Image",
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .padding(horizontal = pxToDp(12), vertical = pxToDp(12)),
+                        .padding(
+                            horizontal = ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp), 
+                            vertical = ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp)
+                        ),
                     contentScale = ContentScale.Crop
                 )
                 AppCategoryIcon(
                     painter = painterResource(R.drawable.ic_save),
                     iconDescription = "Save icon",
-                    iconSize = pxToDp(18),
+                    iconSize = ResponsiveLayout.getResponsiveSize(18.dp, 20.dp, 24.dp),
                     tint = if (isSaved) highlightColor else navLabelColor,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(pxToDp(8))
+                        .padding(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
                         .clickable{
                             saveClick()
                         }
@@ -330,43 +335,46 @@ fun EquipmentCard(
                     .height(detailHeight)
                     .fillMaxWidth()
                     .background(whiteColor)
-                    .padding(top = pxToDp(6)),
+                    .padding(top = ResponsiveLayout.getResponsivePadding(6.dp, 8.dp, 10.dp)),
                 horizontalAlignment = Alignment.Start
             ) {
                 CustomLabel(
                     header = equipName,
                     headerColor = darkTextColor,
-                    fontSize = pxToDp(12).value.sp,
-                    modifier = Modifier.padding(top = pxToDp(2))
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                    modifier = Modifier.padding(top = ResponsiveLayout.getResponsivePadding(2.dp, 3.dp, 4.dp))
                 )
 
                 CustomLabel(
                     header =  available,
                     headerColor = highlightColor,
-                    fontSize = pxToDp(12).value.sp,
-                    modifier = Modifier.padding(top = pxToDp(3), bottom = pxToDp(3))
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                    modifier = Modifier.padding(
+                        top = ResponsiveLayout.getResponsivePadding(3.dp, 4.dp, 5.dp), 
+                        bottom = ResponsiveLayout.getResponsivePadding(3.dp, 4.dp, 5.dp)
+                    )
                 )
 
                 CustomLabel(
                     header = facilityName,
                     headerColor = lightTextColor,
-                    fontSize = pxToDp(12).value.sp,
-                    modifier = Modifier.padding(bottom = pxToDp(3))
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                    modifier = Modifier.padding(bottom = ResponsiveLayout.getResponsivePadding(3.dp, 4.dp, 5.dp))
                 )
 
                 Row {
                     AppCategoryIcon(
                         painter = painterResource(R.drawable.ic_location),
                         iconDescription = "location icon",
-                        iconSize = pxToDp(12),
+                        iconSize = ResponsiveLayout.getResponsiveSize(12.dp, 14.dp, 16.dp),
                         tint = lightTextColor
                     )
-                    Spacer(modifier = Modifier.width(pxToDp(5)))
+                    Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsivePadding(5.dp, 6.dp, 8.dp)))
                     CustomLabel(
                         header = "IDC, Photo Studio",
                         headerColor = lightTextColor,
-                        fontSize = pxToDp(12).value.sp,
-                        modifier = Modifier.padding(bottom = pxToDp(0))
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                        modifier = Modifier.padding(bottom = 0.dp)
                     )
                 }
             }

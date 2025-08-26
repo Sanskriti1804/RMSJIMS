@@ -35,6 +35,7 @@ import com.example.labinventory.ui.theme.Typography
 import com.example.labinventory.ui.theme.labelColor
 import com.example.labinventory.ui.theme.searchBarColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 
 
 @Composable
@@ -47,15 +48,15 @@ fun AppSearchBar(
     iconDescription: String = "Search",
     backgroundColor: Color = searchBarColor,
     textColor: Color = labelColor,
-    shape: Shape = RoundedCornerShape(pxToDp(50)),
+    shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsiveSize(50.dp, 60.dp, 70.dp)),
 ) {
     Box(
         modifier = modifier
             .clip(shape)
             .background(backgroundColor)
-            .height(pxToDp(46))
+            .height(ResponsiveLayout.getResponsiveSize(46.dp, 52.dp, 60.dp))
             .fillMaxWidth()
-            .padding(horizontal = pxToDp(16)), // inner padding
+            .padding(horizontal = ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)), // inner padding
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
@@ -65,10 +66,10 @@ fun AppSearchBar(
                 painter = searchIcon,
                 contentDescription = iconDescription,
                 modifier = Modifier
-                    .size(pxToDp(21)),
+                    .size(ResponsiveLayout.getResponsiveSize(21.dp, 24.dp, 28.dp)),
                 tint = textColor
             )
-            Spacer(modifier = Modifier.width(pxToDp(16)))
+            Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsivePadding(16.dp, 18.dp, 20.dp)))
 
             BasicTextField(
                 value = query,
@@ -76,18 +77,18 @@ fun AppSearchBar(
                 singleLine = true,
                 textStyle = Typography.labelSmall().copy(
                     color = labelColor,
-                    fontSize =15.sp
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(15.sp, 16.sp, 18.sp)
                 ),
                 modifier = Modifier
                     .weight(1f)
-                    .padding(vertical = pxToDp(8)), // vertical centering
+                    .padding(vertical = ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)), // vertical centering
                 decorationBox = { innerTextField ->
                     if (query.isEmpty()) {
                         Text(
                             text = placeholder,
                             style = Typography.labelSmall().copy(
                                 color = labelColor,
-                                fontSize =15.sp
+                                fontSize = ResponsiveLayout.getResponsiveFontSize(15.sp, 16.sp, 18.sp)
                             )
                         )
                     }

@@ -63,6 +63,7 @@ import com.example.labinventory.ui.theme.headerColor
 import com.example.labinventory.ui.theme.highlightColor
 import com.example.labinventory.ui.theme.weekendColor
 import com.example.labinventory.ui.theme.whiteColor
+import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.FacilitiesViewModel
 import com.example.labinventory.viewmodel.UserSessionViewModel
@@ -116,7 +117,7 @@ fun ProdDescScreen(
                         navController.navigate(Screen.CalendarScreen.route)
                     },
                     buttonText = "BOOK NOW",
-                    modifier = Modifier.padding(pxToDp(16))
+                    modifier = Modifier.padding(ResponsiveLayout.getHorizontalPadding())
                 )
             }
             else{
@@ -124,7 +125,7 @@ fun ProdDescScreen(
                     onEditClick = {},
                     onDeleteClick = {},
                     onBookClick = {},
-                    modifier = Modifier.padding(pxToDp(16))
+                    modifier = Modifier.padding(ResponsiveLayout.getHorizontalPadding())
                 )
             }
         },
@@ -134,10 +135,10 @@ fun ProdDescScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(pxToDp(16)),
-            verticalArrangement = Arrangement.spacedBy(pxToDp(12))
+                .padding(ResponsiveLayout.getHorizontalPadding()),
+            verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp))
         ) {
-            Spacer(modifier = Modifier.height(pxToDp(20)))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)))
             ProductCarousel(
                 images = productImage,
                 pageInteractionSource = pagerInteractionSource,
@@ -166,13 +167,13 @@ fun ProductCarousel(
     inactiveColor : Color = Color.DarkGray,
     activeColor : Color = highlightColor,
     indicatorShape: Shape = CircleShape,
-    indicatorSize : Dp = pxToDp(6),
+    indicatorSize : Dp = ResponsiveLayout.getResponsiveSize(6.dp, 8.dp, 10.dp),
     isFav : Boolean = false
 ){
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(pxToDp(200)),
+            .height(ResponsiveLayout.getResponsiveSize(200.dp, 240.dp, 280.dp)),
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor
         )
@@ -181,7 +182,7 @@ fun ProductCarousel(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(pxToDp(16))
+                .padding(ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp))
         ) {
             HorizontalPager(
                 state = pagerState, // Use the passed pagerState

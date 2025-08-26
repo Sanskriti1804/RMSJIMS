@@ -38,6 +38,7 @@ import com.example.labinventory.ui.theme.selectedChipTextColor
 import com.example.labinventory.ui.theme.selectedchipColor
 import com.example.labinventory.ui.theme.sortDividerColor
 import com.example.labinventory.ui.theme.whiteColor
+import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.viewmodel.FilterSortViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -68,16 +69,16 @@ fun FilterSortBottomSheet(
     ModalBottomSheet(
         onDismissRequest = { viewModel.hideSheet() },
         sheetState = sheetState,
-        shape = RoundedCornerShape(pxToDp(10)),
+        shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 16.dp)),
         containerColor = whiteColor,
         dragHandle = null,
         contentWindowInsets = { WindowInsets(0, 0, 0, 0) }
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(pxToDp(16))) {
+        Column(modifier = Modifier.fillMaxWidth().padding(ResponsiveLayout.getHorizontalPadding())) {
 
             FilterSortTabs(tabs = tabs, onTabSelected = viewModel::selectTab)
 
-            Spacer(modifier = Modifier.height(pxToDp(10)))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 16.dp)))
 
             // Content based on selected tab
             val selectedTab = tabs.find { it.isSelected }?.tab ?: FilterTab.Filter
@@ -87,9 +88,9 @@ fun FilterSortBottomSheet(
                         Text(
                             text = group.section.name.lowercase().replaceFirstChar(Char::titlecase),
                             color = selectedChipTextColor,
-                            fontSize = 14.sp,
+                            fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp),
                             fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
-                            modifier = Modifier.padding(vertical = pxToDp(14))
+                            modifier = Modifier.padding(vertical = ResponsiveLayout.getResponsivePadding(14.dp, 16.dp, 20.dp))
                         )
 
                         ChipGroup(

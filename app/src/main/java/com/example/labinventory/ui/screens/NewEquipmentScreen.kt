@@ -40,6 +40,7 @@ import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -56,17 +57,17 @@ fun NewEquipmentScreen() {
             AppButton(
                 buttonText = "ADD EQUIPMENT",
                 onClick = {},
-                modifier = Modifier.padding(1.dp)
+                modifier = Modifier.padding(ResponsiveLayout.getResponsivePadding(1.dp, 2.dp, 3.dp))
             )
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(pxToDp(16))
+                .padding(ResponsiveLayout.getHorizontalPadding())
                 .padding(paddingValues)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(pxToDp(13))
+            verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(13.dp, 16.dp, 20.dp))
         ) {
             // 🔵 Image Upload Card
             AddImageCard()

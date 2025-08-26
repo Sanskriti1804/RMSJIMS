@@ -72,6 +72,7 @@ import com.example.labinventory.ui.theme.highlightColor
 import com.example.labinventory.ui.theme.navBackColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
 import org.koin.core.time.TimeInMillis
@@ -84,14 +85,14 @@ fun AppButton(
     containerColor: Color = highlightColor,
     contentColor : Color = whiteColor,
     buttonText: String,
-    shape: Shape = RoundedCornerShape(4.dp),
+    shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)),
     modifier: Modifier = Modifier
 ){
     Button(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(pxToDp(52)),
+            .height(ResponsiveLayout.getResponsiveSize(52.dp, 60.dp, 68.dp)),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor
@@ -100,7 +101,7 @@ fun AppButton(
         content = {
                 Text(
                     text = buttonText,
-                    fontSize = 16.sp,
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(16.sp, 18.sp, 20.sp),
                     color = contentColor
                 )
         }
@@ -114,8 +115,8 @@ fun EditButton(
     contentColor : Color = highlightColor,
     buttonText: String = "Edit",
     icon: Painter = painterResource(R.drawable.ic_edit),
-    iconSize: Dp = pxToDp(12),
-    shape: Shape = RoundedCornerShape(pxToDp(20)),
+    iconSize: Dp = ResponsiveLayout.getResponsiveSize(12.dp, 14.dp, 16.dp),
+    shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsiveSize(20.dp, 24.dp, 28.dp)),
     modifier: Modifier = Modifier
 ){
   Button(
@@ -129,8 +130,11 @@ fun EditButton(
       shape = shape,
   ) {
       Row(
-          modifier = Modifier.padding(horizontal = pxToDp(10), vertical = pxToDp(0)),
-          horizontalArrangement = Arrangement.spacedBy(pxToDp(6)),
+          modifier = Modifier.padding(
+              horizontal = ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 16.dp), 
+              vertical = 0.dp
+          ),
+          horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(6.dp, 8.dp, 10.dp)),
       ) {
           Icon(
               painter = icon,
@@ -141,7 +145,7 @@ fun EditButton(
           CustomLabel(
               header = buttonText,
               headerColor = contentColor,
-              fontSize = 10.sp
+              fontSize = ResponsiveLayout.getResponsiveFontSize(10.sp, 12.sp, 14.sp)
           )
       }
   }
@@ -164,9 +168,9 @@ fun AppFAB(
     onClick : () -> Unit ={},
     contentColor: Color = whiteColor,
     containerColor: Color = navBackColor,
-    capsuleShape: Shape = RoundedCornerShape(pxToDp(30)),
+    capsuleShape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsiveSize(30.dp, 36.dp, 42.dp)),
     iconShape: Shape = CircleShape,
-    iconSize: Dp = 30.dp
+    iconSize: Dp = ResponsiveLayout.getResponsiveSize(30.dp, 36.dp, 42.dp)
 ){
     var showLabel by rememberSaveable { mutableStateOf(showIntro) }
 
@@ -198,27 +202,31 @@ fun AppFAB(
                 Row(
                     modifier = Modifier
                         .wrapContentSize()
-                        .padding(horizontal = pxToDp(18), vertical = pxToDp(16)),
-                    horizontalArrangement = Arrangement.spacedBy(pxToDp(12)),
+                        .padding(
+                            horizontal = ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp),
+                            vertical = ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp)
+                        ),
+                    horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
                         painter = ai_chatIcon,
-                        contentDescription = "FAB Icon",
-                        tint = Color.Unspecified
+                        contentDescription = "AI Chat Icon",
+                        modifier = Modifier.size(iconSize),
+                        tint = contentColor
                     )
-                    CustomLabel(
-                        header = "Share your project to get equipment suggestions",
-                        headerColor = contentColor,
-                        fontSize = 14.sp
+                    Text(
+                        text = "AI Chat",
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp),
+                        color = contentColor
                     )
                 }
             } else {
                 Icon(
                     painter = ai_chatIcon,
-                    contentDescription = "FAB Icon",
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(iconSize)
+                    contentDescription = "AI Chat Icon",
+                    modifier = Modifier.size(iconSize),
+                    tint = contentColor
                 )
             }
         }

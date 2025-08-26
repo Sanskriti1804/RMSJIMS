@@ -48,7 +48,7 @@ fun CustomNavigationBar(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(0.5f.dp)
+                .height(ResponsiveLayout.getResponsivePadding(0.5.dp, 1.dp, 1.5.dp))
                 .background(dividerColor)
         )
         
@@ -98,23 +98,15 @@ fun CustomNavigationBar(
                                     )
                                     .background(badgeColor, shape = CircleShape)
                                     .padding(
-                                        horizontal = ResponsiveLayout.getResponsivePadding(4.dp, 5.dp, 6.dp), 
-                                        vertical = ResponsiveLayout.getResponsivePadding(1.dp, 1.5.dp, 2.dp)
+                                        horizontal = ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp),
+                                        vertical = ResponsiveLayout.getResponsivePadding(2.dp, 3.dp, 4.dp)
                                     )
                             ) {
-                                if (item.badgeCount != null) {
-                                    Text(
-                                        text = item.badgeCount.toString(),
-                                        color = if (isSelected) selectedColor else contentColor,
-                                        fontSize = ResponsiveLayout.getResponsiveFontSize(10.sp, 12.sp, 14.sp)
-                                    )
-                                } else {
-                                    Text(
-                                        text = "•",
-                                        color = if (isSelected) selectedColor else contentColor,
-                                        fontSize = ResponsiveLayout.getResponsiveFontSize(8.sp, 10.sp, 12.sp)
-                                    )
-                                }
+                                Text(
+                                    text = item.badgeCount?.toString() ?: "",
+                                    fontSize = ResponsiveLayout.getResponsiveFontSize(10.sp, 12.sp, 14.sp),
+                                    color = whiteColor
+                                )
                             }
                         }
                     }
@@ -123,8 +115,8 @@ fun CustomNavigationBar(
 
                     Text(
                         text = item.label,
-                        color = if (isSelected) selectedColor else contentColor,
-                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(10.sp, 12.sp, 14.sp),
+                        color = if (isSelected) selectedColor else contentColor
                     )
                 }
             }

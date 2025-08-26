@@ -37,14 +37,15 @@ import com.example.labinventory.R
 import com.example.labinventory.ui.theme.cardColor
 import com.example.labinventory.ui.theme.darkTextColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 
 @Composable
 fun AppTextField(
     modifier: Modifier = Modifier.fillMaxWidth(),
     value: String,
     onValueChange: (String) -> Unit,
-    height: Dp = 46.dp,
-    shape: Shape = RoundedCornerShape(pxToDp(4)),
+    height: Dp = ResponsiveLayout.getResponsiveSize(46.dp, 52.dp, 60.dp),
+    shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)),
     placeholder: String,
     textColor: Color = darkTextColor.copy(alpha = 0.7f),
     containerColor: Color = cardColor,
@@ -61,7 +62,7 @@ fun AppTextField(
                 header = placeholder,
                 modifier = Modifier.padding(0.dp),
                 headerColor = darkTextColor.copy(0.7f),
-                fontSize = 14.sp
+                fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp)
             )
         },
         colors = TextFieldDefaults.colors(
@@ -89,7 +90,7 @@ fun FilteredAppTextField(
     modifier: Modifier = Modifier.fillMaxWidth(),
     value: String,
     onValueChange: (String) -> Unit,
-    shape: Shape = RoundedCornerShape(pxToDp(4)),
+    shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)),
     placeholder: String,
     textColor: Color = darkTextColor.copy(alpha = 0.7f),
     containerColor: Color = cardColor,
@@ -118,7 +119,7 @@ fun FilteredAppTextField(
                     header = placeholder,
                     modifier = Modifier.padding(0.dp),
                     headerColor = darkTextColor.copy(0.7f),
-                    fontSize = 14.sp
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp)
                 )
             },
             colors = TextFieldDefaults.colors(
@@ -165,9 +166,9 @@ fun AppDropDownTextField(
     modifier : Modifier,
     value : String,
     items : List<String>,
-    height : Dp = 46.dp,
+    height : Dp = ResponsiveLayout.getResponsiveSize(46.dp, 52.dp, 60.dp),
     onValueChange : (String) -> Unit,
-    shape: Shape = RoundedCornerShape(1.dp),
+    shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(1.dp, 2.dp, 3.dp)),
     placeholder: String,
     textColor : Color = darkTextColor.copy(alpha = 0.7f),
     containercolor : Color = cardColor
@@ -186,14 +187,14 @@ fun AppDropDownTextField(
                         header = placeholder,
                         modifier = Modifier.padding(0.dp),
                         headerColor = darkTextColor.copy(0.7f),
-                        fontSize = 14.sp
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp)
                     )
 
                     AppCategoryIcon(
                         painter = painterResource(R.drawable.ic_dropdown),
                         iconDescription = "Drop Down Icon",
                         modifier = Modifier
-                            .padding(4.dp)
+                            .padding(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp))
                     )
                 }
             },
@@ -206,7 +207,7 @@ fun AppDropDownTextField(
                         .clickable {
                             expanded = !expanded
                         }
-                        .padding(8.dp)
+                        .padding(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
                 )
             },
             colors = TextFieldDefaults.colors(
