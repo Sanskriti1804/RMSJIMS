@@ -29,6 +29,7 @@ import com.example.labinventory.R
 import com.example.labinventory.ui.theme.headerColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +43,7 @@ fun CustomTopBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = pxToDp(15))
+                .padding(top = ResponsiveLayout.getResponsivePadding(15.dp, 18.dp, 22.dp))
                 .background(containerColor),
             verticalAlignment = Alignment.Top
         ) {
@@ -50,23 +51,27 @@ fun CustomTopBar(
                 AppNavBackIcon(
                     onClick = onNavigationClick,
                     modifier = Modifier
-                        .padding(start = pxToDp(17), end = pxToDp(11), top = pxToDp(20))
+                        .padding(
+                            start = ResponsiveLayout.getResponsivePadding(17.dp, 20.dp, 24.dp), 
+                            end = ResponsiveLayout.getResponsivePadding(11.dp, 14.dp, 17.dp), 
+                            top = ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)
+                        )
                         .align(Alignment.CenterVertically)
 
                 )
             }
             else{
-                Spacer(modifier = Modifier.width(pxToDp(16)))
+                Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsivePadding(16.dp, 18.dp, 20.dp)))
 
             }
 
             CustomLabel(
                 header = title,
                 headerColor = titleColor,
-                fontSize = 25.sp,
+                fontSize = ResponsiveLayout.getResponsiveFontSize(25.sp, 28.sp, 32.sp),
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .padding(top = pxToDp(17))
+                    .padding(top = ResponsiveLayout.getResponsivePadding(17.dp, 20.dp, 24.dp))
             )
         }
 }

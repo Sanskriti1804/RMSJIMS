@@ -26,16 +26,17 @@ import com.example.labinventory.ui.theme.navBackColor
 import com.example.labinventory.ui.theme.navLabelColor
 import com.example.labinventory.ui.theme.searchBarColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 
 @Composable
 fun AppCircularIcon(
     painter : Painter = painterResource(R.drawable.ic_reset),
     iconDescription : String = "Circular Icon",
-    boxSize : Dp = pxToDp(46),
+    boxSize : Dp = ResponsiveLayout.getResponsiveSize(46.dp, 52.dp, 60.dp),
     boxShape : Shape = CircleShape,
     boxColor : Color = searchBarColor,
-    iconPadding : Dp = pxToDp(11),
-    iconSize : Dp = pxToDp(22),
+    iconPadding : Dp = ResponsiveLayout.getResponsivePadding(11.dp, 13.dp, 15.dp),
+    iconSize : Dp = ResponsiveLayout.getResponsiveSize(22.dp, 24.dp, 28.dp),
     onClick : () -> Unit = {},
     tint : Color = labelColor
 ){
@@ -64,7 +65,7 @@ fun AppCategoryIcon(
     painter : Painter,
     iconDescription : String = "Equipment Category Icon",
     modifier: Modifier = Modifier,
-    iconSize: Dp = pxToDp(24),
+    iconSize: Dp = ResponsiveLayout.getResponsiveSize(24.dp, 28.dp, 32.dp),
     tint : Color = categoryIconColor
 ){
     Icon(
@@ -81,7 +82,7 @@ fun AppNavIcon(
     painter : Painter,
     iconDescription : String = "Navigation Icon",
     modifier: Modifier = Modifier,
-    iconSize : Dp = pxToDp(24),
+    iconSize : Dp = ResponsiveLayout.getResponsiveSize(24.dp, 28.dp, 32.dp),
     tint : Color = navLabelColor,
 ){
     Icon(
@@ -98,7 +99,7 @@ fun AppNavBackIcon(
     painter : Painter = painterResource(R.drawable.ic_back),
     iconDescription : String = "Navigation Icon",
     modifier: Modifier = Modifier,
-    size : Dp = pxToDp(24),
+    size : Dp = ResponsiveLayout.getResponsiveSize(24.dp, 28.dp, 32.dp),
     tint : Color = navBackColor,
     onClick: () -> Unit
 ){

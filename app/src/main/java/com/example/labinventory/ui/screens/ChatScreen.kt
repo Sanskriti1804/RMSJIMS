@@ -38,6 +38,7 @@ import com.example.labinventory.ui.theme.aiColor
 import com.example.labinventory.ui.theme.navBackColor
 import com.example.labinventory.ui.theme.someGrayColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.viewmodel.SearchViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -49,16 +50,19 @@ fun ChatBottomSheet(
     val query by viewModel.query
 
     Surface(
-        shape = RoundedCornerShape(topStart = pxToDp(30), topEnd = pxToDp(30)),
+        shape = RoundedCornerShape(
+            topStart = ResponsiveLayout.getResponsiveSize(30.dp, 36.dp, 42.dp), 
+            topEnd = ResponsiveLayout.getResponsiveSize(30.dp, 36.dp, 42.dp)
+        ),
         color = navBackColor,
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = pxToDp(880))
+            .heightIn(min = ResponsiveLayout.getResponsiveSize(880.dp, 920.dp, 960.dp))
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(pxToDp(15)),
+                .padding(ResponsiveLayout.getResponsivePadding(15.dp, 18.dp, 22.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Top Icons Row
@@ -68,7 +72,7 @@ fun ChatBottomSheet(
                     contentDescription = "Chat Icon",
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .size(pxToDp(44))
+                        .size(ResponsiveLayout.getResponsiveSize(44.dp, 48.dp, 52.dp))
                 )
 
                 IconButton(
@@ -78,13 +82,13 @@ fun ChatBottomSheet(
                     Icon(
                         painter = painterResource(R.drawable.ic_close),
                         contentDescription = "Close",
-                        modifier = Modifier.size(pxToDp(26)),
+                        modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(26.dp, 28.dp, 32.dp)),
                         tint = someGrayColor
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(pxToDp(12)))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(12.dp, 14.dp, 16.dp)))
 
             Text(
                 text = "Share your project to get",
@@ -94,13 +98,13 @@ fun ChatBottomSheet(
             )
             Text(
                 text = "equipment suggestions",
-                fontSize = 16.sp,
+                fontSize = ResponsiveLayout.getResponsiveFontSize(16.sp, 18.sp, 20.sp),
                 color = aiColor,
                 fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(24.dp, 28.dp, 32.dp)))
 
             // Input Field
             SearchInputField(
@@ -126,7 +130,7 @@ fun SearchInputField(
         singleLine = true,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Go),
         keyboardActions = KeyboardActions(onGo = {
             onSearch()

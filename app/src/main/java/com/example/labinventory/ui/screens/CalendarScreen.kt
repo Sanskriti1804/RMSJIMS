@@ -71,6 +71,7 @@ import com.example.labinventory.ui.theme.someGrayColor
 import com.example.labinventory.ui.theme.weekendColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
+import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.viewmodel.BookingScreenViewmodel
 import com.example.labinventory.viewmodel.CalendarViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -117,7 +118,7 @@ fun CalendarScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.Transparent)
-                    .padding(16.dp),
+                    .padding(ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 AppButton(
@@ -134,15 +135,16 @@ fun CalendarScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding( start = 16.dp,
-                    end = 16.dp,
+                .padding( 
+                    start = ResponsiveLayout.getHorizontalPadding(),
+                    end = ResponsiveLayout.getHorizontalPadding(),
                     top = paddingValues.calculateTopPadding(),
                     bottom = 0.dp
                 ),
-            verticalArrangement = Arrangement.spacedBy(pxToDp(20))
+            verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp))
            ) {
 
-            Spacer(modifier = Modifier.height(pxToDp(6)))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(6.dp, 8.dp, 10.dp)))
 
             MonthTabRow(
                 months = months,
@@ -188,14 +190,14 @@ fun MonthTabRow(
 ) {
     LazyRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(pxToDp(12))
+        horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp))
     ) {
         items(months) { month ->
             val isSelected = month == currentMonth
 
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(pxToDp(4)))
+                    .clip(RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)))
                     .background(if (isSelected) highlightColor else cardColor)
                     .clickable { onMonthSelected(month) }
             ) {
