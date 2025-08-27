@@ -104,8 +104,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .height(ResponsiveLayout.getResponsiveSize(46.dp, 60.dp, 68.dp))
                         .weight(1f),
-                    placeholder = "Equipments, Tools, Supplies, etc..."
-                )
+                  )
 
                 Spacer(modifier = Modifier.width(ResponsiveLayout.getCardSpacing()))
 

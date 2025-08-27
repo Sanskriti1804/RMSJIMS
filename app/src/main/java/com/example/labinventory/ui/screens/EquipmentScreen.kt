@@ -132,8 +132,7 @@ fun EquipmentScreen(
                     onQueryChange = {},
                     modifier = Modifier
                         .height(ResponsiveLayout.getResponsiveSize(46.dp, 60.dp, 68.dp))
-                        .weight(1f),
-                    placeholder = "Equipments, Tools, Supplies, etc..."
+                        .weight(1f)
                 )
 
                 Spacer(modifier = Modifier.width(ResponsiveLayout.getCardSpacing()))

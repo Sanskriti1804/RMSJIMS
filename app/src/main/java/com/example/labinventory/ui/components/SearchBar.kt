@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,7 +44,7 @@ fun AppSearchBar(
     modifier: Modifier = Modifier,
     query: String,
     onQueryChange: (String) -> Unit,
-    placeholder: String = "Search",
+    placeholder: String = "Equipments, Tools, Supplies, etc...",
     searchIcon: Painter = painterResource(id = R.drawable.search),
     iconDescription: String = "Search",
     backgroundColor: Color = searchBarColor,
@@ -86,6 +87,8 @@ fun AppSearchBar(
                     if (query.isEmpty()) {
                         Text(
                             text = placeholder,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             style = Typography.labelSmall().copy(
                                 color = labelColor,
                                 fontSize = ResponsiveLayout.getResponsiveFontSize(15.sp, 16.sp, 18.sp)
