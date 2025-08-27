@@ -101,8 +101,7 @@ fun ProjectInfoScreen(
             AppTextField(
                 value = value,
                 onValueChange = { value = it},
-                placeholder = "Project Description",
-                height = 110.dp
+                placeholder = "Project Description"
             )
 
 

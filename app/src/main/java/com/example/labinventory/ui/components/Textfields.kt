@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -30,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +46,7 @@ fun AppTextField(
     modifier: Modifier = Modifier.fillMaxWidth(),
     value: String,
     onValueChange: (String) -> Unit,
-    height: Dp = ResponsiveLayout.getResponsiveSize(46.dp, 52.dp, 60.dp),
+//    height: Dp = ResponsiveLayout.getResponsiveSize(46.dp, 52.dp, 60.dp),
     shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)),
     placeholder: String,
     textColor: Color = darkTextColor.copy(alpha = 0.7f),
@@ -80,7 +82,7 @@ fun AppTextField(
         visualTransformation = visualTransformation,
         minLines = minLines,
         maxLines = maxLines,
-        modifier = modifier.fillMaxWidth().height(height)
+        modifier = modifier.fillMaxWidth()
     )
 }
 
@@ -163,23 +165,25 @@ fun FilteredAppTextField(
 
 @Composable
 fun AppDropDownTextField(
-    modifier : Modifier,
+    modifier : Modifier = Modifier.fillMaxWidth(),
     value : String,
     items : List<String>,
-    height : Dp = ResponsiveLayout.getResponsiveSize(46.dp, 52.dp, 60.dp),
+//    height : Dp = ResponsiveLayout.getResponsiveSize(46.dp, 52.dp, 60.dp),
     onValueChange : (String) -> Unit,
     shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(1.dp, 2.dp, 3.dp)),
     placeholder: String,
     textColor : Color = darkTextColor.copy(alpha = 0.7f),
-    containercolor : Color = cardColor
+    containerColor : Color = cardColor
 ){
     var expanded by remember { mutableStateOf(false) }
 
-    Box(modifier.height(height)){
+    Box(modifier){
         OutlinedTextField(
             value = value,
             onValueChange = {},
             readOnly = true,
+            singleLine = true,
+            maxLines = 1,
             shape = shape,
             placeholder = {
                 Row {
@@ -190,12 +194,6 @@ fun AppDropDownTextField(
                         fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp)
                     )
 
-                    AppCategoryIcon(
-                        painter = painterResource(R.drawable.ic_dropdown),
-                        iconDescription = "Drop Down Icon",
-                        modifier = Modifier
-                            .padding(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp))
-                    )
                 }
             },
             trailingIcon = {
@@ -213,14 +211,14 @@ fun AppDropDownTextField(
             colors = TextFieldDefaults.colors(
                 focusedTextColor = textColor,
                 unfocusedTextColor = textColor,
-                focusedContainerColor = containercolor,
-                unfocusedContainerColor = containercolor,
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
                 focusedIndicatorColor = textColor
             ),
             modifier = Modifier
                 .clickable{
                     expanded = true
-                }
+                },
         )
 
         DropdownMenu(
