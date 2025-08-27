@@ -243,7 +243,7 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
             bottom = ResponsiveLayout.getResponsivePadding(8.dp, 12.dp, 16.dp)
         ),
         horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(37.dp, 42.dp, 48.dp)),
-        modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(64.dp, 72.dp, 80.dp))
+//        modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(64.dp, 72.dp, 80.dp))
     ) {
         itemsIndexed(categories) { index, category ->
             Column(

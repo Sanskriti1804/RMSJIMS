@@ -321,7 +321,6 @@ fun InChargeCard(
     val facilitiesList = facilitiesViewModel.facilitiesState
 
     var expanded by remember { mutableStateOf(true) }
-    val collapsedHeight = pxToDp(52)
     val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
 
     Card(
@@ -334,7 +333,6 @@ fun InChargeCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .then(if (!expanded) Modifier.height(collapsedHeight) else Modifier)
                 .padding(pxToDp(16))
         ) {
             if (expanded) {
@@ -444,7 +442,6 @@ fun AdditionalInfoCard(
     val facilitiesList = facilitiesViewModel.facilitiesState
 
     var expanded by remember { mutableStateOf(true) }
-    val collapsedHeight = pxToDp(52)
     val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
 
     Card(
@@ -456,7 +453,6 @@ fun AdditionalInfoCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .then(if (!expanded) Modifier.height(collapsedHeight) else Modifier)
                 .padding(pxToDp(16))
         ) {
             if (expanded) {
@@ -516,7 +512,6 @@ fun UseCard(
     containerColor: Color = cardColor
 ) {
     var expanded by remember { mutableStateOf(true) }
-    val collapsedHeight = pxToDp(52)
     val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
 
     Card(
@@ -528,7 +523,6 @@ fun UseCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .then(if (!expanded) Modifier.height(collapsedHeight) else Modifier)
                 .padding(pxToDp(16))
         ) {
             if (expanded) {
