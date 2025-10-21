@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,27 +19,22 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.labinventory.R
 import com.example.labinventory.data.model.BookingDates
 import com.example.labinventory.data.model.BookingTab
 import com.example.labinventory.data.model.InChargeInfo
 import com.example.labinventory.data.model.ProductInfo
-import com.example.labinventory.data.model.Status
 import com.example.labinventory.data.model.TabItem
 import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppNavIcon
@@ -48,11 +42,10 @@ import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomNavigationBar
 import com.example.labinventory.ui.components.CustomTopBar
 import com.example.labinventory.ui.components.EditButton
-import com.example.labinventory.ui.theme.cardColor
-import com.example.labinventory.ui.theme.categoryColor
+import com.example.labinventory.ui.theme.onSurfaceVariant
 import com.example.labinventory.ui.theme.categoryIconColor
-import com.example.labinventory.ui.theme.darkTextColor
-import com.example.labinventory.ui.theme.highlightColor
+import com.example.labinventory.ui.theme.onSurfaceColor
+import com.example.labinventory.ui.theme.primaryColor
 import com.example.labinventory.ui.theme.someGrayColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
@@ -126,12 +119,12 @@ fun BookingTabSelector(tabs: List<TabItem>, onTabSelected: (BookingTab) -> Unit)
                         painter = painterResource(id = it.iconRes),
                         iconDescription = it.label,
                         iconSize = pxToDp(20),
-                        tint = if (it.isSelected) highlightColor else categoryIconColor
+                        tint = if (it.isSelected) primaryColor else categoryIconColor
                     )
                     CustomLabel(
                         header = it.label,
                         fontSize = 12.sp,
-                        headerColor = if (it.isSelected) highlightColor else categoryIconColor
+                        headerColor = if (it.isSelected) primaryColor else categoryIconColor
                     )
                 }
             }
@@ -148,7 +141,7 @@ fun InfoCard(
     onEditBooking: () -> Unit,
     icons: List<Int> = listOf(R.drawable.ic_mail),
     cardShape: Shape = RectangleShape,
-    containerColor : Color = cardColor,
+    containerColor : Color = onSurfaceVariant,
 ) {
     Card(
         shape = cardShape,
@@ -180,7 +173,7 @@ fun InfoCard(
                         header = productInfo.title,
                         fontSize = 16.sp,
                         modifier = Modifier,
-                        headerColor = darkTextColor
+                        headerColor = onSurfaceColor
                     )
                     CustomLabel(
                         header = productInfo.location,
@@ -210,7 +203,7 @@ fun InfoCard(
             Column(verticalArrangement = Arrangement.spacedBy(pxToDp(16))) {
                 CustomLabel(
                     header = "InCharge",
-                    headerColor = darkTextColor.copy(0.9f)
+                    headerColor = onSurfaceColor.copy(0.9f)
                 )
                 InChargeRow(label = "Prof.", name = "Sumant Rao")
                 InChargeRow(
@@ -232,7 +225,7 @@ fun InfoCard(
                 ) {
                     CustomLabel(
                         header = "Booking Dates",
-                        headerColor = darkTextColor.copy(0.9f)
+                        headerColor = onSurfaceColor.copy(0.9f)
                     )
                     EditButton(
                         onClick = onEditBooking
@@ -256,14 +249,14 @@ fun InChargeRoww(label: String, name: String, icons: List<Int>? = null) {
             CustomLabel(
                 header = "$label",
                 fontSize = 14.sp,
-                headerColor = darkTextColor.copy(0.5f),
+                headerColor = onSurfaceColor.copy(0.5f),
                 modifier = Modifier.width(50.dp)
             )
             CustomLabel(
                 header = name,
                 fontSize = 14.sp,
                 modifier = Modifier,
-                headerColor = darkTextColor.copy(0.8f)
+                headerColor = onSurfaceColor.copy(0.8f)
 
             )
         }
@@ -294,7 +287,7 @@ fun DatesRow(label: String, name: String) {
             CustomLabel(
                 header = "$label",
                 fontSize = 16.sp,
-                headerColor = darkTextColor.copy(0.5f),
+                headerColor = onSurfaceColor.copy(0.5f),
                 modifier = Modifier
                     .width(80.dp)
             )
@@ -302,7 +295,7 @@ fun DatesRow(label: String, name: String) {
                 header = name,
                 fontSize = 16.sp,
                 modifier = Modifier,
-                headerColor = darkTextColor.copy(0.8f)
+                headerColor = onSurfaceColor.copy(0.8f)
 
             )
         }

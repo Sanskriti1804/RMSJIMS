@@ -1,9 +1,6 @@
 package com.example.labinventory.ui.components
 
-import android.R.attr.padding
-import android.graphics.drawable.Icon
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -11,32 +8,20 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.with
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ButtonElevation
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -48,41 +33,27 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.labinventory.R
-import com.example.labinventory.ui.theme.Dimensions
-import com.example.labinventory.ui.theme.Shapes
-import com.example.labinventory.ui.theme.app_llComponent
-import com.example.labinventory.ui.theme.app_ltext
-import com.example.labinventory.ui.theme.darkTextColor
-import com.example.labinventory.ui.theme.headerColor
-import com.example.labinventory.ui.theme.highlightColor
+import com.example.labinventory.ui.theme.onSurfaceColor
+import com.example.labinventory.ui.theme.primaryColor
 import com.example.labinventory.ui.theme.navBackColor
 import com.example.labinventory.ui.theme.whiteColor
-import com.example.labinventory.util.pxToDp
 import com.example.labinventory.util.ResponsiveLayout
-import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
-import org.koin.core.time.TimeInMillis
-import kotlin.toString
 
 
 @Composable
 fun AppButton(
     onClick : () -> Unit = {},
-    containerColor: Color = highlightColor,
+    containerColor: Color = primaryColor,
     contentColor : Color = whiteColor,
     buttonText: String,
     shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)),
@@ -111,8 +82,8 @@ fun AppButton(
 @Composable
 fun EditButton(
     onClick : () -> Unit = {},
-    containerColor: Color = darkTextColor.copy(0.08f),
-    contentColor : Color = highlightColor,
+    containerColor: Color = onSurfaceColor.copy(0.08f),
+    contentColor : Color = primaryColor,
     buttonText: String = "Edit",
     icon: Painter = painterResource(R.drawable.ic_edit),
     iconSize: Dp = ResponsiveLayout.getResponsiveSize(12.dp, 14.dp, 16.dp),

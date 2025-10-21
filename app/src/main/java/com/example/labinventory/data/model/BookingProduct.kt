@@ -1,9 +1,8 @@
 package com.example.labinventory.data.model
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import com.example.labinventory.ui.theme.bookedColor
-import com.example.labinventory.ui.theme.highlightColor
+import com.example.labinventory.ui.theme.successColor
+import com.example.labinventory.ui.theme.primaryColor
 
 data class ProductInfo(
     val imageRes: Int,
@@ -15,8 +14,8 @@ data class ProductInfo(
 )
 
 enum class Status(val label: String, val color: Color) {
-    PENDING("Verification Pending", highlightColor),
-    BOOKED("Booked", bookedColor),
+    PENDING("Verification Pending", primaryColor),
+    BOOKED("Booked", successColor),
     CANCELLED("Cancelled", Color.Red)
 }
 

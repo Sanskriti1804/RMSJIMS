@@ -1,39 +1,27 @@
 package com.example.labinventory.ui.screens
 
-import androidx.annotation.Px
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.example.labinventory.R
 import com.example.labinventory.data.model.FilterChip
 import com.example.labinventory.data.model.FilterTab
 import com.example.labinventory.data.model.SortOption
 import com.example.labinventory.data.model.TabGroup
 import com.example.labinventory.ui.components.AppButton
-import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.theme.categoryIconColor
 import com.example.labinventory.ui.theme.chipColor
-import com.example.labinventory.ui.theme.darkTextColor
-import com.example.labinventory.ui.theme.highlightColor
+import com.example.labinventory.ui.theme.primaryColor
 import com.example.labinventory.ui.theme.selectedChipTextColor
 import com.example.labinventory.ui.theme.selectedchipColor
 import com.example.labinventory.ui.theme.sortDividerColor
@@ -157,7 +145,7 @@ fun FilterSortTabs(
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
                 modifier = Modifier.tabIndicatorOffset(tabPositions[selectedIndex.coerceAtLeast(0)]),
-                color = highlightColor
+                color = primaryColor
             )
         },
         containerColor = whiteColor,
@@ -169,7 +157,7 @@ fun FilterSortTabs(
             Tab(
                 selected = tab.isSelected,
                 onClick = { onTabSelected(tab.tab) },
-                selectedContentColor = highlightColor,
+                selectedContentColor = primaryColor,
                 unselectedContentColor = categoryIconColor,
                 text = {
                     Text(
@@ -209,7 +197,7 @@ fun FilterChipItem(
         color = if (chip.isSelected) selectedchipColor else Color.Transparent,
         border = BorderStroke(
             pxToDp(1),
-            if (chip.isSelected) highlightColor else chipColor
+            if (chip.isSelected) primaryColor else chipColor
         ),
         modifier = Modifier.clickable { onClick() }
     ) {
@@ -242,7 +230,7 @@ fun SortList(
                         vertical = pxToDp(26),
                         horizontal = pxToDp(19)
                     ),
-                color = if (option.isSelected) highlightColor else selectedChipTextColor,
+                color = if (option.isSelected) primaryColor else selectedChipTextColor,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.font_alliance_regular_two))
             )

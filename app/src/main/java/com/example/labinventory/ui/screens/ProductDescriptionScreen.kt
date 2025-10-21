@@ -1,7 +1,6 @@
 package com.example.labinventory.ui.screens
 
 import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -42,7 +40,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.labinventory.R
@@ -52,16 +49,14 @@ import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.AppCategoryIcon
 import com.example.labinventory.ui.components.AppCircularIcon
-import com.example.labinventory.ui.components.AppFAB
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomTopBar
-import com.example.labinventory.ui.theme.cardColor
+import com.example.labinventory.ui.theme.onSurfaceVariant
 import com.example.labinventory.ui.theme.circularBoxColor
-import com.example.labinventory.ui.theme.darkTextColor
+import com.example.labinventory.ui.theme.onSurfaceColor
 import com.example.labinventory.ui.theme.editCardTextColor
-import com.example.labinventory.ui.theme.headerColor
-import com.example.labinventory.ui.theme.highlightColor
-import com.example.labinventory.ui.theme.weekendColor
+import com.example.labinventory.ui.theme.primaryColor
+import com.example.labinventory.ui.theme.errorColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.util.pxToDp
@@ -163,9 +158,9 @@ fun ProductCarousel(
     contentScale: ContentScale = ContentScale.Crop,
     pagerState: PagerState,
     pageInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    backgroundColor : Color = cardColor,
+    backgroundColor : Color = onSurfaceVariant,
     inactiveColor : Color = Color.DarkGray,
-    activeColor : Color = highlightColor,
+    activeColor : Color = primaryColor,
     indicatorShape: Shape = CircleShape,
     indicatorSize : Dp = ResponsiveLayout.getResponsiveSize(6.dp, 8.dp, 10.dp),
     isFav : Boolean = false
@@ -225,7 +220,7 @@ fun ProductCarousel(
 fun ProductDescriptionCard(
     modifier: Modifier,
     shape: Shape = RectangleShape,
-    cardContainerColor: Color = cardColor
+    cardContainerColor: Color = onSurfaceVariant
 ) {
     val facilitiesViewModel : FacilitiesViewModel = koinViewModel ()
     val facilitiesList = facilitiesViewModel.facilitiesState
@@ -251,7 +246,7 @@ fun ProductDescriptionCard(
             ) {
                 CustomLabel(
                     header = "Canon EOS R50 V",
-                    headerColor = darkTextColor,
+                    headerColor = onSurfaceColor,
                     fontSize = 16.sp,
                     modifier = Modifier
                 )
@@ -298,13 +293,13 @@ fun ProductDescriptionCard(
             CustomLabel(
                 header = label,
                 modifier = Modifier.weight(0.2f),
-                headerColor = darkTextColor.copy(alpha = 0.5f),
+                headerColor = onSurfaceColor.copy(alpha = 0.5f),
                 fontSize = 14.sp
             )
             CustomLabel(
                 header = value,
                 modifier = Modifier.weight(1f),
-                headerColor = darkTextColor.copy(alpha = 0.8f),
+                headerColor = onSurfaceColor.copy(alpha = 0.8f),
                 fontSize = 14.sp
             )
         }
@@ -314,7 +309,7 @@ fun ProductDescriptionCard(
 @Composable
 fun InChargeCard(
     modifier: Modifier = Modifier,
-    containerColor : Color = cardColor,
+    containerColor : Color = onSurfaceVariant,
     shape: Shape = RectangleShape
 ) {
     val facilitiesViewModel : FacilitiesViewModel = koinViewModel()
@@ -348,7 +343,7 @@ fun InChargeCard(
                             if (currentFacility != null){
                                 CustomLabel(
                                     header = "InCharge",
-                                    headerColor = darkTextColor.copy(0.9f),
+                                    headerColor = onSurfaceColor.copy(0.9f),
                                     fontSize = 16.sp
                                 )
                                 Spacer(modifier = Modifier.height(pxToDp(5)))
@@ -369,7 +364,7 @@ fun InChargeCard(
                 ) {
                     CustomLabel(
                         header = "InCharge",
-                        headerColor = darkTextColor.copy(0.9f),
+                        headerColor = onSurfaceColor.copy(0.9f),
                         fontSize = 16.sp
                     )
                 }
@@ -380,7 +375,7 @@ fun InChargeCard(
                     if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
                 ),
                 iconDescription = "Expand Icon",
-                tint = darkTextColor,
+                tint = onSurfaceColor,
                 iconSize = pxToDp(20),
                 modifier = Modifier.align(iconAlignment).padding(pxToDp(4))
             )
@@ -402,7 +397,7 @@ fun InChargeRow(
     ) {
         CustomLabel(
             header = label,
-            headerColor = darkTextColor.copy(alpha = 0.5f),
+            headerColor = onSurfaceColor.copy(alpha = 0.5f),
             fontSize = 14.sp,
             modifier = Modifier.weight(0.2f)
         )
@@ -413,7 +408,7 @@ fun InChargeRow(
         ) {
             CustomLabel(
                 header = name,
-                headerColor = darkTextColor.copy(alpha = 0.8f),
+                headerColor = onSurfaceColor.copy(alpha = 0.8f),
                 fontSize = 14.sp,
                 modifier = Modifier.padding(pxToDp(10))
             )
@@ -425,7 +420,7 @@ fun InChargeRow(
                     boxSize = pxToDp(28),
                     iconPadding = pxToDp(4),
                     iconSize = adjustedIconSize,
-                    tint = highlightColor,
+                    tint = primaryColor,
                     boxColor = circularBoxColor
                 )
             }
@@ -436,7 +431,7 @@ fun InChargeRow(
 @Composable
 fun AdditionalInfoCard(
     modifier: Modifier = Modifier,
-    containerColor : Color = cardColor
+    containerColor : Color = onSurfaceVariant
 ) {
     val facilitiesViewModel : FacilitiesViewModel = koinViewModel()
     val facilitiesList = facilitiesViewModel.facilitiesState
@@ -468,7 +463,7 @@ fun AdditionalInfoCard(
                             if (currentFacility != null){
                                 CustomLabel(
                                     header = "Additional Information",
-                                    headerColor = darkTextColor.copy(0.9f),
+                                    headerColor = onSurfaceColor.copy(0.9f),
                                     fontSize = 16.sp
                                 )
                                 Spacer(modifier = Modifier.height(pxToDp(5)))
@@ -486,7 +481,7 @@ fun AdditionalInfoCard(
                 ) {
                     CustomLabel(
                         header = "Additional Information",
-                        headerColor = darkTextColor.copy(0.9f),
+                        headerColor = onSurfaceColor.copy(0.9f),
                         fontSize = 16.sp
                     )
                 }
@@ -497,7 +492,7 @@ fun AdditionalInfoCard(
                     if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
                 ),
                 iconDescription = "Expand Icon",
-                tint = darkTextColor,
+                tint = onSurfaceColor,
                 iconSize = pxToDp(20),
                 modifier = Modifier.align(iconAlignment).padding(pxToDp(4))
             )
@@ -509,7 +504,7 @@ fun AdditionalInfoCard(
 @Composable
 fun UseCard(
     modifier: Modifier = Modifier,
-    containerColor: Color = cardColor
+    containerColor: Color = onSurfaceVariant
 ) {
     var expanded by remember { mutableStateOf(true) }
     val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
@@ -532,7 +527,7 @@ fun UseCard(
                 ) {
                     CustomLabel(
                         header = "How to use",
-                        headerColor = darkTextColor.copy(0.9f),
+                        headerColor = onSurfaceColor.copy(0.9f),
                         fontSize = 16.sp
                     )
                     Spacer(modifier = Modifier.height(pxToDp(5)))
@@ -546,7 +541,7 @@ fun UseCard(
                 ) {
                     CustomLabel(
                         header = "How to use",
-                        headerColor = darkTextColor.copy(0.9f),
+                        headerColor = onSurfaceColor.copy(0.9f),
                         fontSize = 16.sp
                     )
                 }
@@ -557,7 +552,7 @@ fun UseCard(
                     if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
                 ),
                 iconDescription = "Expand Icon",
-                tint = darkTextColor,
+                tint = onSurfaceColor,
                 iconSize = pxToDp(20),
                 modifier = Modifier.align(iconAlignment).padding(pxToDp(4))
             )
@@ -583,14 +578,14 @@ fun ActionCard(
             ) {
                 AppButton(
                     onClick = onEditClick,
-                    containerColor = cardColor,
+                    containerColor = onSurfaceVariant,
                     contentColor = editCardTextColor,
                     buttonText = "EDIT"
                 )
                 AppButton(
                     onClick = onDeleteClick,
-                    containerColor = cardColor,
-                    contentColor = weekendColor,
+                    containerColor = onSurfaceVariant,
+                    contentColor = errorColor,
                     buttonText = "DELETE"
                 )
             }

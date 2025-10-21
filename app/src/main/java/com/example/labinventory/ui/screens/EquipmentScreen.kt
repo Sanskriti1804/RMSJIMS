@@ -12,17 +12,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,7 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,7 +50,6 @@ import com.example.labinventory.R
 import com.example.labinventory.data.model.EquipmentCategory
 import com.example.labinventory.data.model.UiState
 import com.example.labinventory.data.model.categories
-import com.example.labinventory.data.schema.Facilities
 import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppCategoryIcon
 import com.example.labinventory.ui.components.AppCircularIcon
@@ -63,15 +57,14 @@ import com.example.labinventory.ui.components.AppSearchBar
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomNavigationBar
 import com.example.labinventory.ui.components.CustomTopBar
-import com.example.labinventory.ui.theme.cardColor
+import com.example.labinventory.ui.theme.onSurfaceVariant
 import com.example.labinventory.ui.theme.categoryColor
 import com.example.labinventory.ui.theme.categoryIconColor
-import com.example.labinventory.ui.theme.darkTextColor
-import com.example.labinventory.ui.theme.highlightColor
+import com.example.labinventory.ui.theme.onSurfaceColor
+import com.example.labinventory.ui.theme.primaryColor
 import com.example.labinventory.ui.theme.lightTextColor
 import com.example.labinventory.ui.theme.navLabelColor
 import com.example.labinventory.ui.theme.whiteColor
-import com.example.labinventory.util.pxToDp
 import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.viewmodel.FacilitiesViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
@@ -199,10 +192,10 @@ fun EquipmentScreen(
 fun CategoryItem(
     category: EquipmentCategory,
     isSelected : Boolean = false,
-    selectedIconColor: Color = highlightColor,
+    selectedIconColor: Color = primaryColor,
     iconColor: Color = categoryIconColor,
     selectedLabelColor: Color = categoryColor,
-    labelColor: Color = darkTextColor.copy(0.4f),
+    labelColor: Color = onSurfaceColor.copy(0.4f),
     onClick: () -> Unit
 ) {
     Column(
@@ -300,7 +293,7 @@ fun EquipmentCard(
         Column(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
-                    .background(cardColor)
+                    .background(onSurfaceVariant)
                     .height(imageHeight)
                     .fillMaxWidth()
             ) {
@@ -319,7 +312,7 @@ fun EquipmentCard(
                     painter = painterResource(R.drawable.ic_save),
                     iconDescription = "Save icon",
                     iconSize = ResponsiveLayout.getResponsiveSize(18.dp, 20.dp, 24.dp),
-                    tint = if (isSaved) highlightColor else navLabelColor,
+                    tint = if (isSaved) primaryColor else navLabelColor,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
@@ -339,14 +332,14 @@ fun EquipmentCard(
             ) {
                 CustomLabel(
                     header = equipName,
-                    headerColor = darkTextColor,
+                    headerColor = onSurfaceColor,
                     fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
                     modifier = Modifier.padding(top = ResponsiveLayout.getResponsivePadding(2.dp, 3.dp, 4.dp))
                 )
 
                 CustomLabel(
                     header =  available,
-                    headerColor = highlightColor,
+                    headerColor = primaryColor,
                     fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
                     modifier = Modifier.padding(
                         top = ResponsiveLayout.getResponsivePadding(3.dp, 4.dp, 5.dp), 

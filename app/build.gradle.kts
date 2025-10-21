@@ -88,6 +88,10 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.5.0")
 
+    implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.1.1")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

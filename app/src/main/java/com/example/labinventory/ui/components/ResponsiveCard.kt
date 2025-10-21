@@ -17,10 +17,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.labinventory.ui.theme.cardColor
+import com.example.labinventory.ui.theme.onSurfaceVariant
 import com.example.labinventory.ui.theme.titleColor
 import com.example.labinventory.util.ResponsiveLayout
-import com.example.labinventory.util.ResponsiveAppWrapper
 
 /**
  * Responsive card component that adapts to different screen sizes
@@ -31,7 +30,7 @@ fun ResponsiveCard(
     title: String,
     subtitle: String? = null,
     onClick: (() -> Unit)? = null,
-    containerColor: Color = cardColor,
+    containerColor: Color = onSurfaceVariant,
     shape: Shape = RoundedCornerShape(8.dp),
     modifier: Modifier = Modifier
 ) {
@@ -87,7 +86,7 @@ fun ResponsiveCard(
 fun ResponsiveGridCard(
     title: String,
     onClick: (() -> Unit)? = null,
-    containerColor: Color = cardColor,
+    containerColor: Color = onSurfaceVariant,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -127,7 +126,7 @@ fun ResponsiveListCard(
     title: String,
     description: String,
     onClick: (() -> Unit)? = null,
-    containerColor: Color = cardColor,
+    containerColor: Color = onSurfaceVariant,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -181,7 +180,7 @@ fun ResponsiveActionCard(
     title: String,
     actionText: String,
     onClick: () -> Unit,
-    containerColor: Color = cardColor,
+    containerColor: Color = onSurfaceVariant,
     modifier: Modifier = Modifier
 ) {
     Card(

@@ -4,19 +4,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -29,16 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.labinventory.R
-import com.example.labinventory.ui.theme.cardColor
-import com.example.labinventory.ui.theme.darkTextColor
-import com.example.labinventory.util.pxToDp
+import com.example.labinventory.ui.theme.onSurfaceVariant
+import com.example.labinventory.ui.theme.onSurfaceColor
 import com.example.labinventory.util.ResponsiveLayout
 
 @Composable
@@ -49,8 +41,8 @@ fun AppTextField(
 //    height: Dp = ResponsiveLayout.getResponsiveSize(46.dp, 52.dp, 60.dp),
     shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)),
     placeholder: String,
-    textColor: Color = darkTextColor.copy(alpha = 0.7f),
-    containerColor: Color = cardColor,
+    textColor: Color = onSurfaceColor.copy(alpha = 0.7f),
+    containerColor: Color = onSurfaceVariant,
     minLines: Int = 1,
     maxLines: Int = 1,
     visualTransformation: VisualTransformation = VisualTransformation.None
@@ -63,7 +55,7 @@ fun AppTextField(
             CustomLabel(
                 header = placeholder,
                 modifier = Modifier.padding(0.dp),
-                headerColor = darkTextColor.copy(0.7f),
+                headerColor = onSurfaceColor.copy(0.7f),
                 fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp)
             )
         },
@@ -94,8 +86,8 @@ fun FilteredAppTextField(
     onValueChange: (String) -> Unit,
     shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)),
     placeholder: String,
-    textColor: Color = darkTextColor.copy(alpha = 0.7f),
-    containerColor: Color = cardColor,
+    textColor: Color = onSurfaceColor.copy(alpha = 0.7f),
+    containerColor: Color = onSurfaceVariant,
     minLines: Int = 1,
     maxLines: Int = 1,
     visualTransformation: VisualTransformation = VisualTransformation.None,
@@ -120,7 +112,7 @@ fun FilteredAppTextField(
                 CustomLabel(
                     header = placeholder,
                     modifier = Modifier.padding(0.dp),
-                    headerColor = darkTextColor.copy(0.7f),
+                    headerColor = onSurfaceColor.copy(0.7f),
                     fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp)
                 )
             },
@@ -172,8 +164,8 @@ fun AppDropDownTextField(
     onValueChange : (String) -> Unit,
     shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(1.dp, 2.dp, 3.dp)),
     placeholder: String,
-    textColor : Color = darkTextColor.copy(alpha = 0.7f),
-    containerColor : Color = cardColor
+    textColor : Color = onSurfaceColor.copy(alpha = 0.7f),
+    containerColor : Color = onSurfaceVariant
 ){
     var expanded by remember { mutableStateOf(false) }
 
@@ -190,7 +182,7 @@ fun AppDropDownTextField(
                     CustomLabel(
                         header = placeholder,
                         modifier = Modifier.padding(0.dp),
-                        headerColor = darkTextColor.copy(0.7f),
+                        headerColor = onSurfaceColor.copy(0.7f),
                         fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp)
                     )
 

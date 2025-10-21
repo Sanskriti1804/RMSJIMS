@@ -2,7 +2,6 @@ package com.example.labinventory.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +22,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.labinventory.R
 import com.example.labinventory.data.model.UiState
@@ -31,12 +29,10 @@ import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.AppDropDownTextField
 import com.example.labinventory.ui.components.AppTextField
-import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomTopBar
 import com.example.labinventory.ui.components.FilteredAppTextField
-import com.example.labinventory.ui.theme.darkTextColor
+import com.example.labinventory.ui.theme.onSurfaceColor
 import com.example.labinventory.ui.theme.whiteColor
-import com.example.labinventory.util.pxToDp
 import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.viewmodel.BranchViewModel
 import com.example.labinventory.viewmodel.DepartmentViewModel
@@ -173,7 +169,7 @@ fun ProjectInfoScreen(
             Spacer(modifier = Modifier.height(13.dp))
             Text(
                 text = "Tell us about your project and where you’ll be using the equipment. Use the dropdown to select whether it’s a personal or course project.",
-                color = darkTextColor.copy(0.9f),
+                color = onSurfaceColor.copy(0.9f),
                 fontSize = 16.sp,
                 modifier = Modifier.fillMaxWidth(),
                 letterSpacing = 0.3.sp,

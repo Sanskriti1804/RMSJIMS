@@ -76,7 +76,7 @@ fun AppSearchBar(
                 value = query,
                 onValueChange = onQueryChange,
                 singleLine = true,
-                textStyle = Typography.labelSmall().copy(
+                textStyle = Typography.labelMedium.copy(
                     color = labelColor,
                     fontSize = ResponsiveLayout.getResponsiveFontSize(15.sp, 16.sp, 18.sp)
                 ),
@@ -89,7 +89,7 @@ fun AppSearchBar(
                             text = placeholder,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            style = Typography.labelSmall().copy(
+                            style = Typography.labelMedium.copy(
                                 color = labelColor,
                                 fontSize = ResponsiveLayout.getResponsiveFontSize(15.sp, 16.sp, 18.sp)
                             )

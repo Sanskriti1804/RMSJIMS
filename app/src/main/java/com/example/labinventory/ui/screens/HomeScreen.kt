@@ -1,9 +1,7 @@
 package com.example.labinventory.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Card
@@ -42,11 +39,10 @@ import com.example.labinventory.ui.components.AppFAB
 import com.example.labinventory.ui.components.AppSearchBar
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomNavigationBar
-import com.example.labinventory.ui.theme.cardColor
+import com.example.labinventory.ui.theme.onSurfaceVariant
 import com.example.labinventory.ui.theme.categoryColor
 import com.example.labinventory.ui.theme.titleColor
 import com.example.labinventory.ui.theme.whiteColor
-import com.example.labinventory.util.pxToDp
 import com.example.labinventory.util.ResponsiveLayout
 import com.example.labinventory.viewmodel.ItemCategoriesViewModel
 import com.example.labinventory.viewmodel.FilterSortViewModel
@@ -184,7 +180,7 @@ fun HomeScreen(
 fun AppCategoryCard(
     onClick: () -> Unit = {},
     title : String,
-    containerColor: Color = cardColor,
+    containerColor: Color = onSurfaceVariant,
     shape: Shape = RectangleShape
 ){
     Card(

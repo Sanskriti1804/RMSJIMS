@@ -12,30 +12,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,30 +37,24 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.labinventory.R
-import com.example.labinventory.data.model.BookingDates
-import com.example.labinventory.data.model.InChargeInfo
 import com.example.labinventory.data.model.ProductInfo
 import com.example.labinventory.navigation.Screen
 import com.example.labinventory.ui.components.AppButton
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomTopBar
-import com.example.labinventory.ui.components.EditButton
-import com.example.labinventory.ui.theme.cardColor
-import com.example.labinventory.ui.theme.darkTextColor
+import com.example.labinventory.ui.theme.onSurfaceVariant
+import com.example.labinventory.ui.theme.onSurfaceColor
 import com.example.labinventory.ui.theme.daysColor
-import com.example.labinventory.ui.theme.highlightColor
-import com.example.labinventory.ui.theme.someGrayColor
-import com.example.labinventory.ui.theme.weekendColor
+import com.example.labinventory.ui.theme.primaryColor
+import com.example.labinventory.ui.theme.errorColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.util.ResponsiveLayout
@@ -78,7 +64,6 @@ import org.koin.androidx.compose.koinViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.format.TextStyle
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -198,12 +183,12 @@ fun MonthTabRow(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)))
-                    .background(if (isSelected) highlightColor else cardColor)
+                    .background(if (isSelected) primaryColor else onSurfaceVariant)
                     .clickable { onMonthSelected(month) }
             ) {
                 CustomLabel(
                     header = month.month.name.lowercase().replaceFirstChar { it.uppercase() },
-                    headerColor = if (isSelected) whiteColor.copy(alpha = 0.9f) else darkTextColor.copy(alpha = 0.9f),
+                    headerColor = if (isSelected) whiteColor.copy(alpha = 0.9f) else onSurfaceColor.copy(alpha = 0.9f),
                     modifier = Modifier
                         .padding(horizontal = pxToDp(45), vertical = pxToDp(12)),
                     fontSize = 14.sp
@@ -234,7 +219,7 @@ fun DaysOfWeekHeader(
                     fontSize = 14.sp,
                     fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
                     textAlign = TextAlign.Center,
-                    color = if (isWeekend) weekendColor else darkTextColor.copy(0.9f)
+                    color = if (isWeekend) errorColor else onSurfaceColor.copy(0.9f)
                 )
             }
         }
@@ -276,9 +261,9 @@ fun CalendarGrid(
                             .clip(RoundedCornerShape(pxToDp(4)))
                             .background(
                                 when {
-                                    isSelected -> highlightColor
-                                    inMonth -> cardColor
-                                    else -> cardColor
+                                    isSelected -> primaryColor
+                                    inMonth -> onSurfaceVariant
+                                    else -> onSurfaceVariant
                                 }
                             )
                             .border(
@@ -288,7 +273,7 @@ fun CalendarGrid(
                                     else -> 0.dp
                                 },
                                 color = when {
-                                    isToday -> highlightColor
+                                    isToday -> primaryColor
                                     !inMonth -> Color.Transparent
                                     else -> Color.Transparent
                                 },
@@ -299,8 +284,8 @@ fun CalendarGrid(
                         Text(
                             text = date.dayOfMonth.toString(),
                             color = when {
-                                isWeekend -> weekendColor
-                                inMonth -> darkTextColor
+                                isWeekend -> errorColor
+                                inMonth -> onSurfaceColor
                                 else -> daysColor
                             },
                             style = MaterialTheme.typography.bodySmall
@@ -324,7 +309,7 @@ fun StatusCard(
 ) {
     Card(
         colors = CardDefaults
-            .cardColors(containerColor = cardColor),
+            .cardColors(containerColor = onSurfaceVariant),
         modifier = modifier.fillMaxWidth(),
         shape = RectangleShape
     ) {
@@ -338,29 +323,29 @@ fun StatusCard(
             StatusLabel(
                 label = "Holidays",
                 value = holidayCount.toString(),
-                valueColor = weekendColor
+                valueColor = errorColor
             )
             StatusLabel(
                 label = "Booked",
                 value = bookedDate.dayOfMonth.toString(),
-                valueColor = weekendColor,
+                valueColor = errorColor,
                 isStrikethrough = true
             )
             StatusLabel(
                 label = "Today",
                 value = today.dayOfMonth.toString(),
-                valueColor = highlightColor
+                valueColor = primaryColor
             )
             StatusLabel(
                 label = "Available",
                 value = availableDate.dayOfMonth.toString(),
-                valueColor = darkTextColor
+                valueColor = onSurfaceColor
             )
             StatusLabel(
                 label = "Book On",
                 value = bookOnDate.dayOfMonth.toString(),
                 valueColor = whiteColor,
-                containerColor = highlightColor,
+                containerColor = primaryColor,
                 isBoxed = true
             )
         }
@@ -373,7 +358,7 @@ fun StatusLabel(
     label: String,
     value: String,
     valueColor: Color,
-    containerColor: Color = highlightColor,
+    containerColor: Color = primaryColor,
     isStrikethrough: Boolean = false,
     isBoxed: Boolean = false,
     modifier: Modifier = Modifier
@@ -403,7 +388,7 @@ fun StatusLabel(
             text = label,
             fontFamily = FontFamily(Font(R.font.font_alliance_regular_two)),
             textAlign = TextAlign.Center,
-            color = darkTextColor,
+            color = onSurfaceColor,
             fontSize = 14.sp
         )
     }
@@ -441,7 +426,7 @@ fun EquipBookingCard(
                 ) {
                     EquipBookingItem("Item", "Canon EOS R50 V")
                     EquipBookingItem("Location", "IDC School of Design")
-                    EquipBookingItem("Timing", "(09:00am - 05:30pm)", highlightColor)
+                    EquipBookingItem("Timing", "(09:00am - 05:30pm)", primaryColor)
                 }
             }
         }
@@ -452,7 +437,7 @@ fun EquipBookingCard(
 fun EquipBookingItem(
     label : String,
     value : String,
-    headerColor: Color = darkTextColor
+    headerColor: Color = onSurfaceColor
 ){
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -461,7 +446,7 @@ fun EquipBookingItem(
     ) {
        CustomLabel(
            header = label,
-           headerColor = darkTextColor.copy(0.5f),
+           headerColor = onSurfaceColor.copy(0.5f),
            fontSize = 14.sp
        )
        CustomLabel(

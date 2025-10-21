@@ -1,7 +1,6 @@
 package com.example.labinventory.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +15,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,8 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,8 +32,8 @@ import com.example.labinventory.ui.components.AppDropDownTextField
 import com.example.labinventory.ui.components.AppTextField
 import com.example.labinventory.ui.components.CustomLabel
 import com.example.labinventory.ui.components.CustomTopBar
-import com.example.labinventory.ui.theme.cardColor
-import com.example.labinventory.ui.theme.darkTextColor
+import com.example.labinventory.ui.theme.onSurfaceVariant
+import com.example.labinventory.ui.theme.onSurfaceColor
 import com.example.labinventory.ui.theme.whiteColor
 import com.example.labinventory.util.pxToDp
 import com.example.labinventory.util.ResponsiveLayout
@@ -147,7 +143,7 @@ fun AddImageCard(
             .fillMaxWidth()
             .height(pxToDp(108)),
         colors = CardDefaults.cardColors(
-            containerColor = cardColor
+            containerColor = onSurfaceVariant
         ),
         onClick = onClick,
         shape = RoundedCornerShape(pxToDp(4))
@@ -170,7 +166,7 @@ fun AddImageCard(
             CustomLabel(
                 header = "Add Image",
                 fontSize = 12.sp,
-                headerColor = darkTextColor.copy(0.7f)
+                headerColor = onSurfaceColor.copy(0.7f)
             )
         }
     }

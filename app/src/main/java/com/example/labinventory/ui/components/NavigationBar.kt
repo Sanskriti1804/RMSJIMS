@@ -23,19 +23,17 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.labinventory.navigation.bottomNavItems
-import com.example.labinventory.ui.theme.highlightColor
+import com.example.labinventory.ui.theme.primaryColor
 import com.example.labinventory.ui.theme.navLabelColor
-import com.example.labinventory.ui.theme.someGrayColor
 import com.example.labinventory.ui.theme.someOtherGrayColor
 import com.example.labinventory.ui.theme.whiteColor
-import com.example.labinventory.util.pxToDp
 import com.example.labinventory.util.ResponsiveLayout
 
 @Composable
 fun CustomNavigationBar(
     bottomBarColor: Color = whiteColor,
-    badgeColor: Color = highlightColor,
-    selectedColor: Color = highlightColor,
+    badgeColor: Color = primaryColor,
+    selectedColor: Color = primaryColor,
     contentColor: Color = navLabelColor,
     dividerColor: Color = someOtherGrayColor,
     navController: NavHostController
