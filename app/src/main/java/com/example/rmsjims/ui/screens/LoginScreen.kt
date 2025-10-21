@@ -84,9 +84,10 @@ fun LoginScreen(
                 Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
 
                 AppButton(
-                    onClick = {},
+                    onClick = {
 //                        authViewModel.login(email, password)
-//                        navController.navigate(Screen.HomeScreen.route)},
+                        navController.navigate(Screen.HomeScreen.route)
+                              },
                     buttonText = "LOGIN"
                 )
 
@@ -95,8 +96,9 @@ fun LoginScreen(
                     fontSize = 10.sp,
                     modifier = Modifier
                         .clickable(
-                            onClick = {}
-//                                navController.navigate(Screen.ForgotPasswordScreen.route)}
+                            onClick = {
+                                navController.navigate(Screen.ForgotPasswordScreen.route)
+                            }
                         )
                 )
             }

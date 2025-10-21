@@ -40,7 +40,7 @@ fun MainApp(){
 fun AppNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.HomeScreen.route
+        startDestination = Screen.LoginScreen.route
     ) {
 
         composable(Screen.HomeScreen.route) {

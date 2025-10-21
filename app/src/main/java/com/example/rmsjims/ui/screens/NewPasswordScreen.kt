@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.AppTextField
 import com.example.rmsjims.ui.components.CustomLabel
@@ -60,7 +61,7 @@ fun NewPasswordScreen(navController: NavHostController){
                 onValueChange = {},
                 placeholder = "New Password"
             )
-            Spacer(modifier = Modifier.height(Dimensions.smallSpacer))
+            Spacer(modifier = Modifier.height(Dimensions.smallSpacer()))
             AppTextField(
                 value = "Confirm Password",
                 onValueChange = {},
@@ -70,8 +71,8 @@ fun NewPasswordScreen(navController: NavHostController){
 
 
             AppButton(
-                onClick = {},
-//                    navController.navigate(Screen.HomeScreen.route)},
+                onClick = {
+                    navController.navigate(Screen.HomeScreen.route)},
                 buttonText = "Save",
             )
         }

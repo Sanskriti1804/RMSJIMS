@@ -83,8 +83,8 @@ fun EmailVerificationScreen(navController: NavHostController){
             Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
 
             AppButton(
-                onClick = {},
-//                    navController.navigate(Screen.NewPasswordScreen.route)},
+                onClick = {
+                    navController.navigate(Screen.NewPasswordScreen.route) },
                 buttonText = "Verify",
             )
         }

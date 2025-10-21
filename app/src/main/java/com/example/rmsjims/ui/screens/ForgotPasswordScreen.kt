@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.AppTextField
 import com.example.rmsjims.ui.components.CustomLabel
@@ -62,8 +63,8 @@ fun ForgotPasswordScreen(navController: NavHostController){
             Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
 
             AppButton(
-                onClick = {},
-//                    navController.navigate(Screen.EmailVerificationScreen.route)},
+                onClick = {
+                    navController.navigate(Screen.EmailVerificationScreen.route)},
                 buttonText = "Send"
             )
         }
