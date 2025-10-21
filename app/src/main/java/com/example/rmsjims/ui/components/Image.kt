@@ -1,16 +1,39 @@
 package com.example.rmsjims.ui.components
 
+import android.R.attr.padding
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.example.rmsjims.R
+import com.example.rmsjims.ui.theme.Dimensions
+
+@Composable
+fun AppLogoImage(
+    profile : Painter = painterResource(R.drawable.jims_logo),
+    userProfileDesc : String = "User Profile Photo",
+    contentScale : ContentScale = ContentScale.Crop,
+    size : Dp = 100.dp
+){
+    Image(
+        painter = profile,
+        contentDescription = userProfileDesc,
+        modifier = Modifier.padding(Dimensions.componentPadding())
+            .size(size),
+        contentScale = contentScale,
+
+    )
+}
 
 //@Composable
-//fun CustomProfilePic(
-//    profile : Painter = painterResource(R.drawable.profile),
+//fun ProfileImage(
+//    profile : Painter = painterResource(R.drawable.jims_logo),
 //    userProfileDesc : String = "User Profile Photo",
 //    contentScale : ContentScale = ContentScale.Crop
 //){
@@ -22,7 +45,7 @@ import com.example.rmsjims.R
 //            .size(Dimensions.profileSize),
 //        contentScale = contentScale,
 //
-//    )
+//        )
 //}
 
 @Composable
