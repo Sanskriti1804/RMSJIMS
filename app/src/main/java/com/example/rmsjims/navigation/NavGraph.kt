@@ -11,8 +11,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.rmsjims.ui.screens.BookingScreen
 import com.example.rmsjims.ui.screens.CalendarScreen
+import com.example.rmsjims.ui.screens.EmailVerificationScreen
 import com.example.rmsjims.ui.screens.EquipmentScreen
 import com.example.rmsjims.ui.screens.HomeScreen
+import com.example.rmsjims.ui.screens.LoginScreen
 import com.example.rmsjims.ui.screens.ProdDescScreen
 import com.example.rmsjims.ui.screens.ProjectInfoScreen
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
@@ -21,6 +23,8 @@ import com.example.rmsjims.viewmodel.FacilitiesViewModel
 import com.example.rmsjims.viewmodel.FilterSortViewModel
 import com.example.rmsjims.viewmodel.ItemsViewModel
 import com.example.rmsjims.viewmodel.UserSessionViewModel
+import com.example.shopping.startup.screen.ForgotPasswordScreen
+import com.example.shopping.startup.screen.NewPasswordScreen
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -68,6 +72,18 @@ fun AppNavGraph(navController: NavHostController){
         }
         composable(Screen.ProjectInfoScreen.route) {
             ProjectInfoScreen(navController)
+        }
+        composable(Screen.LoginScreen.route) {
+            LoginScreen(navController)
+        }
+        composable(Screen.EmailVerificationScreen.route) {
+            EmailVerificationScreen(navController)
+        }
+        composable(Screen.ForgotPasswordScreen.route) {
+            ForgotPasswordScreen(navController)
+        }
+        composable(Screen.NewPasswordScreen.route) {
+            NewPasswordScreen(navController)
         }
     }
 }
