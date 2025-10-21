@@ -13,7 +13,7 @@ val Pink40 = Color(0xFF7D5260)
 
 // temp color
 
-val primaryColor = Color(0xFFE67824)
+val primaryColor = Color(0xFF024CA1)
 val onSurfaceColor = Color(0xFF000000)
 val onSurfaceVariant: Color = Color(0xFFF6F6F6)
 val successColor = Color(0xFF26BB64C)
