@@ -16,7 +16,7 @@ val localProps = Properties().apply {
 }
 
 android {
-    namespace = "com.example.labinventory"
+    namespace = "com.example.rmsjims"
     compileSdk = 35
 
     buildFeatures {
@@ -25,7 +25,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.labinventory"
+        applicationId = "com.example.rmsjims"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
