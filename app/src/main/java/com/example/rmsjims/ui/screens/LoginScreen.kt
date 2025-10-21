@@ -1,9 +1,11 @@
 package com.example.rmsjims.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
@@ -18,16 +20,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.rmsjims.R
 import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppButton
+import com.example.rmsjims.ui.components.AppIconTextField
 import com.example.rmsjims.ui.components.AppLogoImage
 import com.example.rmsjims.ui.components.AppTextField
 import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomTitle
 import com.example.rmsjims.ui.theme.Dimensions
+import com.example.rmsjims.ui.theme.app_background
+import com.example.rmsjims.ui.theme.onSurfaceColor
+import com.example.rmsjims.ui.theme.onSurfaceVariant
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -37,72 +44,62 @@ fun LoginScreen(
 
     val appLogo = painterResource(id = R.drawable.jims_logo)
 
-    var email by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 //    var isLoading by remember { mutableStateOf(false) }
 
     Column (
-        modifier = Modifier.padding(Dimensions.componentPadding()),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(app_background)
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
+        Spacer(modifier = Modifier.height(22.dp))
         AppLogoImage()
         Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
 
-        CustomTitle(
-            header = "Login"
+        AppIconTextField(
+            value = username,
+            onValueChange = {username = it},
+            placeholder = "Username",
+            icon = painterResource(R.drawable.ic_user)
         )
 
         Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
 
-        Card(
-            onClick = {}
-        ) {
-            Column(
-                modifier = Modifier.padding(Dimensions.componentPadding()),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CustomTitle(
-                    header = "email"
-                )
-                AppTextField(
-                    value = email,
-                    onValueChange = {email = it},
-                    placeholder = "Enter your email"
-                )
-                CustomTitle(
-                    header = "Password"
-                )
-                AppTextField(
-                    value = password,
-                    onValueChange = {password = it},
-                    placeholder = "Enter your password",
-                    visualTransformation = PasswordVisualTransformation()
-                )
+        AppIconTextField(
+            value = password,
+            onValueChange = {password = it},
+            placeholder = "Password",
+            visualTransformation = PasswordVisualTransformation(),
+            icon = painterResource((R.drawable.ic_password))
+        )
 
-                Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
+        Spacer(modifier = Modifier.height(16.dp))
 
-                AppButton(
+        CustomLabel(
+            header = "Forgot your username or password?",
+            fontSize = 12.sp,
+            headerColor = onSurfaceColor.copy(0.5f),
+            modifier = Modifier
+                .align(Alignment.End)
+                .clickable(
                     onClick = {
-//                        authViewModel.login(email, password)
-                        navController.navigate(Screen.HomeScreen.route)
-                              },
-                    buttonText = "LOGIN"
+                        navController.navigate(Screen.ForgotPasswordScreen.route)
+                    }
                 )
+        )
+        Spacer(modifier = Modifier.height(16.dp))
 
-                CustomLabel(
-                    header = "Forgot Password",
-                    fontSize = 10.sp,
-                    modifier = Modifier
-                        .clickable(
-                            onClick = {
-                                navController.navigate(Screen.ForgotPasswordScreen.route)
-                            }
-                        )
-                )
-            }
-        }
+        AppButton(
+            onClick = {
+//              authViewModel.login(username, password)
+                navController.navigate(Screen.HomeScreen.route)
+                      },
+            buttonText = "LOGIN"
+        )
     }
 }
 //

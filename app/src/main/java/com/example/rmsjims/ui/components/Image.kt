@@ -18,8 +18,8 @@ import com.example.rmsjims.ui.theme.Dimensions
 fun AppLogoImage(
     profile : Painter = painterResource(R.drawable.jims_logo),
     userProfileDesc : String = "User Profile Photo",
-    contentScale : ContentScale = ContentScale.Crop,
-    size : Dp = 100.dp
+    contentScale : ContentScale = ContentScale.Fit,
+    size : Dp = 200.dp
 ){
     Image(
         painter = profile,

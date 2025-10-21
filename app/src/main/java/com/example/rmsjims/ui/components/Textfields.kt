@@ -1,6 +1,8 @@
 package com.example.rmsjims.ui.components
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,9 +25,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +62,62 @@ fun AppTextField(
                 headerColor = onSurfaceColor.copy(0.7f),
                 fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp)
             )
+        },
+        colors = TextFieldDefaults.colors(
+            focusedTextColor = textColor,
+            unfocusedTextColor = textColor,
+            disabledTextColor = textColor,
+            focusedContainerColor = containerColor,
+            unfocusedContainerColor = containerColor,
+            disabledContainerColor = containerColor,
+            cursorColor = textColor,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        ),
+        visualTransformation = visualTransformation,
+        minLines = minLines,
+        maxLines = maxLines,
+        modifier = modifier.fillMaxWidth()
+    )
+}
+
+@Composable
+fun AppIconTextField(
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    value: String,
+    onValueChange: (String) -> Unit,
+//    height: Dp = ResponsiveLayout.getResponsiveSize(46.dp, 52.dp, 60.dp),
+    shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)),
+    placeholder: String,
+    textColor: Color = onSurfaceColor.copy(alpha = 0.7f),
+    containerColor: Color = onSurfaceVariant,
+    minLines: Int = 1,
+    maxLines: Int = 1,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    icon: Painter
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        shape = shape,
+        placeholder = {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                AppCategoryIcon(
+                    painter = icon,
+                    iconSize = 20.dp
+                )
+                CustomLabel(
+                    header = placeholder,
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(0.dp),
+                    headerColor = onSurfaceColor.copy(0.7f),
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(18.sp, 22.sp, 24.sp)
+                )
+            }
         },
         colors = TextFieldDefaults.colors(
             focusedTextColor = textColor,
