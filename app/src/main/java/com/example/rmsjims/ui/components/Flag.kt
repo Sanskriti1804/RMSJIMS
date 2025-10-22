@@ -24,22 +24,22 @@ fun TicketFlag(
     Box(
         modifier = Modifier
             .wrapContentSize()
-            .clip(Shapes.ChipsShape)
-            .background(ticket.dispColor.copy(0.5f))
+            .clip(Shapes.CardShape)
+            .background(ticket.dispColor.copy(0.2f))
     ){
         Row(
             modifier = Modifier
-                .padding(2.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                .padding(5.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             AppCategoryIcon(
                 painter = painterResource(R.drawable.ic_priority_flag),
-                iconSize =8.dp,
+                iconSize =16.dp,
                 tint = ticket.dispColor
             )
             CustomLabel(
                 header = ticket.dispName,
-                fontSize = 8.sp
+                fontSize = 16.sp
             )
         }
     }

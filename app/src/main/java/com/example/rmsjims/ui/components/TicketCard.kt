@@ -20,12 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.rmsjims.R
 import com.example.rmsjims.data.model.TicketPriority
 import com.example.rmsjims.ui.theme.Shapes
+import com.example.rmsjims.ui.theme.app_background
 import com.example.rmsjims.ui.theme.cardColor
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import java.util.Date
@@ -33,8 +35,8 @@ import kotlin.toString
 
 @Composable
 fun TicketCard(
-    elevation: Dp,
-    ticketId : String,
+    elevation: Dp = 2.dp,
+    ticketId : String = "TX-10456",
     count : Int = 12
 ){
     Card(
@@ -45,7 +47,7 @@ fun TicketCard(
         ),
         shape = Shapes.CardShape,
         colors = CardDefaults.cardColors(
-            containerColor = cardColor
+            containerColor = app_background
         )
         ){
         Column(
@@ -160,5 +162,11 @@ fun TicketCard(
 
     }
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TicketCardPreview() {
+    TicketCard()
 }
 
