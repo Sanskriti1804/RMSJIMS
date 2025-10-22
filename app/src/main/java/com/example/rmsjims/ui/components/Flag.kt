@@ -34,12 +34,12 @@ fun TicketFlag(
         ) {
             AppCategoryIcon(
                 painter = painterResource(R.drawable.ic_priority_flag),
-                iconSize =16.dp,
+                iconSize =12.dp,
                 tint = ticket.dispColor
             )
             CustomLabel(
                 header = ticket.dispName,
-                fontSize = 16.sp
+                fontSize = 12.sp
             )
         }
     }
