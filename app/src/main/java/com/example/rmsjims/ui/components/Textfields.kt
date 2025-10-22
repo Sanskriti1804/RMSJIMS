@@ -115,7 +115,7 @@ fun AppIconTextField(
                         .align(Alignment.CenterVertically)
                         .padding(0.dp),
                     headerColor = onSurfaceColor.copy(0.7f),
-                    fontSize = ResponsiveLayout.getResponsiveFontSize(18.sp, 22.sp, 24.sp)
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(16.sp, 18.sp, 20.sp)
                 )
             }
         },
