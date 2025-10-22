@@ -22,6 +22,7 @@ import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.TicketCard
 import com.example.rmsjims.ui.theme.Shapes
 import com.example.rmsjims.ui.theme.primaryColor
+import com.example.rmsjims.util.ResponsiveLayout
 
 @Composable
 fun TicketScreen(){
@@ -32,24 +33,25 @@ fun TicketScreen(){
             .fillMaxSize()
             .background(primaryColor.copy(0.1f))
             .clip(Shapes.CardShape)
-            .padding(16.dp)
+            .padding(ResponsiveLayout.getHorizontalPadding())
     ){
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp))
         ) {
             Row (
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsiveSize(8.dp, 10.dp, 12.dp)),
                 modifier = Modifier.align(Alignment.Start),
                 verticalAlignment = Alignment.CenterVertically
             ){
                 CustomBadge(
                     badgeColor = ticketPriority.dispColor,
-                    contentModifier = Modifier.size(6.dp)
+                    contentModifier = Modifier.size(ResponsiveLayout.getResponsiveSize(6.dp, 8.dp, 10.dp))
                 )
                 CustomLabel(
-                    header = ticketPriority.dispName
+                    header = ticketPriority.dispName,
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp)
                 )
                 CustomBadge(
                     badgeColor = ticketGroup.groupColor,

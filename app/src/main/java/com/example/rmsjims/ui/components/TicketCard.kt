@@ -33,12 +33,13 @@ import com.example.rmsjims.ui.theme.Shapes
 import com.example.rmsjims.ui.theme.app_background
 import com.example.rmsjims.ui.theme.cardColor
 import com.example.rmsjims.ui.theme.onSurfaceColor
+import com.example.rmsjims.util.ResponsiveLayout
 import java.util.Date
 import kotlin.toString
 
 @Composable
 fun TicketCard(
-    elevation: Dp = 2.dp,
+    elevation: Dp = ResponsiveLayout.getResponsiveSize(2.dp, 3.dp, 4.dp),
     ticketId : String = "TX-10456",
     count : Int = 12
 ) {
@@ -55,9 +56,9 @@ fun TicketCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
+                .padding(ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp))
         ) {
             CustomLabel(
                 header = ticketId,
@@ -76,35 +77,35 @@ fun TicketCard(
                 Row {
                     AppCategoryIcon(
                         painter = painterResource(R.drawable.ic_assigned_time),
-                        iconSize = 12.dp,
+                        iconSize = ResponsiveLayout.getResponsiveSize(12.dp, 14.dp, 16.dp),
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsiveSize(4.dp, 6.dp, 8.dp)))
                     CustomLabel(
                         header = Date().toString(),
                         headerColor = onSurfaceColor,
-                        fontSize = 12.sp
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
                     )
                 }
             }
 
             Box(
                 modifier = Modifier
-                    .padding( 6.dp)
+                    .padding(ResponsiveLayout.getResponsiveSize(6.dp, 8.dp, 10.dp))
                     .wrapContentSize()
                     .clip(Shapes.CardShape)
-                    .border(1.dp, cardColor)
+                    .border(ResponsiveLayout.getResponsiveSize(1.dp, 1.5.dp, 2.dp), cardColor)
             ) {
                 Column(
                     modifier = Modifier
                         .wrapContentSize()
-                        .padding(10.dp),
+                        .padding(ResponsiveLayout.getResponsiveSize(10.dp, 12.dp, 14.dp)),
 //                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsiveSize(8.dp, 10.dp, 12.dp))
                 ) {
                     CustomLabel(
                         header = "Projector in 301A not working",
                         headerColor = onSurfaceColor.copy(0.8f),
-                        fontSize = 12.sp
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
                     )
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -113,12 +114,12 @@ fun TicketCard(
                         CustomLabel(
                             header = "Deadline",
                             headerColor = onSurfaceColor.copy(0.8f),
-                            fontSize = 12.sp
+                            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
                         )
                         CustomLabel(
                             header = "28 Oct, 2025",
                             headerColor = onSurfaceColor.copy(0.8f),
-                            fontSize = 12.sp
+                            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
                         )
                     }
                     Row(
@@ -128,12 +129,12 @@ fun TicketCard(
                         CustomLabel(
                             header = "Requested by",
                             headerColor = onSurfaceColor.copy(0.8f),
-                            fontSize = 12.sp
+                            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
                         )
                         CustomLabel(
                             header = "S.K. Shukla",
                             headerColor = onSurfaceColor.copy(0.8f),
-                            fontSize = 12.sp
+                            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
                         )
                     }
                     Row(
@@ -143,12 +144,12 @@ fun TicketCard(
                         CustomLabel(
                             header = "Assignee",
                             headerColor = onSurfaceColor.copy(0.8f),
-                            fontSize = 12.sp
+                            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
                         )
                         CustomLabel(
                             header = "V. Verma",
                             headerColor = onSurfaceColor.copy(0.8f),
-                            fontSize = 12.sp
+                            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
                         )
                     }
                 }
@@ -162,20 +163,20 @@ fun TicketCard(
             Row {
                 AppCategoryIcon(
                     painter = painterResource(R.drawable.ic_ticket_thread),
-                    iconSize = 12.dp,
+                    iconSize = ResponsiveLayout.getResponsiveSize(12.dp, 14.dp, 16.dp),
                     tint = onSurfaceColor.copy(0.5f)
                 )
                 CustomLabel(
                     header = count.toString(),
                     headerColor = onSurfaceColor.copy(0.8f),
-                    fontSize = 12.sp,
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
                     modifier = Modifier
                 )
             }
             CustomLabel(
                 header = "See Detail",
                 headerColor = onSurfaceColor.copy(0.8f),
-                fontSize = 12.sp
+                fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
             )
         }
     }

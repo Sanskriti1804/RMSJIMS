@@ -13,18 +13,19 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.rmsjims.R
 import com.example.rmsjims.ui.theme.Dimensions
+import com.example.rmsjims.util.ResponsiveLayout
 
 @Composable
 fun AppLogoImage(
     profile : Painter = painterResource(R.drawable.jims_logo),
     userProfileDesc : String = "User Profile Photo",
     contentScale : ContentScale = ContentScale.Fit,
-    size : Dp = 200.dp
+    size : Dp = ResponsiveLayout.getResponsiveSize(200.dp, 240.dp, 280.dp)
 ){
     Image(
         painter = profile,
         contentDescription = userProfileDesc,
-        modifier = Modifier.padding(Dimensions.componentPadding())
+        modifier = Modifier.padding(ResponsiveLayout.getResponsiveSize(8.dp, 12.dp, 16.dp))
             .size(size),
         contentScale = contentScale,
 
