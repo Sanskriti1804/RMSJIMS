@@ -1,7 +1,6 @@
 package com.example.rmsjims.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -31,11 +29,9 @@ import com.example.rmsjims.data.model.UiState
 import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.AppDropDownTextField
-import com.example.rmsjims.ui.components.AppFAB
 import com.example.rmsjims.ui.components.AppTextField
 import com.example.rmsjims.ui.components.CustomTopBar
 import com.example.rmsjims.ui.components.FilteredAppTextField
-import com.example.rmsjims.ui.theme.app_background
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.whiteColor

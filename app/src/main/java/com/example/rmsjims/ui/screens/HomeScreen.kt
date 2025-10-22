@@ -72,7 +72,8 @@ fun HomeScreen(
         floatingActionButton = {
             if (userRole == UserRole.USER){
                 AppFAB(
-                    onClick = {searchViewModel.showChatSheet()}
+                    onClick = {searchViewModel.showChatSheet()},
+                    modifier = Modifier
                 )
             }
         },

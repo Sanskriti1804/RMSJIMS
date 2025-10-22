@@ -17,6 +17,8 @@ import com.example.rmsjims.ui.screens.HomeScreen
 import com.example.rmsjims.ui.screens.LoginScreen
 import com.example.rmsjims.ui.screens.ProdDescScreen
 import com.example.rmsjims.ui.screens.ProjectInfoScreen
+import com.example.rmsjims.ui.screens.RaiseTicketScreen
+import com.example.rmsjims.ui.screens.TicketScreen
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.CalendarViewModel
 import com.example.rmsjims.viewmodel.FacilitiesViewModel
@@ -40,7 +42,7 @@ fun MainApp(){
 fun AppNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.LoginScreen.route
+        startDestination = Screen.RaiseTicketScreen.route
     ) {
 
         composable(Screen.HomeScreen.route) {
@@ -84,6 +86,12 @@ fun AppNavGraph(navController: NavHostController){
         }
         composable(Screen.NewPasswordScreen.route) {
             NewPasswordScreen(navController)
+        }
+        composable(Screen.RaiseTicketScreen.route) {
+            RaiseTicketScreen(navController)
+        }
+        composable(Screen.TicketScreen.route) {
+            TicketScreen()
         }
     }
 }
