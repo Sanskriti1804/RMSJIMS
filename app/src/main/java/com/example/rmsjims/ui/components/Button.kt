@@ -135,18 +135,17 @@ fun AppButtonPreview() {
 @Composable
 fun AppFAB(
     showIntro : Boolean = true,
+    modifier: Modifier,
     delay: Int = 5000,
     onClick : () -> Unit ={},
     contentColor: Color = whiteColor,
     containerColor: Color = navBackColor,
     capsuleShape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsiveSize(30.dp, 36.dp, 42.dp)),
     iconShape: Shape = CircleShape,
-    iconSize: Dp = ResponsiveLayout.getResponsiveSize(30.dp, 36.dp, 42.dp)
+    iconSize: Dp = ResponsiveLayout.getResponsiveSize(30.dp, 36.dp, 42.dp),
+    icon : Painter = painterResource(R.drawable.ic_aichat)
 ){
     var showLabel by rememberSaveable { mutableStateOf(showIntro) }
-
-    val ai_chatIcon = painterResource(R.drawable.ic_aichat)
-
 
     LaunchedEffect(showLabel) {
         delay(delay.toLong())
@@ -155,7 +154,7 @@ fun AppFAB(
 
     FloatingActionButton(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .wrapContentWidth(),
         containerColor = containerColor,
         contentColor = contentColor,
@@ -181,7 +180,7 @@ fun AppFAB(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = ai_chatIcon,
+                        painter = icon,
                         contentDescription = "AI Chat Icon",
                         modifier = Modifier.size(iconSize),
                         tint = contentColor
@@ -194,7 +193,7 @@ fun AppFAB(
                 }
             } else {
                 Icon(
-                    painter = ai_chatIcon,
+                    painter = icon,
                     contentDescription = "AI Chat Icon",
                     modifier = Modifier.size(iconSize),
                     tint = contentColor
