@@ -46,7 +46,7 @@ import com.example.rmsjims.ui.theme.onSurfaceVariant
 import com.example.rmsjims.ui.theme.categoryIconColor
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.primaryColor
-import com.example.rmsjims.ui.theme.someGrayColor
+import com.example.rmsjims.ui.theme.cardColor
 import com.example.rmsjims.ui.theme.whiteColor
 import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.util.ResponsiveLayout
@@ -179,7 +179,7 @@ fun InfoCard(
                         header = productInfo.location,
                         fontSize = 12.sp,
                         modifier = Modifier,
-                        headerColor = someGrayColor
+                        headerColor = cardColor
                     )
                     CustomLabel(
                         header = productInfo.status.label,
@@ -197,7 +197,7 @@ fun InfoCard(
             }
 
 //            Spacer(modifier = Modifier.height(pxToDp(20)))
-            Divider(thickness = pxToDp(1), color = someGrayColor)
+            Divider(thickness = pxToDp(1), color = cardColor)
 //            Spacer(modifier = Modifier.height(pxToDp(20)))
 
             Column(verticalArrangement = Arrangement.spacedBy(pxToDp(16))) {
@@ -214,7 +214,7 @@ fun InfoCard(
             }
 
 //            Spacer(modifier = Modifier.height(16.dp))
-            Divider(thickness = pxToDp(1), color = someGrayColor)
+            Divider(thickness = pxToDp(1), color = cardColor)
 //            Spacer(modifier = Modifier.height(16.dp))
             Column(verticalArrangement = Arrangement.spacedBy(pxToDp(18))) {
                 Row(

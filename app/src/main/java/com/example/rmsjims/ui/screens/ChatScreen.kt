@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.example.rmsjims.R
 import com.example.rmsjims.ui.theme.aiColor
 import com.example.rmsjims.ui.theme.navBackColor
-import com.example.rmsjims.ui.theme.someGrayColor
+import com.example.rmsjims.ui.theme.cardColor
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.viewmodel.SearchViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -77,7 +77,7 @@ fun ChatBottomSheet(
                         painter = painterResource(R.drawable.ic_close),
                         contentDescription = "Close",
                         modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(26.dp, 28.dp, 32.dp)),
-                        tint = someGrayColor
+                        tint = cardColor
                     )
                 }
             }
