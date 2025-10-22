@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -182,4 +183,12 @@ fun ProjectInfoScreen(
     }
 }
 
+
+@Preview(showBackground = true)
+@Composable
+fun ProjectInfoScreenPreview() {
+    // This preview will not have a real NavController or ViewModels,
+    // so it's mainly for layout checking.
+    ProjectInfoScreen(navController = androidx.navigation.compose.rememberNavController())
+}
 
