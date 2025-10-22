@@ -56,7 +56,7 @@ fun AppButton(
     containerColor: Color = primaryColor,
     contentColor : Color = whiteColor,
     buttonText: String,
-    shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)),
+    shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsiveSize(4.dp, 6.dp, 8.dp)),
     modifier: Modifier = Modifier
 ){
     Button(
@@ -102,10 +102,10 @@ fun EditButton(
   ) {
       Row(
           modifier = Modifier.padding(
-              horizontal = ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 16.dp), 
+              horizontal = ResponsiveLayout.getResponsiveSize(10.dp, 12.dp, 16.dp), 
               vertical = 0.dp
           ),
-          horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(6.dp, 8.dp, 10.dp)),
+          horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsiveSize(6.dp, 8.dp, 10.dp)),
       ) {
           Icon(
               painter = icon,
@@ -173,10 +173,10 @@ fun AppFAB(
                     modifier = Modifier
                         .wrapContentSize()
                         .padding(
-                            horizontal = ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp),
-                            vertical = ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp)
+                             horizontal = ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp),
+                             vertical = ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)
                         ),
-                    horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)),
+                    horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsiveSize(8.dp, 10.dp, 12.dp)),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(

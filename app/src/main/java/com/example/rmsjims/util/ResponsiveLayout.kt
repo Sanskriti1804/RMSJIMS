@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import com.example.rmsjims.ui.theme.DeviceType
 import com.example.rmsjims.ui.theme.ResponsiveDimensions
 
@@ -21,12 +22,7 @@ object ResponsiveLayout {
     @Composable
     fun getGridColumns(): GridCells {
         val dimensions = ResponsiveDimensions.getResponsiveDimensions()
-        return when (dimensions.deviceType) {
-            DeviceType.PHONE -> GridCells.Fixed(2)
-            DeviceType.LARGE_PHONE -> GridCells.Fixed(2)
-            DeviceType.TABLET -> GridCells.Fixed(3)
-            DeviceType.LARGE_TABLET -> GridCells.Fixed(4)
-        }
+        return GridCells.Fixed(dimensions.gridColumns)
     }
     
     /**
@@ -44,15 +40,12 @@ object ResponsiveLayout {
     }
 
     /**
-     * Get responsive search bar
+     * Get responsive search bar height
      */
-    fun getSearchBarHeight(deviceType: DeviceType): Dp {
-        return when (deviceType) {
-            DeviceType.PHONE -> 46.dp
-            DeviceType.LARGE_PHONE -> 52.dp
-            DeviceType.TABLET -> 60.dp
-            DeviceType.LARGE_TABLET -> 68.dp
-        }
+    @Composable
+    fun getSearchBarHeight(): Dp {
+        val dimensions = ResponsiveDimensions.getResponsiveDimensions()
+        return dimensions.searchBarHeight
     }
     
     /**

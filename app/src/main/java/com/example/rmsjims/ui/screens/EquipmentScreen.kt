@@ -210,7 +210,7 @@ fun CategoryItem(
             tint = if (isSelected) selectedIconColor else iconColor
         )
 
-        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)))
+        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(8.dp, 10.dp, 12.dp)))
 
         CustomLabel(
             header = category.label,
@@ -232,10 +232,10 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
         contentPadding = PaddingValues(
             start = ResponsiveLayout.getHorizontalPadding(), 
             end = ResponsiveLayout.getHorizontalPadding(),
-            top = ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp), 
-            bottom = ResponsiveLayout.getResponsivePadding(8.dp, 12.dp, 16.dp)
+            top = ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp), 
+            bottom = ResponsiveLayout.getResponsiveSize(8.dp, 12.dp, 16.dp)
         ),
-        horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(37.dp, 42.dp, 48.dp)),
+        horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsiveSize(37.dp, 42.dp, 48.dp)),
 //        modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(64.dp, 72.dp, 80.dp))
     ) {
         itemsIndexed(categories) { index, category ->
@@ -254,13 +254,13 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
                     onClick = {  }
                 )
 
-                Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)))
+                Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(8.dp, 10.dp, 12.dp)))
 
                 if (category.id == selectedCategoryId) {
                     Box(
                         Modifier
                             .width(ResponsiveLayout.getResponsiveSize(30.dp, 36.dp, 42.dp))
-                            .height(ResponsiveLayout.getResponsivePadding(1.dp, 1.5.dp, 2.dp))
+                            .height(ResponsiveLayout.getResponsiveSize(1.dp, 1.5.dp, 2.dp))
                             .background(categoryColor)
                     )
                 }
@@ -303,8 +303,8 @@ fun EquipmentCard(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .padding(
-                            horizontal = ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp), 
-                            vertical = ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp)
+                            horizontal = ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp), 
+                            vertical = ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)
                         ),
                     contentScale = ContentScale.Crop
                 )
@@ -315,7 +315,7 @@ fun EquipmentCard(
                     tint = if (isSaved) primaryColor else navLabelColor,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
+                        .padding(ResponsiveLayout.getResponsiveSize(8.dp, 10.dp, 12.dp))
                         .clickable{
                             saveClick()
                         }
@@ -327,14 +327,14 @@ fun EquipmentCard(
                     .height(detailHeight)
                     .fillMaxWidth()
                     .background(whiteColor)
-                    .padding(top = ResponsiveLayout.getResponsivePadding(6.dp, 8.dp, 10.dp)),
+                    .padding(top = ResponsiveLayout.getResponsiveSize(6.dp, 8.dp, 10.dp)),
                 horizontalAlignment = Alignment.Start
             ) {
                 CustomLabel(
                     header = equipName,
                     headerColor = onSurfaceColor,
                     fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-                    modifier = Modifier.padding(top = ResponsiveLayout.getResponsivePadding(2.dp, 3.dp, 4.dp))
+                    modifier = Modifier.padding(top = ResponsiveLayout.getResponsiveSize(2.dp, 3.dp, 4.dp))
                 )
 
                 CustomLabel(
@@ -342,8 +342,8 @@ fun EquipmentCard(
                     headerColor = primaryColor,
                     fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
                     modifier = Modifier.padding(
-                        top = ResponsiveLayout.getResponsivePadding(3.dp, 4.dp, 5.dp), 
-                        bottom = ResponsiveLayout.getResponsivePadding(3.dp, 4.dp, 5.dp)
+                        top = ResponsiveLayout.getResponsiveSize(3.dp, 4.dp, 5.dp), 
+                        bottom = ResponsiveLayout.getResponsiveSize(3.dp, 4.dp, 5.dp)
                     )
                 )
 
@@ -351,7 +351,7 @@ fun EquipmentCard(
                     header = facilityName,
                     headerColor = lightTextColor,
                     fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-                    modifier = Modifier.padding(bottom = ResponsiveLayout.getResponsivePadding(3.dp, 4.dp, 5.dp))
+                    modifier = Modifier.padding(bottom = ResponsiveLayout.getResponsiveSize(3.dp, 4.dp, 5.dp))
                 )
 
                 Row {
@@ -361,7 +361,7 @@ fun EquipmentCard(
                         iconSize = ResponsiveLayout.getResponsiveSize(12.dp, 14.dp, 16.dp),
                         tint = lightTextColor
                     )
-                    Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsivePadding(5.dp, 6.dp, 8.dp)))
+                    Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsiveSize(5.dp, 6.dp, 8.dp)))
                     CustomLabel(
                         header = "IDC, Photo Studio",
                         headerColor = lightTextColor,

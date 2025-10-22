@@ -35,6 +35,7 @@ import com.example.rmsjims.ui.theme.Dimensions
 import com.example.rmsjims.ui.theme.app_background
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.onSurfaceVariant
+import com.example.rmsjims.util.ResponsiveLayout
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -52,13 +53,13 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(app_background)
-            .padding(16.dp),
+            .padding(ResponsiveLayout.getHorizontalPadding()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Spacer(modifier = Modifier.height(22.dp))
+        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(22.dp, 32.dp, 42.dp)))
         AppLogoImage()
-        Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
+        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(4.dp, 8.dp, 12.dp)))
 
         AppIconTextField(
             value = username,
@@ -67,7 +68,7 @@ fun LoginScreen(
             icon = painterResource(R.drawable.ic_user)
         )
 
-        Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
+        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(4.dp, 8.dp, 12.dp)))
 
         AppIconTextField(
             value = password,
@@ -77,11 +78,11 @@ fun LoginScreen(
             icon = painterResource((R.drawable.ic_password))
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp)))
 
         CustomLabel(
             header = "Forgot your username or password?",
-            fontSize = 12.sp,
+            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
             headerColor = onSurfaceColor.copy(0.5f),
             modifier = Modifier
                 .align(Alignment.End)
@@ -91,7 +92,7 @@ fun LoginScreen(
                     }
                 )
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp)))
 
         AppButton(
             onClick = {

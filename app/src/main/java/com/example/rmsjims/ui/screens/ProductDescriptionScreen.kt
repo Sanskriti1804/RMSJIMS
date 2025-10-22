@@ -131,9 +131,9 @@ fun ProdDescScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(ResponsiveLayout.getHorizontalPadding()),
-            verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp))
+            verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp))
         ) {
-            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(20.dp, 24.dp, 28.dp)))
             ProductCarousel(
                 images = productImage,
                 pageInteractionSource = pagerInteractionSource,
