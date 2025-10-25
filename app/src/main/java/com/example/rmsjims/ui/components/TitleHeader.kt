@@ -1,11 +1,28 @@
 package com.example.rmsjims.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.TextStyle
@@ -17,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import com.example.rmsjims.R
 import com.example.rmsjims.ui.theme.categoryColor
 import com.example.rmsjims.ui.theme.navLabelColor
+import com.example.rmsjims.ui.theme.onSurfaceColor
+import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.titleColor
 import com.example.rmsjims.util.ResponsiveLayout
 
@@ -92,5 +111,29 @@ fun CustomDivider(
         thickness = thickness,
         color = divColor
     )
+}
+
+@Composable
+fun CapsuleText(
+    containerColor: Color = onSurfaceColor.copy(0.08f),
+    contentColor : Color = primaryColor,
+    capsuleText: String,
+    shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsiveSize(20.dp, 24.dp, 28.dp)),
+    modifier: Modifier = Modifier
+){
+    Box (
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .wrapContentSize()
+            .clip(shape)
+            .background(containerColor)
+    ){
+        CustomLabel(
+            header = capsuleText,
+            modifier = Modifier.padding(2.dp).defaultMinSize(minHeight = 0.dp),
+            headerColor = Color.White
+        )
+
+    }
 }
 

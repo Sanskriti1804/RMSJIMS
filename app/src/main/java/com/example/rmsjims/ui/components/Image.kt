@@ -4,8 +4,12 @@ import android.R.attr.padding
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -32,22 +36,24 @@ fun AppLogoImage(
     )
 }
 
-//@Composable
-//fun ProfileImage(
-//    profile : Painter = painterResource(R.drawable.jims_logo),
-//    userProfileDesc : String = "User Profile Photo",
-//    contentScale : ContentScale = ContentScale.Crop
-//){
-//    Image(
-//        painter = profile,
-//        contentDescription = userProfileDesc,
-//        modifier = padding(Dimensions.componentPadding)
-//            .clip(Shapes.ProfilePhoto)
-//            .size(Dimensions.profileSize),
-//        contentScale = contentScale,
-//
-//        )
-//}
+@Composable
+fun ProfileImage(
+    profile : Painter = painterResource(R.drawable.ic_pfp),
+    userProfileDesc : String = "User Profile Photo",
+    contentScale : ContentScale = ContentScale.Crop,
+    shape : Shape = RoundedCornerShape(22.dp),
+    size: Dp = ResponsiveLayout.getResponsiveSize(30.dp, 50.dp, 60.dp)
+){
+    Image(
+        painter = profile,
+        contentDescription = userProfileDesc,
+        modifier = Modifier
+            .clip(shape)
+            .size(size),
+        contentScale = contentScale,
+
+        )
+}
 
 @Composable
 fun AppCategoryImage(
