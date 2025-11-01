@@ -147,7 +147,7 @@ fun MachineStatusScreen(
 @Composable
 fun StatusSummaryCard(label: String, count: Int, color: Color) {
     Card(
-        modifier = Modifier.weight(1f),
+        modifier = Modifier,
         colors = CardDefaults.cardColors(
             containerColor = onSurfaceVariant
         ),
@@ -243,9 +243,9 @@ fun MachineCard(machine: Machine) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(pxToDp(8))
             ) {
-                DetailRow("Location", machine.location)
-                DetailRow("Last Maintenance", machine.lastMaintenance)
-                DetailRow("Next Maintenance", machine.nextMaintenance)
+                DetailRoww("Location", machine.location)
+                DetailRoww("Last Maintenance", machine.lastMaintenance)
+                DetailRoww("Next Maintenance", machine.nextMaintenance)
             }
             
             // Action Buttons
@@ -269,7 +269,7 @@ fun MachineCard(machine: Machine) {
 }
 
 @Composable
-fun DetailRow(label: String, value: String) {
+fun DetailRoww(label: String, value: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween

@@ -147,7 +147,7 @@ fun TicketManagementScreen(
 @Composable
 fun SummaryCard(label: String, value: String, color: Color) {
     Card(
-        modifier = Modifier.weight(1f),
+        modifier = Modifier,
         colors = CardDefaults.cardColors(
             containerColor = onSurfaceVariant
         ),
@@ -280,9 +280,9 @@ fun TicketCard(ticket: Ticket) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(pxToDp(8))
             ) {
-                DetailRow("Raised By", ticket.raisedBy)
-                DetailRow("Assigned To", ticket.assignedTo)
-                DetailRow("Created Date", ticket.createdDate)
+                DetailRoww("Raised By", ticket.raisedBy)
+                DetailRoww("Assigned To", ticket.assignedTo)
+                DetailRoww("Created Date", ticket.createdDate)
             }
             
             // Action Buttons
@@ -314,24 +314,6 @@ fun TicketCard(ticket: Ticket) {
     }
 }
 
-@Composable
-fun DetailRow(label: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        CustomLabel(
-            header = "$label:",
-            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-            headerColor = onSurfaceColor.copy(0.7f)
-        )
-        CustomLabel(
-            header = value,
-            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-            headerColor = onSurfaceColor
-        )
-    }
-}
 
 // Placeholder data class
 data class Ticket(
