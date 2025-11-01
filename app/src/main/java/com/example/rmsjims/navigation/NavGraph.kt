@@ -24,6 +24,12 @@ import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.admin.EquipmentAssignmentScreen
 import com.example.rmsjims.ui.screens.admin.SystemSettingScreen
 import com.example.rmsjims.ui.screens.admin.UserManagementScreen
+import com.example.rmsjims.ui.screens.assisstant.AssistantScreen
+import com.example.rmsjims.ui.screens.assisstant.MachineStatusScreen
+import com.example.rmsjims.ui.screens.assisstant.MaintenanceApprovalScreen
+import com.example.rmsjims.ui.screens.assisstant.ResourceManagementScreen
+import com.example.rmsjims.ui.screens.assisstant.TicketManagementScreen
+import com.example.rmsjims.ui.screens.assisstant.UsageApprovalScreen
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.CalendarViewModel
 import com.example.rmsjims.viewmodel.FacilitiesViewModel
@@ -47,7 +53,7 @@ fun MainApp(){
 fun AppNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.UserManagementScreen.route
+        startDestination = Screen.UsageApprovalScreen.route
     ) {
 
         composable(Screen.HomeScreen.route) {
@@ -112,6 +118,24 @@ fun AppNavGraph(navController: NavHostController){
         }
         composable(Screen.UserManagementScreen.route) {
             UserManagementScreen(navController)
+        }
+        composable(Screen.AssistantScreen.route) {
+            AssistantScreen(navController)
+        }
+        composable(Screen.MachineStatusScreen.route) {
+            MachineStatusScreen(navController)
+        }
+        composable(Screen.MaintenanceApprovalScreen.route) {
+            MaintenanceApprovalScreen(navController)
+        }
+        composable(Screen.ResourceManagementScreen.route) {
+            ResourceManagementScreen(navController)
+        }
+        composable(Screen.TicketManagementScreen.route) {
+            TicketManagementScreen(navController)
+        }
+        composable(Screen.UsageApprovalScreen.route) {
+            UsageApprovalScreen(navController)
         }
 
     }
