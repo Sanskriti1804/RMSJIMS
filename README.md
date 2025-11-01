@@ -192,138 +192,247 @@ app/src/main/java/com/example/labinventory/
 
 ## 🚀 Getting Started
 
-### 1. Use Responsive Dimensions
-```kotlin
-import com.example.labinventory.util.ResponsiveLayout
+[//]: # ()
+[//]: # (### 1. Use Responsive Dimensions)
 
-@Composable
-fun MyComponent() {
-    val padding = ResponsiveLayout.getHorizontalPadding()
-    val isTablet = ResponsiveLayout.isTablet()
-}
-```
+[//]: # (```kotlin)
 
-### 2. Wrap Content with ResponsiveAppWrapper
-```kotlin
-import com.example.labinventory.util.ResponsiveAppWrapper
+[//]: # (import com.example.labinventory.util.ResponsiveLayout)
 
-@Composable
-fun MyScreen() {
-    ResponsiveAppWrapper {
-        // Your content here
-    }
-}
-```
+[//]: # ()
+[//]: # (@Composable)
 
-### 3. Use Responsive Grid Layouts
-```kotlin
-LazyVerticalGrid(
-    columns = ResponsiveLayout.getGridColumns(),
-    contentPadding = ResponsiveLayout.getContentPadding()
-) {
-    // Grid items
-}
-```
+[//]: # (fun MyComponent&#40;&#41; {)
 
-### 4. Apply Responsive Typography
-```kotlin
-import com.example.labinventory.ui.theme.Typography
+[//]: # (    val padding = ResponsiveLayout.getHorizontalPadding&#40;&#41;)
 
-@Composable
-fun MyText() {
-    Text(
-        text = "Title",
-        style = Typography.h1 // Responsive heading
-    )
-}
-```
+[//]: # (    val isTablet = ResponsiveLayout.isTablet&#40;&#41;)
 
-## 🔄 Configuration Changes
+[//]: # (})
 
-The app automatically handles:
-- **Screen rotation** (portrait ↔ landscape)
-- **Screen size changes** (resizable windows, foldable devices)
-- **Density changes** (different pixel densities)
-- **Font scale changes** (accessibility settings)
+[//]: # (```)
 
-## 📱 Testing
+[//]: # ()
+[//]: # (### 2. Wrap Content with ResponsiveAppWrapper)
 
-### Test Different Screen Sizes
-1. Use Android Studio's Layout Inspector
-2. Test on different device emulators
-3. Use foldable device emulators
-4. Test orientation changes
+[//]: # (```kotlin)
 
-### Test Responsive Behavior
-```kotlin
-// Check device type
-val isTablet = ResponsiveLayout.isTablet()
-val isLandscape = ResponsiveLayout.isLandscape()
+[//]: # (import com.example.labinventory.util.ResponsiveAppWrapper)
 
-// Get responsive values
-val padding = ResponsiveLayout.getHorizontalPadding()
-val columns = ResponsiveLayout.getGridColumns()
-```
+[//]: # ()
+[//]: # (@Composable)
 
-## 🎯 Best Practices
+[//]: # (fun MyScreen&#40;&#41; {)
 
-1. **Always use responsive dimensions** instead of hardcoded values
-2. **Wrap screens with ResponsiveAppWrapper** for consistent padding
-3. **Use ResponsiveLayout utilities** for grids and spacing
-4. **Test on multiple screen sizes** and orientations
-5. **Maintain existing UI style** while adding responsiveness
+[//]: # (    ResponsiveAppWrapper {)
 
-## 🔧 Customization
+[//]: # (        // Your content here)
 
-### Custom Breakpoints
-```kotlin
-// In ResponsiveDimensions.kt
-private const val CUSTOM_BREAKPOINT = 700 // dp
-```
+[//]: # (    })
 
-### Custom Multipliers
-```kotlin
-// In ResponsiveDimensions.kt
-val sizeMultiplier = when (deviceType) {
-    DeviceType.PHONE -> 1.0f
-    DeviceType.TABLET -> 1.4f // Custom multiplier
-    // ...
-}
-```
+[//]: # (})
 
-### Custom Grid Columns
-```kotlin
-// In ResponsiveLayout.kt
-fun getCustomGridColumns(phone: Int, tablet: Int): GridCells {
-    return when (deviceType) {
-        DeviceType.PHONE -> GridCells.Fixed(phone)
-        DeviceType.TABLET -> GridCells.Fixed(tablet)
-        // ...
-    }
-}
-```
+[//]: # (```)
 
-## 📚 Dependencies
+[//]: # ()
+[//]: # (### 3. Use Responsive Grid Layouts)
 
-The responsive system uses:
-- **Jetpack Compose**: Modern UI toolkit
-- **Material3**: Material Design components
-- **AndroidX**: Core Android libraries
-- **Koin**: Dependency injection
+[//]: # (```kotlin)
 
-## 🤝 Contributing
+[//]: # (LazyVerticalGrid&#40;)
 
-When adding new components:
-1. Use responsive dimensions instead of hardcoded values
-2. Test on different screen sizes
-3. Maintain existing UI style
-4. Follow MVVM architecture
-5. Add responsive documentation
+[//]: # (    columns = ResponsiveLayout.getGridColumns&#40;&#41;,)
 
-## 📄 License
+[//]: # (    contentPadding = ResponsiveLayout.getContentPadding&#40;&#41;)
 
-This project maintains the existing license while adding responsive capabilities.
+[//]: # (&#41; {)
 
----
+[//]: # (    // Grid items)
 
-**Note**: This responsive system maintains 100% backward compatibility with existing code while providing new responsive features. All existing hardcoded values are preserved as defaults and automatically scaled based on screen size and orientation.
+[//]: # (})
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (### 4. Apply Responsive Typography)
+
+[//]: # (```kotlin)
+
+[//]: # (import com.example.labinventory.ui.theme.Typography)
+
+[//]: # ()
+[//]: # (@Composable)
+
+[//]: # (fun MyText&#40;&#41; {)
+
+[//]: # (    Text&#40;)
+
+[//]: # (        text = "Title",)
+
+[//]: # (        style = Typography.h1 // Responsive heading)
+
+[//]: # (    &#41;)
+
+[//]: # (})
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (## 🔄 Configuration Changes)
+
+[//]: # ()
+[//]: # (The app automatically handles:)
+
+[//]: # (- **Screen rotation** &#40;portrait ↔ landscape&#41;)
+
+[//]: # (- **Screen size changes** &#40;resizable windows, foldable devices&#41;)
+
+[//]: # (- **Density changes** &#40;different pixel densities&#41;)
+
+[//]: # (- **Font scale changes** &#40;accessibility settings&#41;)
+
+[//]: # ()
+[//]: # (## 📱 Testing)
+
+[//]: # ()
+[//]: # (### Test Different Screen Sizes)
+
+[//]: # (1. Use Android Studio's Layout Inspector)
+
+[//]: # (2. Test on different device emulators)
+
+[//]: # (3. Use foldable device emulators)
+
+[//]: # (4. Test orientation changes)
+
+[//]: # ()
+[//]: # (### Test Responsive Behavior)
+
+[//]: # (```kotlin)
+
+[//]: # (// Check device type)
+
+[//]: # (val isTablet = ResponsiveLayout.isTablet&#40;&#41;)
+
+[//]: # (val isLandscape = ResponsiveLayout.isLandscape&#40;&#41;)
+
+[//]: # ()
+[//]: # (// Get responsive values)
+
+[//]: # (val padding = ResponsiveLayout.getHorizontalPadding&#40;&#41;)
+
+[//]: # (val columns = ResponsiveLayout.getGridColumns&#40;&#41;)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (## 🎯 Best Practices)
+
+[//]: # ()
+[//]: # (1. **Always use responsive dimensions** instead of hardcoded values)
+
+[//]: # (2. **Wrap screens with ResponsiveAppWrapper** for consistent padding)
+
+[//]: # (3. **Use ResponsiveLayout utilities** for grids and spacing)
+
+[//]: # (4. **Test on multiple screen sizes** and orientations)
+
+[//]: # (5. **Maintain existing UI style** while adding responsiveness)
+
+[//]: # ()
+[//]: # (## 🔧 Customization)
+
+[//]: # ()
+[//]: # (### Custom Breakpoints)
+
+[//]: # (```kotlin)
+
+[//]: # (// In ResponsiveDimensions.kt)
+
+[//]: # (private const val CUSTOM_BREAKPOINT = 700 // dp)
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (### Custom Multipliers)
+
+[//]: # (```kotlin)
+
+[//]: # (// In ResponsiveDimensions.kt)
+
+[//]: # (val sizeMultiplier = when &#40;deviceType&#41; {)
+
+[//]: # (    DeviceType.PHONE -> 1.0f)
+
+[//]: # (    DeviceType.TABLET -> 1.4f // Custom multiplier)
+
+[//]: # (    // ...)
+
+[//]: # (})
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (### Custom Grid Columns)
+
+[//]: # (```kotlin)
+
+[//]: # (// In ResponsiveLayout.kt)
+
+[//]: # (fun getCustomGridColumns&#40;phone: Int, tablet: Int&#41;: GridCells {)
+
+[//]: # (    return when &#40;deviceType&#41; {)
+
+[//]: # (        DeviceType.PHONE -> GridCells.Fixed&#40;phone&#41;)
+
+[//]: # (        DeviceType.TABLET -> GridCells.Fixed&#40;tablet&#41;)
+
+[//]: # (        // ...)
+
+[//]: # (    })
+
+[//]: # (})
+
+[//]: # (```)
+
+[//]: # ()
+[//]: # (## 📚 Dependencies)
+
+[//]: # ()
+[//]: # (The responsive system uses:)
+
+[//]: # (- **Jetpack Compose**: Modern UI toolkit)
+
+[//]: # (- **Material3**: Material Design components)
+
+[//]: # (- **AndroidX**: Core Android libraries)
+
+[//]: # (- **Koin**: Dependency injection)
+
+[//]: # ()
+[//]: # (## 🤝 Contributing)
+
+[//]: # ()
+[//]: # (When adding new components:)
+
+[//]: # (1. Use responsive dimensions instead of hardcoded values)
+
+[//]: # (2. Test on different screen sizes)
+
+[//]: # (3. Maintain existing UI style)
+
+[//]: # (4. Follow MVVM architecture)
+
+[//]: # (5. Add responsive documentation)
+
+[//]: # ()
+[//]: # (## 📄 License)
+
+[//]: # ()
+[//]: # (This project maintains the existing license while adding responsive capabilities.)
+
+[//]: # ()
+[//]: # (---)
+
+[//]: # ()
+[//]: # (**Note**: This responsive system maintains 100% backward compatibility with existing code while providing new responsive features. All existing hardcoded values are preserved as defaults and automatically scaled based on screen size and orientation.)

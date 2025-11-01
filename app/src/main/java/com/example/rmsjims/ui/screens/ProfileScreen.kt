@@ -13,16 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.rmsjims.R
-import com.example.rmsjims.data.model.BookingTab
-import com.example.rmsjims.data.model.TabItem
-import com.example.rmsjims.navigation.Screen
-import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomNavigationBar
 import com.example.rmsjims.ui.components.CustomTopBar
 import com.example.rmsjims.ui.components.ProfileCard
 import com.example.rmsjims.ui.theme.cardColor
-import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.util.pxToDp
 

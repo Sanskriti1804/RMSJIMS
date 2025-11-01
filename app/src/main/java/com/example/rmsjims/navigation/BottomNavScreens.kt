@@ -28,4 +28,9 @@ val bottomNavItems = listOf(
         iconResId = R.drawable.nav_ic_bookings,
         label = "Bookings"
     ),
+    BottomNavScreens(
+        route = Screen.ProfileScreen.route,
+        iconResId = R.drawable.ic_user,
+        label = "Profile"
+    ),
     )

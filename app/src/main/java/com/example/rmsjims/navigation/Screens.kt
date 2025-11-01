@@ -15,5 +15,6 @@ sealed class Screen(val route : String) {
     object RaiseTicketScreen : Screen("ticket_raise")
     object TicketScreen : Screen("tickets")
     object ProductDescriptionScreen : Screen("profileDescription")
+    object ProfileScreen : Screen("profile")
 
 }
