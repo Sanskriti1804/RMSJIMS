@@ -32,7 +32,6 @@ import com.example.rmsjims.ui.components.AppDropDownTextField
 import com.example.rmsjims.ui.components.AppTextField
 import com.example.rmsjims.ui.components.CustomTopBar
 import com.example.rmsjims.ui.components.FilteredAppTextField
-import com.example.rmsjims.ui.screens.assisstant.AddImageCard
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.whiteColor
