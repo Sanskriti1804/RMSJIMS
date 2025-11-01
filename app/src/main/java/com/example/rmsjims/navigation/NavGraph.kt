@@ -20,6 +20,10 @@ import com.example.rmsjims.ui.screens.ProjectInfoScreen
 import com.example.rmsjims.ui.screens.ProfileScreen
 import com.example.rmsjims.ui.screens.RaiseTicketScreen
 import com.example.rmsjims.ui.screens.TicketScreen
+import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
+import com.example.rmsjims.ui.screens.admin.EquipmentAssignmentScreen
+import com.example.rmsjims.ui.screens.admin.SystemSettingScreen
+import com.example.rmsjims.ui.screens.admin.UserManagementScreen
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.CalendarViewModel
 import com.example.rmsjims.viewmodel.FacilitiesViewModel
@@ -43,7 +47,7 @@ fun MainApp(){
 fun AppNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.HomeScreen.route
+        startDestination = Screen.UserManagementScreen.route
     ) {
 
         composable(Screen.HomeScreen.route) {
@@ -97,5 +101,18 @@ fun AppNavGraph(navController: NavHostController){
         composable(Screen.ProfileScreen.route) {
             ProfileScreen(navController)
         }
+        composable(Screen.AdminDashboardScreen.route) {
+            AdminDashboardScreen(navController)
+        }
+        composable(Screen.EquipmentAssignmentScreen.route) {
+            EquipmentAssignmentScreen(navController)
+        }
+        composable(Screen.SystemSettingScreen.route) {
+            SystemSettingScreen(navController)
+        }
+        composable(Screen.UserManagementScreen.route) {
+            UserManagementScreen(navController)
+        }
+
     }
 }
