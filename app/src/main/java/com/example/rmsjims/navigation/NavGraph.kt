@@ -53,7 +53,7 @@ fun MainApp(){
 fun AppNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.UsageApprovalScreen.route
+        startDestination = Screen.AdminDashboardScreen.route
     ) {
 
         composable(Screen.HomeScreen.route) {
