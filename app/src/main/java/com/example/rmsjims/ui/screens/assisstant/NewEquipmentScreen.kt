@@ -175,13 +175,13 @@ fun EquipmentEntryCard(equipment: EquipmentEntry) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(pxToDp(8))
             ) {
-                DetailRoww("Category", equipment.category)
-                DetailRoww("Manufacturer", equipment.manufacturer)
-                DetailRoww("Model Number", equipment.modelNumber)
-                DetailRoww("Serial Number", equipment.serialNumber)
-                DetailRoww("Purchase Date", equipment.purchaseDate)
-                DetailRoww("Purchase Price", equipment.purchasePrice)
-                DetailRoww("Status", equipment.status)
+                DetailRow("Category", equipment.category)
+                DetailRow("Manufacturer", equipment.manufacturer)
+                DetailRow("Model Number", equipment.modelNumber)
+                DetailRow("Serial Number", equipment.serialNumber)
+                DetailRow("Purchase Date", equipment.purchaseDate)
+                DetailRow("Purchase Price", equipment.purchasePrice)
+                DetailRow("Status", equipment.status)
             }
             
             // Action Buttons
@@ -205,25 +205,6 @@ fun EquipmentEntryCard(equipment: EquipmentEntry) {
         }
     }
 }
-
-//@Composable
-//fun DetailRow(label: String, value: String) {
-//    Row(
-//        modifier = Modifier.fillMaxWidth(),
-//        horizontalArrangement = Arrangement.SpaceBetween
-//    ) {
-//        CustomLabel(
-//            header = "$label:",
-//            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-//            headerColor = onSurfaceColor.copy(0.7f)
-//        )
-//        CustomLabel(
-//            header = value,
-//            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-//            headerColor = onSurfaceColor
-//        )
-//    }
-//}
 
 // Placeholder data class
 data class EquipmentEntry(

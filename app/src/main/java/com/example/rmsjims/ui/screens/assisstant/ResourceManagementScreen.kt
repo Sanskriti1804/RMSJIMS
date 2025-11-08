@@ -234,9 +234,9 @@ fun ResourceCard(resource: Resource) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(pxToDp(8))
             ) {
-                DetailRoww("Location", resource.location)
-                DetailRoww("Capacity", resource.capacity)
-                DetailRoww("Current Usage", resource.currentUsage)
+                DetailRow("Location", resource.location)
+                DetailRow("Capacity", resource.capacity)
+                DetailRow("Current Usage", resource.currentUsage)
             }
             
             // Action Buttons
@@ -258,25 +258,6 @@ fun ResourceCard(resource: Resource) {
         }
     }
 }
-
-//@Composable
-//fun DetailRow(label: String, value: String) {
-//    Row(
-//        modifier = Modifier.fillMaxWidth(),
-//        horizontalArrangement = Arrangement.SpaceBetween
-//    ) {
-//        CustomLabel(
-//            header = "$label:",
-//            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-//            headerColor = onSurfaceColor.copy(0.7f)
-//        )
-//        CustomLabel(
-//            header = value,
-//            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-//            headerColor = onSurfaceColor
-//        )
-//    }
-//}
 
 // Placeholder data class
 data class Resource(

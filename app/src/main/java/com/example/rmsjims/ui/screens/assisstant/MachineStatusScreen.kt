@@ -1,6 +1,7 @@
 package com.example.rmsjims.ui.screens.assisstant
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,26 +12,45 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.rmsjims.ui.components.AppButton
+import coil.compose.AsyncImage
+import com.example.rmsjims.R
+import com.example.rmsjims.data.model.MachineStatusType
+import com.example.rmsjims.data.model.MachineTab
+import com.example.rmsjims.data.model.MachineTabItem
+import com.example.rmsjims.navigation.Screen
+import com.example.rmsjims.ui.components.AppCategoryIcon
+import com.example.rmsjims.ui.components.AppNavIcon
 import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomNavigationBar
 import com.example.rmsjims.ui.components.CustomTopBar
+import com.example.rmsjims.ui.theme.categoryIconColor
+import com.example.rmsjims.ui.theme.lightTextColor
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.onSurfaceVariant
 import com.example.rmsjims.ui.theme.primaryColor
@@ -42,48 +62,131 @@ import com.example.rmsjims.util.pxToDp
 fun MachineStatusScreen(
     navController: NavHostController
 ) {
-    // Placeholder machine data
-    val machines = listOf(
-        Machine(
-            name = "High-Performance Server",
+    var selectedTab by remember { mutableStateOf(MachineTab.Active_Machines) }
+    
+    // Placeholder machine data with status types
+    val allMachines = listOf(
+        MachineData(
             id = "EQ-2024-001",
-            status = "Available",
+            name = "High-Performance Server",
+            statusType = MachineStatusType.OPERATIONAL,
             location = "Lab A-101",
+            imageUrl = R.drawable.temp,
+            facilityName = "IDC, Photo Studio",
             lastMaintenance = "2024-01-10",
-            nextMaintenance = "2024-02-10"
+            nextMaintenance = "2024-02-10",
+            brand = "Dell",
+            model = "PowerEdge R740"
         ),
-        Machine(
-            name = "Oscilloscope Pro",
+        MachineData(
             id = "EQ-2024-045",
-            status = "In Use",
+            name = "Oscilloscope Pro",
+            statusType = MachineStatusType.IDLE,
             location = "Lab B-205",
+            imageUrl = R.drawable.temp,
+            facilityName = "Electronics Lab",
             lastMaintenance = "2024-01-05",
-            nextMaintenance = "2024-02-05"
+            nextMaintenance = "2024-02-05",
+            brand = "Tektronix",
+            model = "TBS1000C"
         ),
-        Machine(
-            name = "3D Printer XL",
+        MachineData(
             id = "EQ-2024-089",
-            status = "Maintenance",
+            name = "3D Printer XL",
+            statusType = MachineStatusType.UNDER_SCHEDULE_MAINTENANCE,
             location = "Lab C-301",
+            imageUrl = R.drawable.temp,
+            facilityName = "Makerspace",
             lastMaintenance = "2024-01-15",
-            nextMaintenance = "2024-01-25"
+            nextMaintenance = "2024-01-25",
+            brand = "Ultimaker",
+            model = "S5 Pro"
         ),
-        Machine(
-            name = "Spectrometer",
+        MachineData(
             id = "EQ-2024-123",
-            status = "Available",
+            name = "Spectrometer",
+            statusType = MachineStatusType.OPERATIONAL,
             location = "Lab D-405",
+            imageUrl = R.drawable.temp,
+            facilityName = "Chemistry Lab",
             lastMaintenance = "2024-01-12",
-            nextMaintenance = "2024-02-12"
+            nextMaintenance = "2024-02-12",
+            brand = "Agilent",
+            model = "8453"
         ),
-        Machine(
-            name = "Microscope Advanced",
+        MachineData(
             id = "EQ-2024-156",
-            status = "In Use",
+            name = "Microscope Advanced",
+            statusType = MachineStatusType.IDLE,
             location = "Lab E-502",
+            imageUrl = R.drawable.temp,
+            facilityName = "Biology Lab",
             lastMaintenance = "2024-01-08",
-            nextMaintenance = "2024-02-08"
+            nextMaintenance = "2024-02-08",
+            brand = "Nikon",
+            model = "Eclipse Ti2"
+        ),
+        MachineData(
+            id = "EQ-2024-200",
+            name = "Centrifuge Ultra",
+            statusType = MachineStatusType.MARK_AS_OUT_OF_ORDER,
+            location = "Lab F-601",
+            imageUrl = R.drawable.temp,
+            facilityName = "Biotech Lab",
+            lastMaintenance = "2024-01-01",
+            nextMaintenance = "2024-03-01",
+            brand = "Eppendorf",
+            model = "5424 R"
+        ),
+        MachineData(
+            id = "EQ-2024-201",
+            name = "DNA Sequencer",
+            statusType = MachineStatusType.UNDER_CHECK,
+            location = "Lab G-705",
+            imageUrl = R.drawable.temp,
+            facilityName = "Genomics Lab",
+            lastMaintenance = "2024-01-20",
+            nextMaintenance = "2024-02-20",
+            brand = "Illumina",
+            model = "MiSeq"
+        ),
+        MachineData(
+            id = "EQ-2024-202",
+            name = "Thermal Cycler",
+            statusType = MachineStatusType.OFFLINE,
+            location = "Lab H-808",
+            imageUrl = R.drawable.temp,
+            facilityName = "Molecular Lab",
+            lastMaintenance = "2023-12-15",
+            nextMaintenance = "2024-02-15",
+            brand = "Applied Biosystems",
+            model = "Veriti"
         )
+    )
+    
+    // Filter machines based on selected tab
+    val filteredMachines = when (selectedTab) {
+        MachineTab.Active_Machines -> allMachines.filter { 
+            it.statusType == MachineStatusType.OPERATIONAL || it.statusType == MachineStatusType.IDLE 
+        }
+        MachineTab.Under_Maintenance -> allMachines.filter { 
+            it.statusType == MachineStatusType.UNDER_SCHEDULE_MAINTENANCE || 
+            it.statusType == MachineStatusType.UNDER_CHECK 
+        }
+        MachineTab.Available -> allMachines.filter { 
+            it.statusType == MachineStatusType.OPERATIONAL 
+        }
+        MachineTab.Out_of_Order -> allMachines.filter { 
+            it.statusType == MachineStatusType.MARK_AS_OUT_OF_ORDER || 
+            it.statusType == MachineStatusType.OFFLINE 
+        }
+    }
+    
+    val tabs = listOf(
+        MachineTabItem(MachineTab.Active_Machines, "Active Machines", R.drawable.ic_tripod, selectedTab == MachineTab.Active_Machines),
+        MachineTabItem(MachineTab.Under_Maintenance, "Under Maintenance", R.drawable.ic_assigned_time, selectedTab == MachineTab.Under_Maintenance),
+        MachineTabItem(MachineTab.Available, "Available", R.drawable.ic_vector, selectedTab == MachineTab.Available),
+        MachineTabItem(MachineTab.Out_of_Order, "Out of Order", R.drawable.ic_ticket_thread, selectedTab == MachineTab.Out_of_Order)
     )
 
     Scaffold(
@@ -103,41 +206,30 @@ fun MachineStatusScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            Spacer(modifier = Modifier.height(ResponsiveLayout.getVerticalPadding()))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(27.dp, 32.dp, 38.dp)))
             
-            // Status Summary
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = ResponsiveLayout.getHorizontalPadding()),
-                horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
-            ) {
-                StatusSummaryCard("Available", machines.count { it.status == "Available" }, Color(0xFF26BB64C))
-                StatusSummaryCard("In Use", machines.count { it.status == "In Use" }, primaryColor)
-                StatusSummaryCard("Maintenance", machines.count { it.status == "Maintenance" }, Color(0xFFE64646))
-            }
-            
-            Spacer(modifier = Modifier.height(ResponsiveLayout.getVerticalPadding()))
-            
-            // Machines List
-            CustomLabel(
-                header = "All Machines",
-                fontSize = ResponsiveLayout.getResponsiveFontSize(18.sp, 20.sp, 22.sp),
-                modifier = Modifier.padding(horizontal = ResponsiveLayout.getHorizontalPadding()),
-                headerColor = onSurfaceColor
+            // Tab Selector
+            MachineTabSelector(
+                tabs = tabs,
+                onTabSelected = { selectedTab = it }
             )
             
-            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp)))
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)))
             
-            LazyColumn(
-                contentPadding = PaddingValues(
-                    horizontal = ResponsiveLayout.getHorizontalPadding(),
-                    vertical = ResponsiveLayout.getVerticalPadding()
-                ),
-                verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
+            // Machine Grid
+            LazyVerticalGrid(
+                columns = ResponsiveLayout.getGridColumns(),
+                contentPadding = ResponsiveLayout.getContentPadding(),
+                verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+                horizontalArrangement = ResponsiveLayout.getGridArrangement()
             ) {
-                items(machines) { machine ->
-                    MachineCard(machine = machine)
+                items(filteredMachines) { machine ->
+                    MachineGridCard(
+                        machine = machine,
+                        onClick = {
+                            navController.navigate(Screen.MachineDetailScreen.createRoute(machine.id))
+                        }
+                    )
                 }
             }
         }
@@ -145,156 +237,166 @@ fun MachineStatusScreen(
 }
 
 @Composable
-fun StatusSummaryCard(label: String, count: Int, color: Color) {
-    Card(
-        modifier = Modifier,
-        colors = CardDefaults.cardColors(
-            containerColor = onSurfaceVariant
-        ),
-        shape = RectangleShape
+fun MachineTabSelector(
+    tabs: List<MachineTabItem>,
+    onTabSelected: (MachineTab) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = ResponsiveLayout.getHorizontalPadding()),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(
-                horizontal = ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp),
-                vertical = ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)
-            ),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(pxToDp(8))
-        ) {
-            CustomLabel(
-                header = "$count",
-                fontSize = ResponsiveLayout.getResponsiveFontSize(24.sp, 28.sp, 32.sp),
-                headerColor = color
-            )
-            CustomLabel(
-                header = label,
-                fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-                headerColor = onSurfaceColor.copy(0.7f)
-            )
-        }
-    }
-}
-
-@Composable
-fun MachineCard(machine: Machine) {
-    val statusColor = when (machine.status) {
-        "Available" -> Color(0xFF26BB64C)
-        "In Use" -> primaryColor
-        "Maintenance" -> Color(0xFFE64646)
-        else -> onSurfaceColor
-    }
-    
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = onSurfaceVariant
-        ),
-        shape = RectangleShape
-    ) {
-        Column(
-            modifier = Modifier.padding(
-                horizontal = ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp),
-                vertical = ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)
-            ),
-            verticalArrangement = Arrangement.spacedBy(pxToDp(12))
-        ) {
-            // Header Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        tabs.forEach { tabItem ->
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp)
+                    .clickable { onTabSelected(tabItem.tab) }
             ) {
                 Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(pxToDp(4))
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(pxToDp(10))
                 ) {
-                    CustomLabel(
-                        header = machine.name,
-                        fontSize = ResponsiveLayout.getResponsiveFontSize(16.sp, 18.sp, 20.sp),
-                        headerColor = onSurfaceColor
+                    AppNavIcon(
+                        painter = painterResource(id = tabItem.iconRes),
+                        iconDescription = tabItem.label,
+                        iconSize = pxToDp(20),
+                        tint = if (tabItem.isSelected) primaryColor else categoryIconColor
                     )
                     CustomLabel(
-                        header = "ID: ${machine.id}",
-                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-                        headerColor = onSurfaceColor.copy(0.6f)
+                        header = tabItem.label,
+                        fontSize = 12.sp,
+                        headerColor = if (tabItem.isSelected) primaryColor else categoryIconColor
                     )
                 }
-                
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = statusColor.copy(0.2f),
-                            shape = RoundedCornerShape(pxToDp(12))
-                        )
-                        .padding(
-                            horizontal = pxToDp(12),
-                            vertical = pxToDp(6)
-                        )
-                ) {
-                    CustomLabel(
-                        header = machine.status,
-                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-                        headerColor = statusColor
-                    )
-                }
-            }
-            
-            // Details
-            Column(
-                verticalArrangement = Arrangement.spacedBy(pxToDp(8))
-            ) {
-                DetailRoww("Location", machine.location)
-                DetailRoww("Last Maintenance", machine.lastMaintenance)
-                DetailRoww("Next Maintenance", machine.nextMaintenance)
-            }
-            
-            // Action Buttons
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(pxToDp(12))
-            ) {
-                AppButton(
-                    buttonText = "View Details",
-                    onClick = { },
-                    modifier = Modifier.weight(1f)
-                )
-                AppButton(
-                    buttonText = "Update Status",
-                    onClick = { },
-                    modifier = Modifier.weight(1f)
-                )
             }
         }
     }
 }
 
 @Composable
-fun DetailRoww(label: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+fun MachineGridCard(
+    machine: MachineData,
+    onClick: () -> Unit,
+    shape: Shape = RectangleShape,
+    imageHeight: Dp = ResponsiveLayout.getResponsiveSize(125.dp, 140.dp, 160.dp),
+    detailHeight: Dp = ResponsiveLayout.getResponsiveSize(75.dp, 85.dp, 95.dp)
+) {
+    Card(
+        modifier = Modifier,
+        onClick = onClick,
+        shape = shape
     ) {
-        CustomLabel(
-            header = "$label:",
-            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-            headerColor = onSurfaceColor.copy(0.7f)
-        )
-        CustomLabel(
-            header = value,
-            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-            headerColor = onSurfaceColor
-        )
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .background(onSurfaceVariant)
+                    .height(imageHeight)
+                    .fillMaxWidth()
+            ) {
+                AsyncImage(
+                    model = machine.imageUrl,
+                    contentDescription = "Machine Image",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(
+                            horizontal = ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp),
+                            vertical = ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)
+                        ),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .height(detailHeight)
+                    .fillMaxWidth()
+                    .background(whiteColor)
+                    .padding(top = ResponsiveLayout.getResponsiveSize(6.dp, 8.dp, 10.dp)),
+                horizontalAlignment = Alignment.Start
+            ) {
+                CustomLabel(
+                    header = machine.name,
+                    headerColor = onSurfaceColor,
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                    modifier = Modifier.padding(
+                        horizontal = ResponsiveLayout.getHorizontalPadding(),
+                        vertical = ResponsiveLayout.getResponsiveSize(2.dp, 3.dp, 4.dp)
+                    )
+                )
+
+                // Status Badge
+                Box(
+                    modifier = Modifier
+                        .padding(
+                            horizontal = ResponsiveLayout.getHorizontalPadding(),
+                            vertical = ResponsiveLayout.getResponsiveSize(3.dp, 4.dp, 5.dp)
+                        )
+                ) {
+                    CustomLabel(
+                        header = machine.statusType.label,
+                        headerColor = whiteColor,
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(10.sp, 12.sp, 14.sp),
+                        modifier = Modifier
+                            .background(
+                                color = machine.statusType.color,
+                                shape = RoundedCornerShape(pxToDp(12))
+                            )
+                            .padding(
+                                horizontal = pxToDp(8),
+                                vertical = pxToDp(4)
+                            )
+                    )
+                }
+
+                CustomLabel(
+                    header = machine.facilityName,
+                    headerColor = lightTextColor,
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                    modifier = Modifier.padding(
+                        horizontal = ResponsiveLayout.getHorizontalPadding(),
+                        vertical = ResponsiveLayout.getResponsiveSize(3.dp, 4.dp, 5.dp)
+                    )
+                )
+
+                Row(
+                    modifier = Modifier.padding(
+                        horizontal = ResponsiveLayout.getHorizontalPadding(),
+                        vertical = ResponsiveLayout.getResponsiveSize(3.dp, 4.dp, 5.dp)
+                    )
+                ) {
+                    AppCategoryIcon(
+                        painter = painterResource(R.drawable.ic_location),
+                        iconDescription = "location icon",
+                        iconSize = ResponsiveLayout.getResponsiveSize(12.dp, 14.dp, 16.dp),
+                        tint = lightTextColor
+                    )
+                    Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsiveSize(5.dp, 6.dp, 8.dp)))
+                    CustomLabel(
+                        header = machine.location,
+                        headerColor = lightTextColor,
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                        modifier = Modifier.padding(bottom = 0.dp)
+                    )
+                }
+            }
+        }
     }
 }
 
-// Placeholder data class
-data class Machine(
-    val name: String,
+// Data class for machine
+data class MachineData(
     val id: String,
-    val status: String,
+    val name: String,
+    val statusType: MachineStatusType,
     val location: String,
+    val imageUrl: Int,
+    val facilityName: String,
     val lastMaintenance: String,
-    val nextMaintenance: String
+    val nextMaintenance: String,
+    val brand: String,
+    val model: String
 )
 
 @Preview(showBackground = true)

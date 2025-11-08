@@ -208,8 +208,8 @@ fun MaintenanceRequestCard(request: MaintenanceRequest) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(pxToDp(8))
             ) {
-                DetailRoww("Requested By", request.requestedBy)
-                DetailRoww("Request Date", request.requestDate)
+                DetailRow("Requested By", request.requestedBy)
+                DetailRow("Request Date", request.requestDate)
                 CustomLabel(
                     header = "Description:",
                     fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
@@ -220,7 +220,7 @@ fun MaintenanceRequestCard(request: MaintenanceRequest) {
                     fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
                     headerColor = onSurfaceColor
                 )
-                DetailRoww("Estimated Cost", request.estimatedCost)
+                DetailRow("Estimated Cost", request.estimatedCost)
             }
             
             // Action Buttons
@@ -252,24 +252,6 @@ fun MaintenanceRequestCard(request: MaintenanceRequest) {
     }
 }
 
-//@Composable
-//fun DetailRow(label: String, value: String) {
-//    Row(
-//        modifier = Modifier.fillMaxWidth(),
-//        horizontalArrangement = Arrangement.SpaceBetween
-//    ) {
-//        CustomLabel(
-//            header = "$label:",
-//            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-//            headerColor = onSurfaceColor.copy(0.7f)
-//        )
-//        CustomLabel(
-//            header = value,
-//            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-//            headerColor = onSurfaceColor
-//        )
-//    }
-//}
 
 // Placeholder data class
 data class MaintenanceRequest(

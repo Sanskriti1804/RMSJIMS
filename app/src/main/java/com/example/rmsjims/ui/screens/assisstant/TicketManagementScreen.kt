@@ -280,9 +280,9 @@ fun TicketCard(ticket: Ticket) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(pxToDp(8))
             ) {
-                DetailRoww("Raised By", ticket.raisedBy)
-                DetailRoww("Assigned To", ticket.assignedTo)
-                DetailRoww("Created Date", ticket.createdDate)
+                DetailRow("Raised By", ticket.raisedBy)
+                DetailRow("Assigned To", ticket.assignedTo)
+                DetailRow("Created Date", ticket.createdDate)
             }
             
             // Action Buttons
