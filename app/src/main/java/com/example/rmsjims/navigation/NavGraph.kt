@@ -28,6 +28,7 @@ import com.example.rmsjims.ui.screens.assisstant.AssistantScreen
 import com.example.rmsjims.ui.screens.assisstant.MachineDetailScreen
 import com.example.rmsjims.ui.screens.assisstant.MachineStatusScreen
 import com.example.rmsjims.ui.screens.assisstant.MaintenanceApprovalScreen
+import com.example.rmsjims.ui.screens.assisstant.MaintenanceDetailScreen
 import com.example.rmsjims.ui.screens.assisstant.ResourceManagementScreen
 import com.example.rmsjims.ui.screens.assisstant.TicketManagementScreen
 import com.example.rmsjims.ui.screens.assisstant.UsageApprovalScreen
@@ -54,7 +55,7 @@ fun MainApp(){
 fun AppNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.MachineStatusScreen.route
+        startDestination = Screen.MaintenanceApprovalScreen.route
     ) {
 
         composable(Screen.HomeScreen.route) {
@@ -135,6 +136,13 @@ fun AppNavGraph(navController: NavHostController){
         }
         composable(Screen.MaintenanceApprovalScreen.route) {
             MaintenanceApprovalScreen(navController)
+        }
+        composable(
+            Screen.MaintenanceDetailScreen.route,
+            arguments = listOf(navArgument("requestId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val requestId = backStackEntry.arguments?.getString("requestId") ?: ""
+            MaintenanceDetailScreen(requestId = requestId, navController = navController)
         }
         composable(Screen.ResourceManagementScreen.route) {
             ResourceManagementScreen(navController)

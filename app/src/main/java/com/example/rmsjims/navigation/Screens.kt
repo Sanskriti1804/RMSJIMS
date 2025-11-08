@@ -26,6 +26,9 @@ sealed class Screen(val route : String) {
         fun createRoute(machineId: String) = "machine_detail/$machineId"
     }
     object MaintenanceApprovalScreen : Screen("maintenance_approval")
+    object MaintenanceDetailScreen : Screen("maintenance_detail/{requestId}") {
+        fun createRoute(requestId: String) = "maintenance_detail/$requestId"
+    }
     object ResourceManagementScreen : Screen("resource_management")
     object TicketManagementScreen : Screen("ticket_management")
     object UsageApprovalScreen : Screen("usage_approval")
