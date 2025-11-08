@@ -413,7 +413,7 @@ fun GrayInfoCard(
             // Action Buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(pxToDp(12))
+                horizontalArrangement = Arrangement.spacedBy(pxToDp(13))
             ) {
                 AppButton(
                     buttonText = "Reject",
