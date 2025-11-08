@@ -398,7 +398,7 @@ fun GrayInfoCard(
                 ) {
                     AppCategoryIcon(
                         painter = painterResource(R.drawable.ic_assigned_time),
-                        iconDescription = "Deadline",
+                        iconDescription = "start",
                         iconSize = pxToDp(16),
                         tint = onSurfaceColor.copy(alpha = 0.7f)
                     )
