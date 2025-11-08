@@ -28,11 +28,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.rmsjims.R
+import com.example.rmsjims.data.model.BookingTab
+import com.example.rmsjims.data.model.TabItem
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomNavigationBar
 import com.example.rmsjims.ui.components.CustomTopBar
 import com.example.rmsjims.ui.components.ProfileImage
+import com.example.rmsjims.ui.screens.TabSelector
 import com.example.rmsjims.ui.theme.cardColor
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.onSurfaceVariant
@@ -99,18 +103,16 @@ fun EquipmentAssignmentScreen(
                 .padding(paddingValues)
         ) {
             Spacer(modifier = Modifier.height(ResponsiveLayout.getVerticalPadding()))
-            
-            // Summary Card
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = ResponsiveLayout.getHorizontalPadding()),
-                colors = CardDefaults.cardColors(
-                    containerColor = onSurfaceVariant
+
+            TabSelector(
+                tabs = listOf(
+                    TabItem(BookingTab.Booking_Requests, "Booking Requests", R.drawable.ic_booking_pending, isSelected = true),
+                    TabItem(BookingTab.Verified_Bookings, "Approved Bookings", R.drawable.ic_booking_verified, isSelected = false),
+                    TabItem(BookingTab.Canceled_Bookings, "Rejected Bookings", R.drawable.ic_booking_canceled, isSelected = false),
                 ),
-                shape = RectangleShape
-            ) {
-                Column(
+                onTabSelected = { selectedTab -> }
+            )
+            Column(
                     modifier = Modifier.padding(
                         horizontal = ResponsiveLayout.getHorizontalPadding(),
                         vertical = ResponsiveLayout.getVerticalPadding()
@@ -153,7 +155,6 @@ fun EquipmentAssignmentScreen(
                     AssignedUserCard(user = user)
                 }
             }
-        }
     }
 }
 

@@ -53,7 +53,7 @@ fun MainApp(){
 fun AppNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.AdminDashboardScreen.route
+        startDestination = Screen.EquipmentAssignmentScreen.route
     ) {
 
         composable(Screen.HomeScreen.route) {

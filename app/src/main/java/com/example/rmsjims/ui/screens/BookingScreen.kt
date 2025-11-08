@@ -74,7 +74,7 @@ fun BookingScreen(
             .padding(paddingValues)) {
             Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(27.dp, 32.dp, 38.dp)))
 
-            BookingTabSelector(
+            TabSelector(
                 tabs = listOf(
                     TabItem(BookingTab.Booking_Requests, "Booking Requests", R.drawable.ic_booking_pending, isSelected = true),
                     TabItem(BookingTab.Verified_Bookings, "Approved Bookings", R.drawable.ic_booking_verified, isSelected = false),
@@ -98,7 +98,7 @@ fun BookingScreen(
 
 //endregion
 @Composable
-fun BookingTabSelector(tabs: List<TabItem>, onTabSelected: (BookingTab) -> Unit) {
+fun TabSelector(tabs: List<TabItem>, onTabSelected: (BookingTab) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
