@@ -21,7 +21,7 @@ fun AssistantModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.AssistantScreen.route
+        startDestination = Screen.ResourceManagementScreen.route
     ) {
         composable(Screen.AssistantScreen.route) {
             AssistantScreen(navController = navController)

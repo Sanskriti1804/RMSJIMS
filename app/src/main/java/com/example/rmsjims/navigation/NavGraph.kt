@@ -49,17 +49,25 @@ import org.koin.androidx.compose.koinViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainApp(){
+fun MainApp(
+    startDestination: String = Screen.LoginScreen.route
+){
     val navController = rememberNavController()
-    AppNavGraph(navController)
+    AppNavGraph(
+        navController = navController,
+        startDestination = startDestination
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AppNavGraph(navController: NavHostController){
+fun AppNavGraph(
+    navController: NavHostController,
+    startDestination: String = Screen.LoginScreen.route
+){
     NavHost(
         navController = navController,
-        startDestination = Screen.RoleSelectionScreen.route
+        startDestination = startDestination
     ) {
 
         composable(Screen.RoleSelectionScreen.route) {
