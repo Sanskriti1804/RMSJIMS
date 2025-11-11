@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">JIMSRMS</string>
+    <string name="admin_email">admin@jimsrms.com</string>
 </resources>
