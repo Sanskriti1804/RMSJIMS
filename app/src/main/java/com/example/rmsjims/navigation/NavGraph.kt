@@ -14,9 +14,12 @@ import com.example.rmsjims.ui.screens.staff.BookingScreen
 import com.example.rmsjims.ui.screens.staff.CalendarScreen
 import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.ui.screens.staff.HomeScreen
+import com.example.rmsjims.ui.screens.shared.AboutAppScreen
 import com.example.rmsjims.ui.screens.shared.LoginScreen
 import com.example.rmsjims.ui.screens.staff.ProdDescScreen
 import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
+import com.example.rmsjims.ui.screens.shared.PermissionsOverviewScreen
+import com.example.rmsjims.ui.screens.shared.RoleOverviewScreen
 import com.example.rmsjims.ui.screens.shared.RoleSelectionScreen
 import com.example.rmsjims.ui.screens.staff.ProfileScreen
 import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
@@ -47,7 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainApp(
-    startDestination: String = Screen.LoginScreen.route
+    startDestination: String = Screen.AboutAppScreen.route
 ){
     val navController = rememberNavController()
     AppNavGraph(
@@ -67,6 +70,23 @@ fun AppNavGraph(
         startDestination = startDestination
     ) {
 
+        composable(Screen.AboutAppScreen.route) {
+            AboutAppScreen(navController)
+        }
+        composable(Screen.RoleOverviewScreen.route) {
+            RoleOverviewScreen(navController)
+        }
+        composable(
+            Screen.PermissionsOverviewScreen.route,
+            arguments = listOf(navArgument("selectedRole") {
+                type = NavType.StringType
+                defaultValue = UserRole.ASSISTANT.name
+            })
+        ) { backStackEntry ->
+            val roleName = backStackEntry.arguments?.getString("selectedRole").orEmpty()
+            val selectedRole = runCatching { UserRole.valueOf(roleName) }.getOrNull()
+            PermissionsOverviewScreen(navController, selectedRole)
+        }
         composable(Screen.RoleSelectionScreen.route) {
             RoleSelectionScreen(navController)
         }

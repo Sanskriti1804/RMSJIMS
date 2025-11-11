@@ -33,5 +33,10 @@ sealed class Screen(val route : String) {
     object ResourceManagementScreen : Screen("resource_management")
     object TicketManagementScreen : Screen("ticket_management")
     object UsageApprovalScreen : Screen("usage_approval")
+    object AboutAppScreen : Screen("about_app")
+    object RoleOverviewScreen : Screen("role_overview")
+    object PermissionsOverviewScreen : Screen("permissions_overview/{selectedRole}") {
+        fun createRoute(selectedRole: String) = "permissions_overview/$selectedRole"
+    }
 
 }
