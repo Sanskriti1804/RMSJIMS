@@ -3,10 +3,19 @@
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>
-        <item name="postSplashScreenTheme">@style/Theme.SplashScreen</item>
+<!--        <item name="postSplashScreenTheme">@style/Theme.RMSJIMS</item>-->
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/animated_logo</item>
         <item name="android:windowSplashScreenIconBackgroundColor">@color/white</item>
         <item name="android:windowSplashScreenBrandingImage">@drawable/jims_logo</item>
         <item name="android:windowSplashScreenAnimationDuration">3000</item>
     </style>
+
+<!--    <style name="Theme.RMSJIMS" parent="Theme.Material3.DayNight.NoActionBar">-->
+<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
+<!--        <item name="android:navigationBarColor">@android:color/transparent</item>-->
+<!--        <item name="android:windowLightStatusBar">true</item>-->
+<!--        <item name="android:windowLightNavigationBar">true</item>-->
+<!--        <item name="windowActionBar">false</item>-->
+<!--        <item name="windowNoTitle">true</item>-->
+<!--    </style>-->
 </resources>
