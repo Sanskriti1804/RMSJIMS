@@ -1,0 +1,89 @@
+package com.example.rmsjims.admin.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.rmsjims.navigation.Screen
+import com.example.rmsjims.ui.screens.ProdDescScreen
+import com.example.rmsjims.ui.screens.ProjectInfoScreen
+import com.example.rmsjims.ui.screens.RaiseTicketScreen
+import com.example.rmsjims.ui.screens.TicketScreen
+import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
+import com.example.rmsjims.ui.screens.admin.EquipmentAssignmentScreen
+import com.example.rmsjims.ui.screens.admin.SystemSettingScreen
+import com.example.rmsjims.ui.screens.admin.UserManagementScreen
+import com.example.rmsjims.ui.screens.assisstant.MaintenanceApprovalScreen
+import com.example.rmsjims.ui.screens.assisstant.MaintenanceDetailScreen
+import com.example.rmsjims.ui.screens.assisstant.MachineDetailScreen
+import com.example.rmsjims.ui.screens.assisstant.MachineStatusScreen
+import com.example.rmsjims.ui.screens.assisstant.ResourceManagementScreen
+import com.example.rmsjims.ui.screens.assisstant.TicketManagementScreen
+import com.example.rmsjims.ui.screens.assisstant.UsageApprovalScreen
+
+@Composable
+fun AdminModuleApp() {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = Screen.AdminDashboardScreen.route
+    ) {
+        composable(Screen.AdminDashboardScreen.route) {
+            AdminDashboardScreen(navController = navController)
+        }
+        composable(Screen.EquipmentAssignmentScreen.route) {
+            EquipmentAssignmentScreen(navController = navController)
+        }
+        composable(Screen.SystemSettingScreen.route) {
+            SystemSettingScreen(navController = navController)
+        }
+        composable(Screen.UserManagementScreen.route) {
+            UserManagementScreen(navController = navController)
+        }
+
+        composable(Screen.MachineStatusScreen.route) {
+            MachineStatusScreen(navController = navController)
+        }
+        composable(
+            Screen.MachineDetailScreen.route,
+            arguments = listOf(navArgument("machineId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val machineId = backStackEntry.arguments?.getString("machineId") ?: ""
+            MachineDetailScreen(machineId = machineId, navController = navController)
+        }
+        composable(Screen.MaintenanceApprovalScreen.route) {
+            MaintenanceApprovalScreen(navController = navController)
+        }
+        composable(
+            Screen.MaintenanceDetailScreen.route,
+            arguments = listOf(navArgument("requestId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val requestId = backStackEntry.arguments?.getString("requestId") ?: ""
+            MaintenanceDetailScreen(requestId = requestId, navController = navController)
+        }
+        composable(Screen.UsageApprovalScreen.route) {
+            UsageApprovalScreen(navController = navController)
+        }
+        composable(Screen.ResourceManagementScreen.route) {
+            ResourceManagementScreen(navController = navController)
+        }
+        composable(Screen.TicketManagementScreen.route) {
+            TicketManagementScreen(navController = navController)
+        }
+        composable(Screen.RaiseTicketScreen.route) {
+            RaiseTicketScreen(navController = navController)
+        }
+        composable(Screen.TicketScreen.route) {
+            TicketScreen()
+        }
+        composable(Screen.ProjectInfoScreen.route) {
+            ProjectInfoScreen(navController = navController)
+        }
+        composable(Screen.ProductDescriptionScreen.route) {
+            ProdDescScreen(navController = navController)
+        }
+    }
+}

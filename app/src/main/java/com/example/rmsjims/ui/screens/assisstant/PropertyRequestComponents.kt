@@ -1,4 +1,4 @@
-package com.example.rmsjims.ui.screens.assisstant
+package com.example.rmsjims.ui.screens.assistant
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
