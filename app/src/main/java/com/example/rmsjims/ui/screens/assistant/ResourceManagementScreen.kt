@@ -1,4 +1,4 @@
-package com.example.rmsjims.ui.screens.assisstant
+package com.example.rmsjims.ui.screens.assistant
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

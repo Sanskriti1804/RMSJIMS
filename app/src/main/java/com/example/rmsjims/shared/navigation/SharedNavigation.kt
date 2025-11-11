@@ -7,10 +7,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.rmsjims.navigation.Screen
-import com.example.rmsjims.ui.screens.ProdDescScreen
-import com.example.rmsjims.ui.screens.ProjectInfoScreen
-import com.example.rmsjims.ui.screens.RaiseTicketScreen
-import com.example.rmsjims.ui.screens.TicketScreen
+import com.example.rmsjims.ui.screens.staff.ProdDescScreen
+import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
+import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
+import com.example.rmsjims.ui.screens.staff.TicketScreen
 
 enum class SharedRoute(val route: String) {
     ProductDetails(Screen.ProductDescriptionScreen.route),

@@ -1,5 +1,7 @@
 package com.example.rmsjims.staff.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -7,19 +9,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.rmsjims.navigation.Screen
-import com.example.rmsjims.ui.screens.BookingScreen
-import com.example.rmsjims.ui.screens.CalendarScreen
-import com.example.rmsjims.ui.screens.HomeScreen
-import com.example.rmsjims.ui.screens.ProdDescScreen
-import com.example.rmsjims.ui.screens.ProfileScreen
-import com.example.rmsjims.ui.screens.ProjectInfoScreen
-import com.example.rmsjims.ui.screens.RaiseTicketScreen
-import com.example.rmsjims.ui.screens.TicketScreen
-import com.example.rmsjims.ui.screens.EquipmentScreen
+import com.example.rmsjims.ui.screens.staff.BookingScreen
+import com.example.rmsjims.ui.screens.staff.CalendarScreen
+import com.example.rmsjims.ui.screens.staff.HomeScreen
+import com.example.rmsjims.ui.screens.staff.ProdDescScreen
+import com.example.rmsjims.ui.screens.staff.ProfileScreen
+import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
+import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
+import com.example.rmsjims.ui.screens.staff.TicketScreen
+import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.CalendarViewModel
 import org.koin.androidx.compose.koinViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StaffModuleApp() {
     val navController = rememberNavController()

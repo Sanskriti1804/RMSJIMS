@@ -1,4 +1,4 @@
-package com.example.rmsjims.ui.screens
+package com.example.rmsjims.ui.screens.shared
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

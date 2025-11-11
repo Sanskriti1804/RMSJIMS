@@ -1,4 +1,4 @@
-package com.example.rmsjims.ui.screens
+package com.example.rmsjims.ui.screens.staff
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable

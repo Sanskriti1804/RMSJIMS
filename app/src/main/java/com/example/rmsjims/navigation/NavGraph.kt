@@ -10,31 +10,31 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.rmsjims.ui.screens.BookingScreen
-import com.example.rmsjims.ui.screens.CalendarScreen
-import com.example.rmsjims.ui.screens.EmailVerificationScreen
-import com.example.rmsjims.ui.screens.EquipmentScreen
-import com.example.rmsjims.ui.screens.HomeScreen
-import com.example.rmsjims.ui.screens.LoginScreen
-import com.example.rmsjims.ui.screens.ProdDescScreen
-import com.example.rmsjims.ui.screens.ProjectInfoScreen
-import com.example.rmsjims.ui.screens.RoleSelectionScreen
-import com.example.rmsjims.ui.screens.ProfileScreen
-import com.example.rmsjims.ui.screens.RaiseTicketScreen
-import com.example.rmsjims.ui.screens.TicketScreen
+import com.example.rmsjims.ui.screens.staff.BookingScreen
+import com.example.rmsjims.ui.screens.staff.CalendarScreen
+import com.example.rmsjims.ui.screens.shared.EmailVerificationScreen
+import com.example.rmsjims.ui.screens.staff.EquipmentScreen
+import com.example.rmsjims.ui.screens.staff.HomeScreen
+import com.example.rmsjims.ui.screens.shared.LoginScreen
+import com.example.rmsjims.ui.screens.staff.ProdDescScreen
+import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
+import com.example.rmsjims.ui.screens.shared.RoleSelectionScreen
+import com.example.rmsjims.ui.screens.staff.ProfileScreen
+import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
+import com.example.rmsjims.ui.screens.staff.TicketScreen
 import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.admin.EquipmentAssignmentScreen
 import com.example.rmsjims.ui.screens.admin.SystemSettingScreen
 import com.example.rmsjims.ui.screens.admin.UserManagementScreen
-import com.example.rmsjims.ui.screens.assisstant.AssistantScreen
-import com.example.rmsjims.ui.screens.assisstant.MachineDetailScreen
-import com.example.rmsjims.ui.screens.assisstant.MachineStatusScreen
-import com.example.rmsjims.ui.screens.assisstant.MaintenanceApprovalScreen
-import com.example.rmsjims.ui.screens.assisstant.MaintenanceDetailScreen
-import com.example.rmsjims.ui.screens.assisstant.ResourceManagementScreen
-import com.example.rmsjims.ui.screens.assisstant.TicketManagementScreen
-import com.example.rmsjims.ui.screens.assisstant.UsageApprovalScreen
-import com.example.rmsjims.ui.screens.assisstant.RequestDetailsScreen
+import com.example.rmsjims.ui.screens.assistant.AssistantScreen
+import com.example.rmsjims.ui.screens.assistant.MachineDetailScreen
+import com.example.rmsjims.ui.screens.assistant.MachineStatusScreen
+import com.example.rmsjims.ui.screens.assistant.MaintenanceApprovalScreen
+import com.example.rmsjims.ui.screens.assistant.MaintenanceDetailScreen
+import com.example.rmsjims.ui.screens.assistant.ResourceManagementScreen
+import com.example.rmsjims.ui.screens.assistant.TicketManagementScreen
+import com.example.rmsjims.ui.screens.assistant.UsageApprovalScreen
+import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
 import com.example.rmsjims.data.model.UserRole
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.CalendarViewModel
@@ -42,8 +42,8 @@ import com.example.rmsjims.viewmodel.FacilitiesViewModel
 import com.example.rmsjims.viewmodel.FilterSortViewModel
 import com.example.rmsjims.viewmodel.ItemsViewModel
 import com.example.rmsjims.viewmodel.UserSessionViewModel
-import com.example.shopping.startup.screen.ForgotPasswordScreen
-import com.example.shopping.startup.screen.NewPasswordScreen
+import com.example.rmsjims.ui.screens.shared.ForgotPasswordScreen
+import com.example.rmsjims.ui.screens.shared.NewPasswordScreen
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -59,7 +59,7 @@ fun MainApp(){
 fun AppNavGraph(navController: NavHostController){
     NavHost(
         navController = navController,
-        startDestination = Screen.RoleSelectionScreen.route
+        startDestination = Screen.LoginScreen.route
     ) {
 
         composable(Screen.RoleSelectionScreen.route) {

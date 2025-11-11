@@ -1,4 +1,4 @@
-package com.example.rmsjims.ui.screens
+package com.example.rmsjims.ui.screens.staff
 
 import android.os.Build
 import androidx.annotation.RequiresApi

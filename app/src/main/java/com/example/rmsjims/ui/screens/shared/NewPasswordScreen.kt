@@ -1,24 +1,25 @@
-package com.example.rmsjims.ui.screens
+package com.example.rmsjims.ui.screens.shared
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.rmsjims.R
 import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.AppTextField
@@ -30,62 +31,49 @@ import com.example.rmsjims.ui.theme.app_background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EmailVerificationScreen(navController: NavHostController){
+fun NewPasswordScreen(navController: NavHostController){
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    Scaffold(
+    Scaffold (
         containerColor = app_background,
         topBar = {
             CustomTopBar(
-                title = "Verify Your Email"
+                title = "Create New Password"
             )
         }
-    ) { paddingValues ->
-        Column(
+    ){ paddingValues ->
+        Column (
             modifier = Modifier.padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-        ) {
+        ){
             Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
 
-            Spacer(modifier = Modifier.height(15.dp))
-
+            Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
             CustomLabel(
-                header = "Please Enter the 4 digit code sent to sans@gmail.com"
+                header = "Your New Password must be different from previously used Password"
             )
             Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
 
-            Row (
-                modifier = Modifier.padding(Dimensions.componentPadding()),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ){
-                AppTextField(
-                    value = "0",
-                    onValueChange = {},
-                    placeholder = "0"
-                )
-                AppTextField(
-                    value = "0",
-                    onValueChange = {},
-                    placeholder = "0"
-                )
-                AppTextField(
-                    value = "0",
-                    onValueChange = {},
-                    placeholder = "0"
-                )
-                AppTextField(
-                    value = "0",
-                    onValueChange = {},
-                    placeholder = "0"
-                )
-            }
-
+            AppTextField(
+                value = "New Password",
+                onValueChange = {},
+                placeholder = "New Password"
+            )
+            Spacer(modifier = Modifier.height(Dimensions.smallSpacer()))
+            AppTextField(
+                value = "Confirm Password",
+                onValueChange = {},
+                placeholder = "Confirm Password"
+            )
             Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
+
 
             AppButton(
                 onClick = {
-                    navController.navigate(Screen.NewPasswordScreen.route) },
-                buttonText = "Verify",
+                    navController.navigate(Screen.HomeScreen.route)},
+                buttonText = "Save",
             )
         }
     }
@@ -93,7 +81,7 @@ fun EmailVerificationScreen(navController: NavHostController){
 
 @Preview(showBackground = true)
 @Composable
-fun EmailVerificationScreenPreview(){
+fun newpasswordcreenPreview(){
     val dummyNavController = rememberNavController()
-    EmailVerificationScreen(dummyNavController)
+    NewPasswordScreen(dummyNavController)
 }

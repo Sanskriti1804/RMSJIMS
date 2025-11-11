@@ -36,7 +36,7 @@ import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomNavigationBar
 import com.example.rmsjims.ui.components.CustomTopBar
 import com.example.rmsjims.ui.components.ProfileImage
-import com.example.rmsjims.ui.screens.TabSelector
+import com.example.rmsjims.ui.screens.staff.TabSelector
 import com.example.rmsjims.ui.theme.cardColor
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.onSurfaceVariant

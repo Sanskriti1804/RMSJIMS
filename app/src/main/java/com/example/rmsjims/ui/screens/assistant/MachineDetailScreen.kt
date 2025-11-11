@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -24,7 +23,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,23 +42,22 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.rmsjims.R
-import com.example.rmsjims.data.model.MaintenanceStatusType
-import com.example.rmsjims.data.model.UrgencyType
+import com.example.rmsjims.data.model.MachineStatusType
 import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.AppCategoryIcon
+import com.example.rmsjims.ui.components.AppCircularIcon
 import com.example.rmsjims.ui.components.CustomLabel
-import com.example.rmsjims.ui.components.CustomTitle
 import com.example.rmsjims.ui.components.CustomTopBar
-import com.example.rmsjims.ui.screens.InChargeRow
-import com.example.rmsjims.ui.theme.cardColor
+import com.example.rmsjims.ui.components.EditButton
+import com.example.rmsjims.ui.screens.staff.InChargeRow
+import com.example.rmsjims.ui.theme.circularBoxColor
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.onSurfaceVariant
 import com.example.rmsjims.ui.theme.primaryColor
@@ -67,29 +69,12 @@ import com.google.accompanist.pager.HorizontalPagerIndicator
 import kotlinx.coroutines.delay
 
 @Composable
-fun MaintenanceDetailScreen(
-    requestId: String,
+fun MachineDetailScreen(
+    machineId: String,
     navController: NavHostController
 ) {
-    // Placeholder maintenance request data - in real app, fetch by requestId
-    val request = MaintenanceRequestData(
-        id = requestId,
-        equipmentName = "3D Printer XL",
-        equipmentId = "EQ-2024-089",
-        imageUrl = R.drawable.temp,
-        facilityName = "Makerspace",
-        location = "Lab C-301",
-        status = MaintenanceStatusType.PENDING,
-        requestedBy = "Dr. Ravi Kumar",
-        requesterLocation = "Computer Science Department",
-        requestDate = "2024-01-20",
-        urgency = "High",
-        description = "Printer head needs replacement. Calibration issues reported. The printer has been experiencing frequent jams and calibration errors.",
-        estimatedCost = "₹15,000",
-        deadline = "2024-01-25",
-        requestType = "Issue",
-        summary = "Printer head replacement required"
-    )
+    // Placeholder machine data - in real app, fetch by machineId
+    var machineStatus by remember { mutableStateOf(MachineStatusType.OPERATIONAL) }
     
     val machineImages = listOf(
         R.drawable.temp,
@@ -112,11 +97,25 @@ fun MaintenanceDetailScreen(
             }
         }
     }
+    
+    // Placeholder machine data
+    val machine = MachineData(
+        id = machineId,
+        name = "High-Performance Server",
+        statusType = machineStatus,
+        location = "Lab A-101",
+        imageUrl = R.drawable.temp,
+        facilityName = "IDC, Photo Studio",
+        lastMaintenance = "2024-01-10",
+        nextMaintenance = "2024-02-10",
+        brand = "Dell",
+        model = "PowerEdge R740"
+    )
 
     Scaffold(
         topBar = {
             CustomTopBar(
-                title = request.equipmentName,
+                title = machine.name,
                 onNavigationClick = {
                     navController.popBackStack()
                 }
@@ -134,38 +133,35 @@ fun MaintenanceDetailScreen(
             Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(20.dp, 24.dp, 28.dp)))
             
             // Image Carousel
-            MaintenanceImageCarousel(
+            MachineImageCarousel(
                 images = machineImages,
                 pagerState = pagerState,
                 pageInteractionSource = pagerInteractionSource
             )
 
-            // Equipment Description Card
-            MaintenanceEquipmentDescriptionCard(request = request)
+            // Machine Description Card
+            MachineDescriptionCard(
+                machine = machine.copy(statusType = machineStatus),
+                onStatusChange = { machineStatus = it }
+            )
 
-            // Requester Info Card
-            RequesterInfoCard(request = request)
-
-            // Blue Accent Card
-            BlueAccentCard(request = request)
-
-            // Gray Info Card
-            GrayInfoCard(request = request)
-            
             // InCharge Card
-            MaintenanceInChargeCard()
-            
+            InChargeCard()
+
             // Additional Info Card
-            MaintenanceAdditionalInfoCard(request = request)
+            AdditionalInfoCard(machine = machine)
+            
+            // Maintenance Info Card
+            MaintenanceInfoCard(machine = machine)
         }
     }
 }
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MaintenanceImageCarousel(
+fun MachineImageCarousel(
     images: List<Int>,
-    imageDescription: String = "Equipment images",
+    imageDescription: String = "Machine images",
     contentScale: ContentScale = ContentScale.Crop,
     pagerState: PagerState,
     pageInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
@@ -217,15 +213,17 @@ fun MaintenanceImageCarousel(
 }
 
 @Composable
-fun MaintenanceEquipmentDescriptionCard(
-    request: MaintenanceRequestData,
+fun MachineDescriptionCard(
+    machine: MachineData,
+    onStatusChange: (MachineStatusType) -> Unit,
     shape: Shape = RectangleShape,
     cardContainerColor: Color = onSurfaceVariant
 ) {
+    var showStatusDropdown by remember { mutableStateOf(false) }
+    
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(pxToDp(190)),
+            .fillMaxWidth(),
         shape = shape,
         colors = CardDefaults.cardColors(
             containerColor = cardContainerColor
@@ -241,199 +239,101 @@ fun MaintenanceEquipmentDescriptionCard(
                 verticalArrangement = Arrangement.spacedBy(pxToDp(16))
             ) {
                 CustomLabel(
-                    header = request.equipmentName,
+                    header = machine.name,
                     headerColor = onSurfaceColor,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    modifier = Modifier
                 )
                 Spacer(modifier = Modifier.height(pxToDp(3)))
                 
-                MaintenanceInfoRow(label = "Equipment ID", value = request.equipmentId)
-                MaintenanceInfoRow(label = "Location", value = request.location)
-                MaintenanceInfoRow(label = "Facility", value = request.facilityName)
-                MaintenanceInfoRow(label = "Request Date", value = request.requestDate)
-            }
-        }
-    }
-}
-
-@Composable
-fun RequesterInfoCard(
-    request: MaintenanceRequestData,
-    modifier: Modifier = Modifier,
-    containerColor: Color = onSurfaceVariant,
-    shape: Shape = RectangleShape
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = containerColor),
-        shape = shape
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(pxToDp(16))
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(pxToDp(12)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                CustomLabel(
-                    header = "Requester Info",
-                    headerColor = onSurfaceColor.copy(0.9f),
-                    fontSize = 16.sp
-                )
-                Spacer(modifier = Modifier.height(pxToDp(5)))
-                MaintenanceInfoRow(label = "Name", value = request.requestedBy)
-                MaintenanceInfoRow(label = "Location", value = request.requesterLocation)
-            }
-        }
-    }
-}
-
-@Composable
-fun BlueAccentCard(
-    request: MaintenanceRequestData,
-    modifier: Modifier = Modifier,
-    shape: Shape = RectangleShape
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = primaryColor.copy(alpha = 0.1f)
-        ),
-        shape = shape
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(pxToDp(16)),
-            verticalArrangement = Arrangement.spacedBy(pxToDp(12))
-        ) {
-            CustomLabel(
-                header = "#${request.requestType}",
-                headerColor = primaryColor,
-                fontSize = 14.sp,
-                modifier = Modifier
-            )
-            CustomTitle(
-                header = request.summary,
-                headerColor = onSurfaceColor,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                maxLine = 2
-            )
-            CustomLabel(
-                header = request.description,
-                headerColor = onSurfaceColor.copy(alpha = 0.7f),
-                fontSize = 14.sp,
-                modifier = Modifier,
-                maxLine = 5
-            )
-        }
-    }
-}
-
-@Composable
-fun GrayInfoCard(
-    request: MaintenanceRequestData,
-    modifier: Modifier = Modifier,
-    containerColor: Color = onSurfaceVariant,
-    shape: Shape = RectangleShape
-) {
-    val urgencyType = when (request.urgency) {
-        "High" -> UrgencyType.HIGH
-        "Medium" -> UrgencyType.MEDIUM
-        "Low" -> UrgencyType.LOW
-        else -> UrgencyType.MEDIUM
-    }
-    
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = containerColor),
-        shape = shape
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(pxToDp(16)),
-            verticalArrangement = Arrangement.spacedBy(pxToDp(16))
-        ) {
-            // Urgency and Deadline Row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Urgency Tag with Flag Icon
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(pxToDp(8)),
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .background(
-                            color = urgencyType.color.copy(alpha = 0.2f),
-                            shape = RoundedCornerShape(pxToDp(12))
-                        )
-                        .padding(
-                            horizontal = pxToDp(12),
-                            vertical = pxToDp(8)
-                        )
-                ) {
-                    AppCategoryIcon(
-                        painter = painterResource(R.drawable.ic_priority_flag),
-                        iconDescription = "Urgency",
-                        iconSize = pxToDp(16),
-                        tint = urgencyType.color
-                    )
-                    CustomLabel(
-                        header = "Urgency: ${urgencyType.label}",
-                        headerColor = urgencyType.color,
-                        fontSize = 14.sp
-                    )
-                }
+                InfoRow(label = "Brand", value = machine.brand)
+                InfoRow(label = "Model", value = machine.model)
+                InfoRow(label = "Location", value = machine.location)
+                InfoRow(label = "Facility", value = machine.facilityName)
                 
-                // Clock Icon with Deadline
+                // Editable Status
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(pxToDp(8)),
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(pxToDp(12)),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    AppCategoryIcon(
-                        painter = painterResource(R.drawable.ic_assigned_time),
-                        iconDescription = "start",
-                        iconSize = pxToDp(16),
-                        tint = onSurfaceColor.copy(alpha = 0.7f)
-                    )
                     CustomLabel(
-                        header = request.deadline,
-                        headerColor = onSurfaceColor.copy(alpha = 0.7f),
+                        header = "Status:",
+                        modifier = Modifier.weight(0.2f),
+                        headerColor = onSurfaceColor.copy(alpha = 0.5f),
                         fontSize = 14.sp
                     )
+                    Box(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        // Status Badge (Clickable)
+                        Box(
+                            modifier = Modifier
+                                .clickable { showStatusDropdown = true }
+                                .background(
+                                    color = machine.statusType.color,
+                                    shape = RoundedCornerShape(pxToDp(20))
+                                )
+                                .padding(horizontal = pxToDp(10), vertical = pxToDp(4))
+                        ) {
+                            CustomLabel(
+                                header = machine.statusType.label,
+                                fontSize = 14.sp,
+                                headerColor = whiteColor
+                            )
+                        }
+                        
+                        // Status Dropdown Menu
+                        DropdownMenu(
+                            expanded = showStatusDropdown,
+                            onDismissRequest = { showStatusDropdown = false }
+                        ) {
+                            MachineStatusType.values().forEach { status ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = status.label,
+                                            color = status.color
+                                        )
+                                    },
+                                    onClick = {
+                                        onStatusChange(status)
+                                        showStatusDropdown = false
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
-            }
-            
-            // Action Buttons
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(pxToDp(13))
-            ) {
-                AppButton(
-                    buttonText = "Reject",
-                    onClick = { },
-                    modifier = Modifier.weight(1f),
-                    containerColor = cardColor,
-                    contentColor = onSurfaceColor
-                )
-                AppButton(
-                    buttonText = "Approve",
-                    onClick = { },
-                    modifier = Modifier.weight(1f)
-                )
             }
         }
     }
 }
 
 @Composable
-fun MaintenanceInChargeCard(
+fun InfoRow(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(pxToDp(12)),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CustomLabel(
+            header = label,
+            modifier = Modifier.weight(0.2f),
+            headerColor = onSurfaceColor.copy(alpha = 0.5f),
+            fontSize = 14.sp
+        )
+        CustomLabel(
+            header = value,
+            modifier = Modifier.weight(1f),
+            headerColor = onSurfaceColor.copy(alpha = 0.8f),
+            fontSize = 14.sp
+        )
+    }
+}
+
+@Composable
+fun InChargeCard(
     modifier: Modifier = Modifier,
     containerColor: Color = onSurfaceVariant,
     shape: Shape = RectangleShape
@@ -498,8 +398,8 @@ fun MaintenanceInChargeCard(
 }
 
 @Composable
-fun MaintenanceAdditionalInfoCard(
-    request: MaintenanceRequestData,
+fun AdditionalInfoCard(
+    machine: MachineData,
     modifier: Modifier = Modifier,
     containerColor: Color = onSurfaceVariant
 ) {
@@ -528,8 +428,9 @@ fun MaintenanceAdditionalInfoCard(
                         fontSize = 16.sp
                     )
                     Spacer(modifier = Modifier.height(pxToDp(5)))
-                    MaintenanceInfoRow(label = "Estimated Cost", value = request.estimatedCost)
-                    MaintenanceInfoRow(label = "Request ID", value = request.id)
+                    CustomLabel(
+                        header = "High-performance server for research and computation. Suitable for machine learning and data analysis tasks."
+                    )
                 }
             } else {
                 Box(
@@ -558,31 +459,69 @@ fun MaintenanceAdditionalInfoCard(
 }
 
 @Composable
-fun MaintenanceInfoRow(label: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(pxToDp(12)),
-        verticalAlignment = Alignment.CenterVertically
+fun MaintenanceInfoCard(
+    machine: MachineData,
+    modifier: Modifier = Modifier,
+    containerColor: Color = onSurfaceVariant
+) {
+    var expanded by remember { mutableStateOf(true) }
+    val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { expanded = !expanded },
+        colors = CardDefaults.cardColors(containerColor = containerColor)
     ) {
-        CustomLabel(
-            header = label,
-            modifier = Modifier.weight(0.2f),
-            headerColor = onSurfaceColor.copy(alpha = 0.5f),
-            fontSize = 14.sp
-        )
-        CustomLabel(
-            header = value,
-            modifier = Modifier.weight(1f),
-            headerColor = onSurfaceColor.copy(alpha = 0.8f),
-            fontSize = 14.sp
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(pxToDp(16))
+        ) {
+            if (expanded) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(pxToDp(12)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    CustomLabel(
+                        header = "Maintenance Information",
+                        headerColor = onSurfaceColor.copy(0.9f),
+                        fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.height(pxToDp(5)))
+                    InfoRow(label = "Last Maintenance", value = machine.lastMaintenance)
+                    InfoRow(label = "Next Maintenance", value = machine.nextMaintenance)
+                }
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    CustomLabel(
+                        header = "Maintenance Information",
+                        headerColor = onSurfaceColor.copy(0.9f),
+                        fontSize = 16.sp
+                    )
+                }
+            }
+
+            AppCategoryIcon(
+                painter = painterResource(
+                    if (expanded) R.drawable.ic_arrow_up else R.drawable.ic_arrow_down
+                ),
+                iconDescription = "Expand Icon",
+                tint = onSurfaceColor,
+                iconSize = pxToDp(20),
+                modifier = Modifier.align(iconAlignment).padding(pxToDp(4))
+            )
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun MaintenanceDetailScreenPreview() {
+fun MachineDetailScreenPreview() {
     val navController = rememberNavController()
-    MaintenanceDetailScreen(requestId = "MAINT-001", navController = navController)
+    MachineDetailScreen(machineId = "EQ-2024-001", navController = navController)
 }
 

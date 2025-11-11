@@ -7,21 +7,21 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.rmsjims.navigation.Screen
-import com.example.rmsjims.ui.screens.ProdDescScreen
-import com.example.rmsjims.ui.screens.ProjectInfoScreen
-import com.example.rmsjims.ui.screens.RaiseTicketScreen
-import com.example.rmsjims.ui.screens.TicketScreen
+import com.example.rmsjims.ui.screens.staff.ProdDescScreen
+import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
+import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
+import com.example.rmsjims.ui.screens.staff.TicketScreen
 import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.admin.EquipmentAssignmentScreen
 import com.example.rmsjims.ui.screens.admin.SystemSettingScreen
 import com.example.rmsjims.ui.screens.admin.UserManagementScreen
-import com.example.rmsjims.ui.screens.assisstant.MaintenanceApprovalScreen
-import com.example.rmsjims.ui.screens.assisstant.MaintenanceDetailScreen
-import com.example.rmsjims.ui.screens.assisstant.MachineDetailScreen
-import com.example.rmsjims.ui.screens.assisstant.MachineStatusScreen
-import com.example.rmsjims.ui.screens.assisstant.ResourceManagementScreen
-import com.example.rmsjims.ui.screens.assisstant.TicketManagementScreen
-import com.example.rmsjims.ui.screens.assisstant.UsageApprovalScreen
+import com.example.rmsjims.ui.screens.assistant.MaintenanceApprovalScreen
+import com.example.rmsjims.ui.screens.assistant.MaintenanceDetailScreen
+import com.example.rmsjims.ui.screens.assistant.MachineDetailScreen
+import com.example.rmsjims.ui.screens.assistant.MachineStatusScreen
+import com.example.rmsjims.ui.screens.assistant.ResourceManagementScreen
+import com.example.rmsjims.ui.screens.assistant.TicketManagementScreen
+import com.example.rmsjims.ui.screens.assistant.UsageApprovalScreen
 
 @Composable
 fun AdminModuleApp() {
@@ -29,7 +29,7 @@ fun AdminModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.AdminDashboardScreen.route
+        startDestination = Screen.LoginScreen.route
     ) {
         composable(Screen.AdminDashboardScreen.route) {
             AdminDashboardScreen(navController = navController)

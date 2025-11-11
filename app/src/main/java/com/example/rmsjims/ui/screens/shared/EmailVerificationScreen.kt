@@ -1,7 +1,8 @@
-package com.example.shopping.startup.screen
+package com.example.rmsjims.ui.screens.shared
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -10,13 +11,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.rmsjims.R
 import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.AppTextField
@@ -28,44 +30,62 @@ import com.example.rmsjims.ui.theme.app_background
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ForgotPasswordScreen(navController: NavHostController){
-
+fun EmailVerificationScreen(navController: NavHostController){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-    Scaffold (
+    Scaffold(
         containerColor = app_background,
         topBar = {
             CustomTopBar(
-            title = "Forgot Password",
-            onNavigationClick = {},
-        )}
-    ){ paddingValues ->
-        Column (
+                title = "Verify Your Email"
+            )
+        }
+    ) { paddingValues ->
+        Column(
             modifier = Modifier.padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-        ){
+        ) {
             Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
 
-            Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
+            Spacer(modifier = Modifier.height(15.dp))
+
             CustomLabel(
-                header = "Please Enter your Email Address to recieve a Verification Code"
+                header = "Please Enter the 4 digit code sent to sans@gmail.com"
             )
             Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
 
-            AppTextField(
-                value = "Email Address",
-                onValueChange = {},
-                placeholder = "Enter your email address"
-            )
-
+            Row (
+                modifier = Modifier.padding(Dimensions.componentPadding()),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ){
+                AppTextField(
+                    value = "0",
+                    onValueChange = {},
+                    placeholder = "0"
+                )
+                AppTextField(
+                    value = "0",
+                    onValueChange = {},
+                    placeholder = "0"
+                )
+                AppTextField(
+                    value = "0",
+                    onValueChange = {},
+                    placeholder = "0"
+                )
+                AppTextField(
+                    value = "0",
+                    onValueChange = {},
+                    placeholder = "0"
+                )
+            }
 
             Spacer(modifier = Modifier.height(Dimensions.medSpacer()))
 
             AppButton(
                 onClick = {
-                    navController.navigate(Screen.EmailVerificationScreen.route)},
-                buttonText = "Send"
+                    navController.navigate(Screen.NewPasswordScreen.route) },
+                buttonText = "Verify",
             )
         }
     }
@@ -73,7 +93,7 @@ fun ForgotPasswordScreen(navController: NavHostController){
 
 @Preview(showBackground = true)
 @Composable
-fun pswdFOrgotScreenPreview(){
+fun EmailVerificationScreenPreview(){
     val dummyNavController = rememberNavController()
-    ForgotPasswordScreen(dummyNavController)
+    EmailVerificationScreen(dummyNavController)
 }
