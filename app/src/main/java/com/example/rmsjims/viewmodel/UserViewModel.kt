@@ -12,12 +12,26 @@ import kotlinx.coroutines.launch
 class UserSessionViewModel(
     private val sessionManager: SessionManager
 ) : ViewModel() {
-    var userRole by mutableStateOf(UserRole.USER)
+    var userRole by mutableStateOf(UserRole.UNASSIGNED)
         private set
 
     init {
         viewModelScope.launch {
-            userRole = sessionManager.getUserRole() // now using injected session manager
+            userRole = sessionManager.getUserRole()
+        }
+    }
+
+    fun updateRole(role: UserRole) {
+        viewModelScope.launch {
+            sessionManager.setUserRole(role)
+            userRole = role
+        }
+    }
+
+    fun clearRole() {
+        viewModelScope.launch {
+            sessionManager.clearRole()
+            userRole = UserRole.UNASSIGNED
         }
     }
 }

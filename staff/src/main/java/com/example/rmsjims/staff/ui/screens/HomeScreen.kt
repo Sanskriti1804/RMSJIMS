@@ -70,7 +70,7 @@ fun HomeScreen(
             CustomNavigationBar(navController = navController)
         },
         floatingActionButton = {
-            if (userRole == UserRole.USER){
+            if (userRole == UserRole.ASSISTANT){
                 AppFAB(
                     onClick = {searchViewModel.showChatSheet()},
                     modifier = Modifier
@@ -121,7 +121,7 @@ fun HomeScreen(
                 headerColor = titleColor
             )
 
-            if (userRole == UserRole.LAB_INCHARGE) {
+            if (userRole == UserRole.ADMIN) {
                 AppButton(
                     buttonText = "Manage Lab",
                     onClick = { },

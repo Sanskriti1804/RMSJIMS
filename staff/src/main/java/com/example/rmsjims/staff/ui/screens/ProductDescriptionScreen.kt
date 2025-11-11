@@ -106,7 +106,7 @@ fun ProdDescScreen(
             )
         },
         bottomBar = {
-            if (userRole == UserRole.USER){
+            if (userRole == UserRole.ASSISTANT){
                 AppButton(
                     onClick = {
                         navController.navigate(Screen.CalendarScreen.route)
