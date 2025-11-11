@@ -4,20 +4,26 @@ import android.content.Context
 import com.example.rmsjims.data.model.UserRole
 
 class SessionManager(private val context: Context) {
-    fun getUserRole(): UserRole {
-        // FOR TESTING ONLY — hardcoded override
-        return UserRole.USER  // or UserRole.USER
+
+    private val prefs by lazy {
+        context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     }
 
+    fun getUserRole(): UserRole {
+        val storedRole = prefs.getString(KEY_USER_ROLE, UserRole.UNASSIGNED.name)
+        return runCatching { UserRole.valueOf(storedRole ?: UserRole.UNASSIGNED.name) }
+            .getOrDefault(UserRole.UNASSIGNED)
+    }
 
-//    fun getUserRole(): UserRole {
-//
-//        // FOR TESTING ONLY — manually switch here:
-//        val testRole = UserRole.LAB_INCHARGE  // or USER
-//
-//        // example using SharedPreferences
-//        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-//        val role = prefs.getString("user_role", UserRole.USER.name)
-//        return UserRole.valueOf(role ?: UserRole.USER.name)
-//    }
+    fun setUserRole(role: UserRole) {
+        prefs.edit().putString(KEY_USER_ROLE, role.name).apply()
+    }
+
+    fun clearRole() {
+        prefs.edit().remove(KEY_USER_ROLE).apply()
+    }
+
+    private companion object {
+        const val KEY_USER_ROLE = "user_role"
+    }
 }
