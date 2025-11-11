@@ -1,4 +1,4 @@
-package com.example.rmsjims.admin.navigation
+package com.example.rmsjims.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -6,7 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.screens.staff.ProdDescScreen
 import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
 import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen

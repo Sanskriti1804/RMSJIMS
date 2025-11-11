@@ -1,4 +1,4 @@
-package com.example.rmsjims.staff.navigation
+package com.example.rmsjims.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -8,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.screens.staff.BookingScreen
 import com.example.rmsjims.ui.screens.staff.CalendarScreen
 import com.example.rmsjims.ui.screens.staff.HomeScreen
