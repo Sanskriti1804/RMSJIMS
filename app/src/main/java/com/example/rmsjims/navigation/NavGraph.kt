@@ -50,7 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainApp(
-    startDestination: String = Screen.HomeScreen.route
+    startDestination: String = Screen.ProductDescriptionScreen.route
 ){
     val navController = rememberNavController()
     AppNavGraph(

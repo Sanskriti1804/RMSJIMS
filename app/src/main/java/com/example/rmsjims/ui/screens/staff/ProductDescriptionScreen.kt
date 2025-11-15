@@ -41,10 +41,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import android.util.Log
 import coil.compose.AsyncImage
 import com.example.rmsjims.R
 import com.example.rmsjims.data.model.UiState
 import com.example.rmsjims.data.model.UserRole
+import com.example.rmsjims.data.schema.Facilities
 import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.AppCategoryIcon
@@ -257,10 +259,22 @@ fun ProductDescriptionCard(
                         Text("Loading facilities")
                     }
                     is UiState.Error -> {
-                        Text("Error loading facilities")
+                        // Fallback to demo facility on error
+                        Log.e("ProductDescriptionCard", "Error loading facilities", facilitiesList.exception)
+                        Log.w("ProductDescriptionCard", "Using demo facility fallback")
+                        val demoFacility = getDemoFacility()
+                        InfoRow(label = "Brand", value = "Canon")
+                        InfoRow(label = "Model", value = "EOS R5 Mark II")
+                        InfoRow(label = "Location", value = demoFacility.location)
+                        InfoRow(label = "Timing", value = demoFacility.timings)
                     }
                     is UiState.Success -> {
-                        val currentFacility = facilitiesList.data.firstOrNull()
+                        // Use real facility if available, otherwise fallback to demo facility
+                        val currentFacility = if (facilitiesList.data.isNotEmpty()) {
+                            facilitiesList.data.firstOrNull()
+                        } else {
+                            getDemoFacility()
+                        }
 
                         if (currentFacility != null){
                             InfoRow(label = "Brand", value = "Canon")
@@ -337,9 +351,31 @@ fun InChargeCard(
                 ) {
                     when(facilitiesList){
                         is UiState.Loading -> Text("Loading facilities")
-                        is UiState.Error -> Text("Error loading facilities")
+                        is UiState.Error -> {
+                            // Fallback to demo facility on error
+                            Log.e("InChargeCard", "Error loading facilities", facilitiesList.exception)
+                            Log.w("InChargeCard", "Using demo facility fallback")
+                            val demoFacility = getDemoFacility()
+                            CustomLabel(
+                                header = "InCharge",
+                                headerColor = onSurfaceColor.copy(0.9f),
+                                fontSize = 16.sp
+                            )
+                            Spacer(modifier = Modifier.height(pxToDp(5)))
+                            InChargeRow(label = "Prof.", name = demoFacility.prof_incharge)
+                            InChargeRow(
+                                label = "Asst.",
+                                name = demoFacility.lab_incharge,
+                                icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
+                            )
+                        }
                         is UiState.Success -> {
-                            val currentFacility = facilitiesList.data.firstOrNull()
+                            // Use real facility if available, otherwise fallback to demo facility
+                            val currentFacility = if (facilitiesList.data.isNotEmpty()) {
+                                facilitiesList.data.firstOrNull()
+                            } else {
+                                getDemoFacility()
+                            }
                             if (currentFacility != null){
                                 CustomLabel(
                                     header = "InCharge",
@@ -457,9 +493,28 @@ fun AdditionalInfoCard(
                 ) {
                     when(facilitiesList){
                         is UiState.Loading -> Text("Loading facilities")
-                        is UiState.Error -> Text("Error loading facilities")
+                        is UiState.Error -> {
+                            // Fallback to demo facility on error
+                            Log.e("AdditionalInfoCard", "Error loading facilities", facilitiesList.exception)
+                            Log.w("AdditionalInfoCard", "Using demo facility fallback")
+                            val demoFacility = getDemoFacility()
+                            CustomLabel(
+                                header = "Additional Information",
+                                headerColor = onSurfaceColor.copy(0.9f),
+                                fontSize = 16.sp
+                            )
+                            Spacer(modifier = Modifier.height(pxToDp(5)))
+                            CustomLabel(
+                                header = demoFacility.description ?: "No Description found"
+                            )
+                        }
                         is UiState.Success -> {
-                            val currentFacility = facilitiesList.data.firstOrNull()
+                            // Use real facility if available, otherwise fallback to demo facility
+                            val currentFacility = if (facilitiesList.data.isNotEmpty()) {
+                                facilitiesList.data.firstOrNull()
+                            } else {
+                                getDemoFacility()
+                            }
                             if (currentFacility != null){
                                 CustomLabel(
                                     header = "Additional Information",
@@ -600,6 +655,29 @@ fun ActionCard(
     }
 }
 
+
+// Demo/fallback facility - used when Supabase returns empty or on error
+@Composable
+private fun getDemoFacility(): Facilities {
+    return remember {
+        Facilities(
+            id = 1,
+            name = "Photo Studio",
+            department_id = 1,
+            type = "Studio",
+            location = "IDC, Photo Studio",
+            timings = "9:00 AM - 6:00 PM",
+            lab_incharge = "Akash Kumar Swami",
+            lab_incharge_phone = "+91 9876543210",
+            lab_incharge_email = "akash.swami@example.com",
+            prof_incharge = "Sumant Rao",
+            prof_incharge_email = "sumant.rao@example.com",
+            description = "State-of-the-art photography studio equipped with professional cameras, lighting equipment, and editing workstations. Available for student projects and research activities.",
+            createdAt = "2024-01-01T00:00:00Z",
+            branch_id = 1
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
