@@ -19,6 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,8 +30,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import android.util.Log
 import com.example.rmsjims.data.model.UiState
 import com.example.rmsjims.data.model.UserRole
+import com.example.rmsjims.data.schema.ItemCategories
 import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.AppCategoryImage
@@ -150,13 +153,20 @@ fun HomeScreen(
                 }
 
                 is UiState.Success -> {
+                    // Use real data if available, otherwise fallback to demo data
+                    val effectiveCategories = if (categories.data.isNotEmpty()) {
+                        categories.data
+                    } else {
+                        getDemoCategories()
+                    }
+
                     LazyVerticalGrid(
                         columns = ResponsiveLayout.getGridColumns(),
                         contentPadding = ResponsiveLayout.getContentPadding(),
                         verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
                         horizontalArrangement = ResponsiveLayout.getGridArrangement(),
                     ) {
-                        items(categories.data) { item ->
+                        items(effectiveCategories) { item ->
                             AppCategoryCard(
                                 title = item.name,
                                 onClick = { navController.navigate(Screen.EquipmentScreen.createRoute(item.name) )}
@@ -166,11 +176,25 @@ fun HomeScreen(
                 }
 
                 is UiState.Error -> {
-                    Text(
-                        text = "Error loading categories",
-                        color = Color.Red,
-                        modifier = Modifier.padding(ResponsiveLayout.getVerticalPadding())
-                    )
+                    // Fallback to demo data on error
+                    Log.e("HomeScreen", "Error loading categories", categories.exception)
+                    Log.w("HomeScreen", "Using demo data fallback due to error")
+
+                    val demoCategories = getDemoCategories()
+
+                    LazyVerticalGrid(
+                        columns = ResponsiveLayout.getGridColumns(),
+                        contentPadding = ResponsiveLayout.getContentPadding(),
+                        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+                        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
+                    ) {
+                        items(demoCategories) { item ->
+                            AppCategoryCard(
+                                title = item.name,
+                                onClick = { navController.navigate(Screen.EquipmentScreen.createRoute(item.name) )}
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -215,6 +239,55 @@ fun AppCategoryCard(
                     .aspectRatio(1f)
             )
         }
+    }
+}
+
+// Demo/fallback categories - used when Supabase returns empty or on error
+@Composable
+private fun getDemoCategories(): List<ItemCategories> {
+    return remember {
+        listOf(
+            ItemCategories(
+                id = 1,
+                name = "Electronics",
+                createdAt = "2024-01-01T00:00:00Z"
+            ),
+            ItemCategories(
+                id = 2,
+                name = "Lab Equipment",
+                createdAt = "2024-01-02T00:00:00Z"
+            ),
+            ItemCategories(
+                id = 3,
+                name = "Photography",
+                createdAt = "2024-01-03T00:00:00Z"
+            ),
+            ItemCategories(
+                id = 4,
+                name = "Tools",
+                createdAt = "2024-01-04T00:00:00Z"
+            ),
+            ItemCategories(
+                id = 5,
+                name = "Computer Hardware",
+                createdAt = "2024-01-05T00:00:00Z"
+            ),
+            ItemCategories(
+                id = 6,
+                name = "Safety Equipment",
+                createdAt = "2024-01-06T00:00:00Z"
+            ),
+            ItemCategories(
+                id = 7,
+                name = "Measurement Devices",
+                createdAt = "2024-01-07T00:00:00Z"
+            ),
+            ItemCategories(
+                id = 8,
+                name = "Storage Solutions",
+                createdAt = "2024-01-08T00:00:00Z"
+            )
+        )
     }
 }
 
