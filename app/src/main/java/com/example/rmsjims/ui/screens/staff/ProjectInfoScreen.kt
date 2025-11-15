@@ -1,7 +1,11 @@
 package com.example.rmsjims.ui.screens.staff
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,13 +13,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.Font
@@ -30,10 +44,14 @@ import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.AppDropDownTextField
 import com.example.rmsjims.ui.components.AppTextField
+import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomTopBar
 import com.example.rmsjims.ui.components.FilteredAppTextField
+import com.example.rmsjims.ui.theme.cardColor
 import com.example.rmsjims.ui.theme.onSurfaceColor
+import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.whiteColor
+import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.viewmodel.BranchViewModel
 import com.example.rmsjims.viewmodel.DepartmentViewModel
@@ -53,6 +71,10 @@ fun ProjectInfoScreen(
     val departmentViewModel : DepartmentViewModel = koinViewModel()
     val query = departmentViewModel.query
     val filteredDepartmentList = departmentViewModel.filteredDepartments
+
+    // Team members state
+    val teamMembers = remember { mutableStateListOf<String>() }
+    var teamMemberInput by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -109,21 +131,42 @@ fun ProjectInfoScreen(
                     onValueChange = {},
                     placeholder = "Loading..."
                 )
-                is UiState.Error -> FilteredAppTextField(
-                    modifier = Modifier.weight(1f),
-                    value = "",
-                    onValueChange = {},
-                    placeholder = "Error loading"
-                )
-                is UiState.Success -> FilteredAppTextField(
-                    value = query,
-                    onValueChange = { departmentViewModel.onQueryChange(it)},
-                    placeholder = "Department",
-                    items = filteredDepartmentList,
-                    onItemSelected = {
-                        departmentViewModel.onDepartmentSelected(it)
+                is UiState.Error -> {
+                    Log.e("ProjectInfoScreen", "Error loading departments")
+                    Log.w("ProjectInfoScreen", "Using demo departments fallback due to error")
+                    
+                    val demoDepartments = getDemoDepartments()
+                    FilteredAppTextField(
+                        modifier = Modifier.weight(1f),
+                        value = query,
+                        onValueChange = { departmentViewModel.onQueryChange(it)},
+                        placeholder = "Department",
+                        items = if (query.isBlank()) demoDepartments else demoDepartments.filter { it.contains(query, ignoreCase = true) },
+                        onItemSelected = {
+                            departmentViewModel.onDepartmentSelected(it)
+                        }
+                    )
+                }
+                is UiState.Success -> {
+                    // Use real data if available, otherwise fallback to demo data
+                    val effectiveDepartments = if (filteredDepartmentList.isNotEmpty()) {
+                        filteredDepartmentList
+                    } else {
+                        Log.w("ProjectInfoScreen", "Empty department list, using demo data fallback")
+                        val demoDepartments = getDemoDepartments()
+                        if (query.isBlank()) demoDepartments else demoDepartments.filter { it.contains(query, ignoreCase = true) }
                     }
-                )
+                    
+                    FilteredAppTextField(
+                        value = query,
+                        onValueChange = { departmentViewModel.onQueryChange(it)},
+                        placeholder = "Department",
+                        items = effectiveDepartments,
+                        onItemSelected = {
+                            departmentViewModel.onDepartmentSelected(it)
+                        }
+                    )
+                }
             }
 
 
@@ -149,23 +192,52 @@ fun ProjectInfoScreen(
                         placeholder = "Loading...",
                         items = emptyList()
                     )
-                    is UiState.Error -> AppDropDownTextField(
-                        modifier = Modifier.weight(1f),
-                        value = "",
-                        onValueChange = {},
-                        placeholder = "Error loading",
-                        items = emptyList()
-                    )
-                    is UiState.Success -> AppDropDownTextField(
-                        modifier = Modifier.weight(1f),
-                        value = selectedBranch,
-                        onValueChange = { selectedBranch = it },
-                        placeholder = "Branch",
-                        items = branchList
-                    )
+                    is UiState.Error -> {
+                        Log.e("ProjectInfoScreen", "Error loading branches")
+                        Log.w("ProjectInfoScreen", "Using demo branches fallback due to error")
+                        
+                        val demoBranches = getDemoBranches()
+                        AppDropDownTextField(
+                            modifier = Modifier.weight(1f),
+                            value = selectedBranch,
+                            onValueChange = { selectedBranch = it },
+                            placeholder = "Branch",
+                            items = demoBranches
+                        )
+                    }
+                    is UiState.Success -> {
+                        // Use real data if available, otherwise fallback to demo data
+                        val effectiveBranches = if (branchList.isNotEmpty()) {
+                            branchList
+                        } else {
+                            Log.w("ProjectInfoScreen", "Empty branch list, using demo data fallback")
+                            getDemoBranches()
+                        }
+                        
+                        AppDropDownTextField(
+                            modifier = Modifier.weight(1f),
+                            value = selectedBranch,
+                            onValueChange = { selectedBranch = it },
+                            placeholder = "Branch",
+                            items = effectiveBranches
+                        )
+                    }
                 }
             }
 
+            // Team Members Section (Optional)
+            TeamMembersSection(
+                teamMembers = teamMembers,
+                inputValue = teamMemberInput,
+                onInputChange = { teamMemberInput = it },
+                onAddMember = {
+                    if (teamMemberInput.isNotBlank() && !teamMembers.contains(teamMemberInput.trim())) {
+                        teamMembers.add(teamMemberInput.trim())
+                        teamMemberInput = ""
+                    }
+                },
+                onRemoveMember = { teamMembers.remove(it) }
+            )
 
             Spacer(modifier = Modifier.height(13.dp))
             Text(
@@ -183,6 +255,153 @@ fun ProjectInfoScreen(
     }
 }
 
+
+// Demo/fallback departments - used when Supabase returns empty or on error
+@Composable
+private fun getDemoDepartments(): List<String> {
+    return remember {
+        listOf(
+            "Electronics & Communication Engineering",
+            "Computer Science & Engineering",
+            "Mechanical Engineering",
+            "Civil Engineering",
+            "Electrical Engineering",
+            "Information Technology",
+            "Aerospace Engineering",
+            "Chemical Engineering",
+            "Biotechnology",
+            "Automobile Engineering"
+        )
+    }
+}
+
+// Demo/fallback branches - used when Supabase returns empty or on error
+@Composable
+private fun getDemoBranches(): List<String> {
+    return remember {
+        listOf(
+            "Computer Science",
+            "Electronics & Communication",
+            "Mechanical",
+            "Civil",
+            "Electrical",
+            "Information Technology",
+            "Aerospace",
+            "Chemical",
+            "Biotechnology",
+            "Automobile"
+        )
+    }
+}
+
+// Team Members Section Component
+@Composable
+fun TeamMembersSection(
+    teamMembers: List<String>,
+    inputValue: String,
+    onInputChange: (String) -> Unit,
+    onAddMember: () -> Unit,
+    onRemoveMember: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(pxToDp(12))
+    ) {
+        // Label with optional indicator
+        CustomLabel(
+            header = "Team Members (Optional)",
+            headerColor = onSurfaceColor.copy(0.9f),
+            fontSize = 14.sp
+        )
+
+        // Input field with Add button
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(pxToDp(8)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AppTextField(
+                modifier = Modifier.weight(1f),
+                value = inputValue,
+                onValueChange = onInputChange,
+                placeholder = "Enter team member name"
+            )
+            IconButton(
+                onClick = onAddMember,
+                modifier = Modifier
+                    .size(ResponsiveLayout.getResponsiveSize(52.dp, 60.dp, 68.dp))
+                    .background(
+                        color = primaryColor,
+                        shape = RoundedCornerShape(pxToDp(8))
+                    )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add Team Member",
+                    tint = whiteColor,
+                    modifier = Modifier.size(pxToDp(20))
+                )
+            }
+        }
+
+        // Display added team members as chips
+        if (teamMembers.isNotEmpty()) {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(pxToDp(8)),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(teamMembers) { member ->
+                    TeamMemberChip(
+                        name = member,
+                        onRemove = { onRemoveMember(member) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TeamMemberChip(
+    name: String,
+    onRemove: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .background(
+                color = primaryColor.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(pxToDp(20))
+            )
+            .padding(
+                horizontal = pxToDp(12),
+                vertical = pxToDp(6)
+            )
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(pxToDp(6)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CustomLabel(
+                header = name,
+                fontSize = 13.sp,
+                headerColor = onSurfaceColor,
+                modifier = Modifier.padding(end = pxToDp(2))
+            )
+            Box(
+                modifier = Modifier
+                    .size(pxToDp(18))
+                    .clickable { onRemove() }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Remove $name",
+                    tint = primaryColor,
+                    modifier = Modifier.size(pxToDp(16))
+                )
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
