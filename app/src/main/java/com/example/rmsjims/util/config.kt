@@ -1,6 +1,13 @@
 package com.example.rmsjims.util
 
+import com.example.rmsjims.BuildConfig
+
 object config {
-    const val SUPABASE_URL = "https://ponognhirmyecjyurpfu.supabase.co"
-    const val SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvbm9nbmhpcm15ZWNqeXVycGZ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyMjg5MTIsImV4cCI6MjA2NTgwNDkxMn0.50SgztTqya5ULdhPcoGPhgQSmwyFhbWPcIaiSRhX9N8"
+    val SUPABASE_URL: String
+        get() = BuildConfig.SUPABASE_URL.takeIf { it.isNotBlank() }
+            ?: error("Supabase URL missing. Define SUPABASE_URL in local.properties or environment.")
+
+    val SUPABASE_KEY: String
+        get() = BuildConfig.SUPABASE_KEY.takeIf { it.isNotBlank() }
+            ?: error("Supabase anon key missing. Define SUPABASE_KEY in local.properties or environment.")
 }

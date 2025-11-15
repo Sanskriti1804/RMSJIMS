@@ -33,12 +33,15 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        localProps["SUPABASE_URL"]?.let {
-            buildConfigField("String", "SUPABASE_URL", "\"$it\"")
-        }
-        localProps["SUPABASE_KEY"]?.let {
-            buildConfigField("String", "SUPABASE_KEY", "\"$it\"")
-        }
+        val supabaseUrl = (localProps["SUPABASE_URL"] as? String)
+            ?: System.getenv("SUPABASE_URL")
+            ?: ""
+        val supabaseKey = (localProps["SUPABASE_KEY"] as? String)
+            ?: System.getenv("SUPABASE_KEY")
+            ?: ""
+
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+        buildConfigField("String", "SUPABASE_KEY", "\"$supabaseKey\"")
     }
 
     buildTypes {

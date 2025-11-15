@@ -5,6 +5,7 @@ package com.example.rmsjims
 //supabaseModule: The DI module for setting up your Supabase client.
 import android.app.Application
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.rmsjims.util.config
 import com.example.rmsjims.di.appModule
@@ -17,15 +18,30 @@ class RMSJimsApp : Application() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
-
-        startKoin {
-            androidContext(this@RMSJimsApp)        // Supplies the app-level context for DI —
-            modules(    //Registers your DI modules
-                supabaseModule(
-                config.SUPABASE_URL,
-                config.SUPABASE_KEY),
-                appModule
-            )
+        
+        Log.d("RMSJimsApp", "Application onCreate() called")
+        
+        try {
+            val supabaseUrl = config.SUPABASE_URL
+            val supabaseKey = config.SUPABASE_KEY
+            Log.d("RMSJimsApp", "Supabase URL loaded: ${if (supabaseUrl.isNotBlank()) "${supabaseUrl.take(20)}..." else "EMPTY"}")
+            Log.d("RMSJimsApp", "Supabase Key loaded: ${if (supabaseKey.isNotBlank()) "${supabaseKey.take(20)}..." else "EMPTY"}")
+            
+            startKoin {
+                androidContext(this@RMSJimsApp)        // Supplies the app-level context for DI —
+                modules(    //Registers your DI modules
+                    supabaseModule(
+                    supabaseUrl,
+                    supabaseKey),
+                    appModule
+                )
+            }
+            Log.d("RMSJimsApp", "Koin initialized successfully")
+        } catch (e: Exception) {
+            Log.e("RMSJimsApp", "CRITICAL ERROR initializing app", e)
+            Log.e("RMSJimsApp", "Exception type: ${e.javaClass.simpleName}")
+            Log.e("RMSJimsApp", "Exception message: ${e.message}")
+            throw e
         }
     }
 }

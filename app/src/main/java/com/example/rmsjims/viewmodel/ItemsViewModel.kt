@@ -1,5 +1,6 @@
 package com.example.rmsjims.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,6 +19,7 @@ class ItemsViewModel(
     var itemsState by mutableStateOf<UiState<List<Items>>>(UiState.Loading)
 
     init {
+        Log.d("ItemsViewModel", "ViewModel initialized, fetching items...")
         getItems()
     }
 
@@ -25,10 +27,21 @@ class ItemsViewModel(
         viewModelScope.launch {
             itemsState = UiState.Loading
             try{
+                Log.d("ItemsViewModel", "Calling repository.fetchItems()...")
                 val items = itemsRepository.fetchItems()
+                Log.d("ItemsViewModel", "Received ${items.size} items from repository")
+                if (items.isEmpty()) {
+                    Log.w("ItemsViewModel", "WARNING: Repository returned empty list!")
+                } else {
+                    Log.d("ItemsViewModel", "First 3 items: ${items.take(3).map { it.name }}")
+                }
                 itemsState = UiState.Success(items)
             }
             catch (e : Exception){
+                Log.e("ItemsViewModel", "ERROR fetching items", e)
+                Log.e("ItemsViewModel", "Exception type: ${e.javaClass.simpleName}")
+                Log.e("ItemsViewModel", "Exception message: ${e.message}")
+                Log.e("ItemsViewModel", "Exception stack trace:", e)
                 itemsState = UiState.Error(e)
             }
         }

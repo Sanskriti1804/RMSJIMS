@@ -157,9 +157,9 @@ fun CalendarScreen(
             )
 
             //EquipCard
-            EquipBookingCard(
-                productInfo = bookingViewmodel.productInfo,
-            )
+//            EquipBookingCard(
+////                productInfo = bookingViewmodel.productInfo,
+//            )
 
         }
     }
