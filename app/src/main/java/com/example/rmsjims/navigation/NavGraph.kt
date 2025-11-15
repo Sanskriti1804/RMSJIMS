@@ -23,7 +23,7 @@ import com.example.rmsjims.ui.screens.shared.RoleOverviewScreen
 import com.example.rmsjims.ui.screens.shared.RoleSelectionScreen
 import com.example.rmsjims.ui.screens.staff.ProfileScreen
 import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
-import com.example.rmsjims.ui.screens.staff.TicketScreen
+import com.example.rmsjims.ui.screens.assistant.TicketScreen
 import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.admin.EquipmentAssignmentScreen
 import com.example.rmsjims.ui.screens.admin.SystemSettingScreen
@@ -50,7 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainApp(
-    startDestination: String = Screen.ProjectInfoScreen.route
+    startDestination: String = Screen.RaiseTicketScreen.route
 ){
     val navController = rememberNavController()
     AppNavGraph(

@@ -9,7 +9,7 @@ import androidx.navigation.navArgument
 import com.example.rmsjims.ui.screens.staff.ProdDescScreen
 import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
 import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
-import com.example.rmsjims.ui.screens.staff.TicketScreen
+import com.example.rmsjims.ui.screens.assistant.TicketScreen
 import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.admin.EquipmentAssignmentScreen
 import com.example.rmsjims.ui.screens.admin.SystemSettingScreen

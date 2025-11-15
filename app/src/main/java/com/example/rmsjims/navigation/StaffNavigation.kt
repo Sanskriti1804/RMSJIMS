@@ -15,7 +15,7 @@ import com.example.rmsjims.ui.screens.staff.ProdDescScreen
 import com.example.rmsjims.ui.screens.staff.ProfileScreen
 import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
 import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
-import com.example.rmsjims.ui.screens.staff.TicketScreen
+import com.example.rmsjims.ui.screens.assistant.TicketScreen
 import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.CalendarViewModel

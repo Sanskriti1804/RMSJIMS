@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rmsjims.ui.screens.staff.ProdDescScreen
 import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
 import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
-import com.example.rmsjims.ui.screens.staff.TicketScreen
+import com.example.rmsjims.ui.screens.assistant.TicketScreen
 
 enum class SharedRoute(val route: String) {
     ProductDetails(Screen.ProductDescriptionScreen.route),
