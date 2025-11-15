@@ -66,10 +66,13 @@ import com.example.rmsjims.ui.theme.lightTextColor
 import com.example.rmsjims.ui.theme.navLabelColor
 import com.example.rmsjims.ui.theme.whiteColor
 import com.example.rmsjims.util.ResponsiveLayout
+import com.example.rmsjims.data.schema.Items
 import com.example.rmsjims.viewmodel.FacilitiesViewModel
 import com.example.rmsjims.viewmodel.FilterSortViewModel
 import com.example.rmsjims.viewmodel.ItemsViewModel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -145,8 +148,14 @@ fun EquipmentScreen(
                 }
 
                 is UiState.Success -> {
-
                     val facilities = (facilitiesState as? UiState.Success)?.data ?: emptyList()
+
+                    // Use real data if available, otherwise fallback to demo data
+                    val effectiveItems = if (items.data.isNotEmpty()) {
+                        items.data
+                    } else {
+                        getDemoEquipmentItems()
+                    }
 
                     LazyVerticalGrid(
                         columns = ResponsiveLayout.getGridColumns(),
@@ -154,7 +163,7 @@ fun EquipmentScreen(
                         verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
                         horizontalArrangement = ResponsiveLayout.getGridArrangement(),
                     ) {
-                        items(items.data) { item ->
+                        items(effectiveItems) { item ->
                             EquipmentCard(
                                 image = item.image_url,
                                 equipName = item.name,
@@ -170,14 +179,32 @@ fun EquipmentScreen(
                 }
 
                 is UiState.Error -> {
-                    val errorMessage = items.exception.localizedMessage ?: "Something went wrong"
+                    // Fallback to demo data on error
                     Log.e("EquipmentScreen", "Error loading items", items.exception)
+                    Log.w("EquipmentScreen", "Using demo data fallback due to error")
 
-                    Text(
-                        text = "Error loading items: $errorMessage",
-                        color = Color.Red,
-                        modifier = Modifier.padding(ResponsiveLayout.getVerticalPadding())
-                    )
+                    val facilities = (facilitiesState as? UiState.Success)?.data ?: emptyList()
+                    val demoItems = getDemoEquipmentItems()
+
+                    LazyVerticalGrid(
+                        columns = ResponsiveLayout.getGridColumns(),
+                        contentPadding = ResponsiveLayout.getContentPadding(),
+                        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+                        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
+                    ) {
+                        items(demoItems) { item ->
+                            EquipmentCard(
+                                image = item.image_url,
+                                equipName = item.name,
+                                available = if (item.is_available == true) "Available" else "Not Available",
+                                onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                                saveClick = {
+                                    isSaved = !isSaved
+                                },
+                                facilityName = itemViewModel.getFacilityNameForEquipment(item, facilities)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -374,6 +401,93 @@ fun EquipmentCard(
     }
 }
 
+
+// Demo/fallback equipment items - used when Supabase returns empty or on error
+@Composable
+private fun getDemoEquipmentItems(): List<Items> {
+    return remember {
+        listOf(
+            Items(
+                id = 1,
+                facility_id = 1,
+                parent_categoy_id = 1,
+                category_id = 1,
+                name = "Canon EOS R50 V",
+                specification = buildJsonObject { },
+                description = "Professional camera for photography studio",
+                image_url = "https://via.placeholder.com/300?text=Canon+EOS+R50",
+                usage_instructions = "Handle with care",
+                is_available = true,
+                createdAt = "2024-01-01T00:00:00Z"
+            ),
+            Items(
+                id = 2,
+                facility_id = 2,
+                parent_categoy_id = 1,
+                category_id = 1,
+                name = "Sony Alpha A7III",
+                specification = buildJsonObject { },
+                description = "High-resolution mirrorless camera",
+                image_url = "https://via.placeholder.com/300?text=Sony+Alpha+A7III",
+                usage_instructions = "Check battery before use",
+                is_available = true,
+                createdAt = "2024-01-02T00:00:00Z"
+            ),
+            Items(
+                id = 3,
+                facility_id = 1,
+                parent_categoy_id = 1,
+                category_id = 1,
+                name = "Nikon D850",
+                specification = buildJsonObject { },
+                description = "DSLR camera with advanced features",
+                image_url = "https://via.placeholder.com/300?text=Nikon+D850",
+                usage_instructions = "Use provided lens cap",
+                is_available = false,
+                createdAt = "2024-01-03T00:00:00Z"
+            ),
+            Items(
+                id = 4,
+                facility_id = 1,
+                parent_categoy_id = 1,
+                category_id = 1,
+                name = "Canon EOS 5D Mark IV",
+                specification = buildJsonObject { },
+                description = "Professional full-frame camera",
+                image_url = "https://via.placeholder.com/300?text=Canon+5D+Mark+IV",
+                usage_instructions = "Review manual before operation",
+                is_available = true,
+                createdAt = "2024-01-04T00:00:00Z"
+            ),
+            Items(
+                id = 5,
+                facility_id = 3,
+                parent_categoy_id = 1,
+                category_id = 1,
+                name = "Fujifilm X-T4",
+                specification = buildJsonObject { },
+                description = "Compact mirrorless camera system",
+                image_url = "https://via.placeholder.com/300?text=Fujifilm+X-T4",
+                usage_instructions = "Ensure memory card is inserted",
+                is_available = true,
+                createdAt = "2024-01-05T00:00:00Z"
+            ),
+            Items(
+                id = 6,
+                facility_id = 2,
+                parent_categoy_id = 1,
+                category_id = 1,
+                name = "Panasonic Lumix GH6",
+                specification = buildJsonObject { },
+                description = "Video-focused mirrorless camera",
+                image_url = "https://via.placeholder.com/300?text=Panasonic+GH6",
+                usage_instructions = "Check SD card compatibility",
+                is_available = false,
+                createdAt = "2024-01-06T00:00:00Z"
+            )
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
