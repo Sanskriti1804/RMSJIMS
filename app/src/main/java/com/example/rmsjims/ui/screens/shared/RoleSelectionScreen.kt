@@ -96,7 +96,8 @@ fun RoleSelectionScreen(
                     RoleCard(
                         option = option,
                         onRoleSelected = { selectedRole ->
-                            // Navigate directly without saving to session manager
+                            // Save role to session manager and navigate
+                            sessionViewModel.updateRole(selectedRole)
                             when (selectedRole) {
                                 UserRole.ADMIN -> {
                                     navController.navigate(Screen.AdminNavGraph.route) {

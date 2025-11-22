@@ -17,6 +17,9 @@ import com.example.rmsjims.ui.screens.staff.ProdDescScreen
 import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
 import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
 import com.example.rmsjims.ui.screens.assistant.TicketScreen
+import com.example.rmsjims.ui.screens.staff.HomeScreen
+import com.example.rmsjims.ui.screens.staff.EquipmentScreen
+import com.example.rmsjims.ui.screens.staff.ProfileScreen
 import com.example.rmsjims.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -26,8 +29,26 @@ fun AssistantModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.ResourceManagementScreen.route
+        startDestination = Screen.HomeScreen.route
     ) {
+        // Bottom navigation screens
+        composable(Screen.HomeScreen.route) {
+            HomeScreen(navController = navController)
+        }
+        composable(
+            Screen.EquipmentScreen.route,
+            arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: "Equipments"
+            EquipmentScreen(
+                navController = navController,
+                categoryName = categoryName
+            )
+        }
+        composable(Screen.ProfileScreen.route) {
+            ProfileScreen(navController = navController)
+        }
+        
         // Assistant-specific screens
         composable(Screen.AssistantScreen.route) {
             AssistantScreen(navController = navController)

@@ -22,12 +22,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.example.rmsjims.navigation.bottomNavItems
+import com.example.rmsjims.data.model.UserRole
+import com.example.rmsjims.navigation.Screen
+import com.example.rmsjims.navigation.getBottomNavItems
 import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.navLabelColor
 import com.example.rmsjims.ui.theme.someOtherGrayColor
 import com.example.rmsjims.ui.theme.whiteColor
 import com.example.rmsjims.util.ResponsiveLayout
+import com.example.rmsjims.viewmodel.UserSessionViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CustomNavigationBar(
@@ -36,10 +40,31 @@ fun CustomNavigationBar(
     selectedColor: Color = primaryColor,
     contentColor: Color = navLabelColor,
     dividerColor: Color = someOtherGrayColor,
-    navController: NavHostController
+    navController: NavHostController,
+    userRole: UserRole? = null,
+    sessionViewModel: UserSessionViewModel = koinViewModel()
 ) {
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
+    
+    // Determine user role - use provided role, then ViewModel, then detect from route
+    val effectiveUserRole = userRole ?: run {
+        // First try ViewModel role (should be set when navigating from RoleSelectionScreen)
+        val vmRole = sessionViewModel.userRole
+        if (vmRole != UserRole.UNASSIGNED) {
+            vmRole
+        } else {
+            // Fallback: Detect role from current route
+            val routeString = currentRoute ?: ""
+            when {
+                routeString == Screen.AdminDashboardScreen.route -> UserRole.ADMIN
+                routeString == Screen.BookingsScreen.route -> UserRole.STAFF
+                routeString == Screen.AssistantScreen.route -> UserRole.ASSISTANT
+                else -> UserRole.UNASSIGNED
+            }
+        }
+    }
+    val bottomNavItems = getBottomNavItems(effectiveUserRole)
 
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -59,7 +84,11 @@ fun CustomNavigationBar(
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             bottomNavItems.forEach { item ->
-                val isSelected = currentRoute == item.route
+                // Handle route matching for routes with parameters (e.g., equipment/{categoryName})
+                val isSelected = when {
+                    item.route.startsWith("equipment/") -> currentRoute?.startsWith("equipment/") == true
+                    else -> currentRoute == item.route
+                }
                 Column(
                     modifier = Modifier
                         .clickable{

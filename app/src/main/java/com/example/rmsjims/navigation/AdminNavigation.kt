@@ -24,6 +24,9 @@ import com.example.rmsjims.ui.screens.assistant.MachineStatusScreen
 import com.example.rmsjims.ui.screens.assistant.TicketManagementScreen
 import com.example.rmsjims.ui.screens.assistant.UsageApprovalScreen
 import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
+import com.example.rmsjims.ui.screens.staff.HomeScreen
+import com.example.rmsjims.ui.screens.staff.EquipmentScreen
+import com.example.rmsjims.ui.screens.staff.ProfileScreen
 
 @Composable
 fun AdminModuleApp() {
@@ -31,8 +34,26 @@ fun AdminModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.ResourceManagementScreen.route
+        startDestination = Screen.HomeScreen.route
     ) {
+        // Bottom navigation screens
+        composable(Screen.HomeScreen.route) {
+            HomeScreen(navController = navController)
+        }
+        composable(
+            Screen.EquipmentScreen.route,
+            arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: "Equipments"
+            EquipmentScreen(
+                navController = navController,
+                categoryName = categoryName
+            )
+        }
+        composable(Screen.ProfileScreen.route) {
+            ProfileScreen(navController = navController)
+        }
+        
         // Admin-specific screens
         composable(Screen.AdminDashboardScreen.route) {
             AdminDashboardScreen(navController = navController)
