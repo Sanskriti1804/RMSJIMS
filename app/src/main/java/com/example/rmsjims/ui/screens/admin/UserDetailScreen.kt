@@ -55,7 +55,6 @@ import com.example.rmsjims.util.pxToDp
 fun UserDetailScreen(
     navController: NavHostController
 ) {
-    // Placeholder user data - in real app, fetch by userId
     val user = User(
         id = "hgkjhk",
         name = "Dr. Ravi Kumar",

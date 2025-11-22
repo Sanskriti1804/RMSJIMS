@@ -24,6 +24,7 @@ import com.example.rmsjims.ui.screens.assistant.MachineStatusScreen
 import com.example.rmsjims.ui.screens.assistant.ResourceManagementScreen
 import com.example.rmsjims.ui.screens.assistant.TicketManagementScreen
 import com.example.rmsjims.ui.screens.assistant.UsageApprovalScreen
+import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
 
 @Composable
 fun AdminModuleApp() {
@@ -31,7 +32,7 @@ fun AdminModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.AdminDashboardScreen.route
+        startDestination = Screen.UserDetailScreen.route
     ) {
         // Admin-specific screens
         composable(Screen.AdminDashboardScreen.route) {
@@ -46,8 +47,53 @@ fun AdminModuleApp() {
         composable(Screen.UserManagementScreen.route) {
             UserManagementScreen(navController = navController)
         }
-        composable(Screen.UserDetailScreen.route) {
+        composable(
+            Screen.UserDetailScreen.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
             UserDetailScreen(navController = navController)
+        }
+
+        // Admin can access Assistant screens for management
+        composable(Screen.ResourceManagementScreen.route) {
+            ResourceManagementScreen(navController = navController)
+        }
+        composable(Screen.TicketManagementScreen.route) {
+            TicketManagementScreen(navController = navController)
+        }
+        composable(Screen.UsageApprovalScreen.route) {
+            UsageApprovalScreen(navController = navController)
+        }
+        composable(Screen.MachineStatusScreen.route) {
+            MachineStatusScreen(navController = navController)
+        }
+        composable(
+            Screen.MachineDetailScreen.route,
+            arguments = listOf(navArgument("machineId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val machineId = backStackEntry.arguments?.getString("machineId") ?: ""
+            MachineDetailScreen(machineId = machineId, navController = navController)
+        }
+        composable(Screen.MaintenanceApprovalScreen.route) {
+            MaintenanceApprovalScreen(navController = navController)
+        }
+        composable(
+            Screen.MaintenanceDetailScreen.route,
+            arguments = listOf(navArgument("requestId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val requestId = backStackEntry.arguments?.getString("requestId") ?: ""
+            MaintenanceDetailScreen(requestId = requestId, navController = navController)
+        }
+        composable(
+            Screen.RequestDetailsScreen.route,
+            arguments = listOf(navArgument("requestId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val requestId = backStackEntry.arguments?.getString("requestId") ?: ""
+            RequestDetailsScreen(
+                navController = navController,
+                requestId = requestId
+            )
         }
 
         // Shared screens - merged directly into AdminNavGraph
