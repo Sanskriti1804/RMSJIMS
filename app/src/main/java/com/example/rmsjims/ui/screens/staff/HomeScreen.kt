@@ -157,22 +157,42 @@ fun HomeScreen(
         )
     }
 
-    val propertyOptions = remember {
-        listOf(
-            "All Properties",
-            "Main Campus",
-            "North Wing",
-            "South Wing",
-            "Annex Facility",
-            "Innovation Hub",
-            "Research Center",
-            "Administration Block"
-        )
-    }
-    var propertyExpanded by rememberSaveable { mutableStateOf(false) }
-    var selectedProperty by rememberSaveable { mutableStateOf(propertyOptions.first()) }
     val savedFilters = remember { mutableStateListOf<FilterTag>() }
     var searchQuery by rememberSaveable { mutableStateOf("") }
+    
+    // Dynamic two-level filter system
+    val mainPropertyCategories = remember {
+        listOf(
+            "All",
+            "Approvals",
+            "Department",
+            "Building",
+            "Resource Type",
+            "Status",
+            "Urgency",
+            "History & Logs",
+            "Recently Added",
+            "Buildings"
+        )
+    }
+    var selectedMainProperty by rememberSaveable { mutableStateOf("All") }
+    var selectedSubProperty by rememberSaveable { mutableStateOf<String?>(null) }
+    
+    // Sub-properties for each main property
+    val subProperties = remember(selectedMainProperty) {
+        when (selectedMainProperty) {
+            "Department" -> listOf("MCA", "BCA", "Engineering Labs", "Physics", "Chemistry", "Biology", "Mathematics", "Computer Science", "Management Studies", "Sciences")
+            "Status" -> listOf("Available", "In Use", "Under Maintenance", "Offline", "Reserved", "Fully Booked")
+            "Building" -> listOf("Building A", "Building B", "Building C", "Building D", "Building E", "Building F", "Main Campus", "North Wing")
+            "Resource Type" -> listOf("Laboratories", "Equipment", "Spaces", "Meeting Rooms", "Storage", "Workshops", "Study Areas")
+            "Urgency" -> listOf("High Priority", "Medium Priority", "Low Priority", "Critical")
+            "Approvals" -> listOf("Pending Approvals", "New Requests", "Priority Requests", "Flagged Requests", "Approved Usages", "Rejected Requests")
+            "History & Logs" -> listOf("Usage Log", "User Activity", "Machine History", "System Logs")
+            "Recently Added" -> listOf("New Machines", "New Users", "New Departments", "New Equipment")
+            "Buildings" -> listOf("Building A", "Building B", "Building C", "Building D", "Building E", "Building F", "Main Campus", "North Wing")
+            else -> emptyList()
+        }
+    }
 
     val propertyRequests = remember { PropertyRequestProvider.sampleRequests() }
     val sections = remember(resources, propertyRequests) { buildResourceSections(resources, propertyRequests) }
@@ -242,15 +262,19 @@ fun HomeScreen(
                 }
             }
 
-            // Resource Management property filter bar
+            // Two dropdown filter system
             item {
-                FilterHeaderSection(
-                    propertyOptions = propertyOptions,
-                    selectedProperty = selectedProperty,
-                    propertyExpanded = propertyExpanded,
+                TwoDropdownFilterSection(
+                    mainProperties = mainPropertyCategories,
+                    selectedMainProperty = selectedMainProperty,
+                    onMainPropertySelected = { 
+                        selectedMainProperty = it
+                        selectedSubProperty = null // Reset sub-property when main property changes
+                    },
+                    subProperties = subProperties,
+                    selectedSubProperty = selectedSubProperty,
+                    onSubPropertySelected = { selectedSubProperty = it },
                     savedFilters = savedFilters,
-                    onPropertyExpanded = { propertyExpanded = it },
-                    onPropertySelected = { selectedProperty = it },
                     onRemoveSavedFilter = { filter -> savedFilters.remove(filter) }
                 )
             }
@@ -486,84 +510,108 @@ private fun ResourceSummaryCard(
 }
 
 @Composable
-private fun FilterHeaderSection(
-    propertyOptions: List<String>,
-    selectedProperty: String,
-    propertyExpanded: Boolean,
+private fun TwoDropdownFilterSection(
+    mainProperties: List<String>,
+    selectedMainProperty: String,
+    onMainPropertySelected: (String) -> Unit,
+    subProperties: List<String>,
+    selectedSubProperty: String?,
+    onSubPropertySelected: (String?) -> Unit,
     savedFilters: List<FilterTag>,
-    onPropertyExpanded: (Boolean) -> Unit,
-    onPropertySelected: (String) -> Unit,
     onRemoveSavedFilter: (FilterTag) -> Unit
 ) {
+    var propertiesExpanded by remember { mutableStateOf(false) }
     val chipSpacing = ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 14.dp)
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
-        horizontalArrangement = Arrangement.spacedBy(chipSpacing),
-        verticalAlignment = Alignment.CenterVertically
+    
+    Column(
+        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp))
     ) {
-        PropertySelectorChip(
-            selectedProperty = selectedProperty,
-            expanded = propertyExpanded,
-            propertyOptions = propertyOptions,
-            onExpandedChange = onPropertyExpanded,
-            onPropertySelected = onPropertySelected
-        )
-
-        savedFilters.forEach { filter ->
-            SavedFilterChip(
-                filter = filter,
-                onRemove = onRemoveSavedFilter
-            )
-        }
-    }
-}
-
-@Composable
-private fun PropertySelectorChip(
-    selectedProperty: String,
-    expanded: Boolean,
-    propertyOptions: List<String>,
-    onExpandedChange: (Boolean) -> Unit,
-    onPropertySelected: (String) -> Unit
-) {
-    Box {
-        SelectableChip(
-            label = selectedProperty,
-            selected = true,
-            onClick = { onExpandedChange(true) },
-            trailingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.ArrowDropDown,
-                    contentDescription = "Select property",
-                    tint = primaryColor
-                )
-            }
-        )
-
-        DropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { onExpandedChange(false) },
-            modifier = Modifier.background(color = whiteColor)
+        // Properties Dropdown Chip
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(chipSpacing),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            propertyOptions.forEach { property ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = property,
-                            color = if (property == selectedProperty) primaryColor else onSurfaceColor
+            Box {
+                SelectableChip(
+                    label = "Properties: $selectedMainProperty",
+                    selected = true,
+                    onClick = { propertiesExpanded = true },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowDropDown,
+                            contentDescription = "Select property",
+                            tint = primaryColor
                         )
-                    },
-                    onClick = {
-                        onPropertySelected(property)
-                        onExpandedChange(false)
                     }
                 )
+                
+                DropdownMenu(
+                    expanded = propertiesExpanded,
+                    onDismissRequest = { propertiesExpanded = false },
+                    modifier = Modifier.background(color = whiteColor)
+                ) {
+                    mainProperties.forEach { property ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = property,
+                                    color = if (property == selectedMainProperty) primaryColor else onSurfaceColor
+                                )
+                            },
+                            onClick = {
+                                onMainPropertySelected(property)
+                                propertiesExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        
+        // Sub-Properties Chips (multiple chips, not dropdown)
+        if (selectedMainProperty != "All" && subProperties.isNotEmpty()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(chipSpacing),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                subProperties.forEach { subProperty ->
+                    SelectableChip(
+                        label = subProperty,
+                        selected = selectedSubProperty == subProperty,
+                        onClick = { 
+                            onSubPropertySelected(
+                                if (selectedSubProperty == subProperty) null else subProperty
+                            )
+                        }
+                    )
+                }
+            }
+        }
+        
+        // Saved Filters Row
+        if (savedFilters.isNotEmpty()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(chipSpacing),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                savedFilters.forEach { filter ->
+                    SavedFilterChip(
+                        filter = filter,
+                        onRemove = onRemoveSavedFilter
+                    )
+                }
             }
         }
     }
 }
+
 
 @Composable
 private fun SavedFilterChip(
@@ -639,7 +687,7 @@ private fun SectionDivider(
             contentAlignment = Alignment.CenterStart
         ) {
             Row(
-                modifier = Modifier
+        modifier = Modifier
                     .fillMaxWidth()
                     .padding(
                         vertical = ResponsiveLayout.getResponsivePadding(6.dp, 8.dp, 10.dp)
