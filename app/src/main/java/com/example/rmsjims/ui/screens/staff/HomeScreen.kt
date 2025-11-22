@@ -2,6 +2,7 @@ package com.example.rmsjims.ui.screens.staff
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,9 +13,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +28,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -63,6 +68,7 @@ import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomNavigationBar
 import com.example.rmsjims.ui.components.CustomSmallLabel
 import com.example.rmsjims.ui.screens.assistant.PropertyRequestsContent
+import com.example.rmsjims.ui.theme.categoryIconColor
 import com.example.rmsjims.ui.theme.chipColor
 import com.example.rmsjims.ui.theme.labelColor
 import com.example.rmsjims.ui.theme.onSurfaceColor
@@ -205,6 +211,30 @@ fun HomeScreen(
             }
         }
     }
+    
+    // Helper function to get count for a sub-property from sections
+    val getSubPropertyCount: (String, String) -> Int = { mainProp, subProp ->
+        sections.find { it.title == mainProp }?.tabs?.flatMap { it.subTabs }
+            ?.find { it.label == subProp }?.count ?: 0
+    }
+    
+    // Filter sections based on selected property/sub-property
+    val filteredSections = remember(selectedMainProperty, selectedSubProperty, sections) {
+        if (selectedMainProperty == "All") {
+            sections
+        } else if (selectedSubProperty != null) {
+            // Show only sections that match the selected property and sub-property
+            sections.filter { section ->
+                section.title == selectedMainProperty && 
+                section.tabs.any { tab -> 
+                    tab.subTabs.any { it.label == selectedSubProperty }
+                }
+            }
+        } else {
+            // Show only sections that match the selected property
+            sections.filter { it.title == selectedMainProperty }
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -275,70 +305,62 @@ fun HomeScreen(
                     selectedSubProperty = selectedSubProperty,
                     onSubPropertySelected = { selectedSubProperty = it },
                     savedFilters = savedFilters,
-                    onRemoveSavedFilter = { filter -> savedFilters.remove(filter) }
+                    onRemoveSavedFilter = { filter -> savedFilters.remove(filter) },
+                    getSubPropertyCount = getSubPropertyCount,
+                    selectedMainPropertyForCount = selectedMainProperty
+                )
+            }
+            
+            // Divider between properties section and list
+            item {
+                Divider(
+                    modifier = Modifier.padding(vertical = ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)),
+                    color = onSurfaceColor.copy(alpha = 0.1f),
+                    thickness = pxToDp(1)
                 )
             }
 
-            item {
-                ResourceSummaryRow(resources = resources)
-            }
+            // Show content based on selected property
+            if (selectedMainProperty == "All") {
+                // Default state: Show only "All Resources" list
+                item {
+                    SectionDivider(
+                        title = "All Resources",
+                        badgeCount = resources.size,
+                        isHighlighted = searchQuery.isNotEmpty()
+                    )
+                }
 
-            sections.forEach { section ->
-                item(key = section.title) {
-                    val state = sectionStates[section.title] ?: ResourceSectionState()
-                    val isSectionPinned = state.selectedSubTab != null || savedFilters.any { it.section == section.title }
-                    val selectedTab = state.selectedTab ?: section.tabs.firstOrNull()
-                    val badgeCount = state.selectedSubTab?.count ?: selectedTab?.count ?: section.totalCount
-
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp))
-                    ) {
-                        SectionDivider(
-                            title = section.title,
-                            badgeCount = badgeCount,
-                            isHighlighted = isSectionPinned
-                        )
-                        SectionTabRow(
-                            tabs = section.tabs,
-                            selectedTab = selectedTab,
-                            onTabSelected = { tab ->
-                                val currentState = sectionStates[section.title] ?: ResourceSectionState()
-                                val retainedSub = currentState.selectedSubTab?.takeIf { sub ->
-                                    tab.subTabs.any { it.label == sub.label }
-                                }
-                                val resolvedSub = retainedSub ?: tab.subTabs.firstOrNull()
-                                if (retainedSub == null) {
-                                    savedFilters.removeWhere { it.section == section.title }
-                                }
-                                sectionStates[section.title] = currentState.copy(
-                                    selectedTab = tab,
-                                    selectedSubTab = resolvedSub
-                                )
-                            }
-                        )
-                        selectedTab?.subTabs?.takeIf { it.isNotEmpty() }?.let { subTabs ->
-                            SectionSubTabRow(
-                                subTabs = subTabs,
-                                selectedSubTab = state.selectedSubTab,
-                                onSubTabSelected = { subTab ->
-                                    val currentState = sectionStates[section.title] ?: ResourceSectionState()
-                                    sectionStates[section.title] = currentState.copy(selectedSubTab = subTab)
-                                    savedFilters.updateFilter(section.title, subTab)
-                                }
-                            )
+                items(resources) { resource ->
+                    ResourceCard(resource = resource)
+                }
+            } else {
+                // When a property is selected: Show only filtered sections with their cards
+                filteredSections.forEach { section ->
+                    item(key = section.title) {
+                        val state = sectionStates[section.title] ?: ResourceSectionState()
+                        val selectedTab = state.selectedTab ?: section.tabs.firstOrNull()
+                        
+                        // If a top-level sub-property is selected, use it to filter content
+                        val effectiveSubTab = if (selectedSubProperty != null && selectedMainProperty == section.title) {
+                            selectedTab?.subTabs?.find { it.label == selectedSubProperty }
+                        } else {
+                            state.selectedSubTab
                         }
-                        val propertyRequestItems = state.selectedSubTab?.propertyRequests?.takeIf { it.isNotEmpty() }
+                        
+                        // Show content only for the effective sub-tab (filtered by top-level selection)
+                        val propertyRequestItems = effectiveSubTab?.propertyRequests?.takeIf { it.isNotEmpty() }
                         if (propertyRequestItems != null) {
                             PropertyRequestsContent(
                                 requests = propertyRequestItems,
-                                showPriorityTag = state.selectedSubTab?.showPriorityTag == true,
-                                showQuickToggle = state.selectedSubTab?.showQuickToggle == true,
-                                showVerificationAction = state.selectedSubTab?.showVerificationAction == true,
+                                showPriorityTag = effectiveSubTab.showPriorityTag,
+                                showQuickToggle = effectiveSubTab.showQuickToggle,
+                                showVerificationAction = effectiveSubTab.showVerificationAction,
                                 navController = navController
                             )
                         } else {
-                            val contentItems = state.selectedSubTab?.content?.takeIf { it.isNotEmpty() }
-                                ?: selectedTab?.content
+                            val contentItems = effectiveSubTab?.content?.takeIf { it.isNotEmpty() }
+                                ?: (if (selectedSubProperty == null) selectedTab?.content else emptyList())
                             ResourceSectionContent(
                                 items = contentItems.orEmpty()
                             )
@@ -346,26 +368,14 @@ fun HomeScreen(
                     }
                 }
             }
+        }
 
-            item {
-                SectionDivider(
-                    title = "All Resources",
-                    badgeCount = resources.size,
-                    isHighlighted = searchQuery.isNotEmpty()
-                )
-            }
+        if (isFilterSheetVisible) {
+            FilterSortBottomSheet(viewModel = filterSortViewModel)
+        }
 
-            items(resources) { resource ->
-                ResourceCard(resource = resource)
-            }
-            }
-
-            if (isFilterSheetVisible) {
-                FilterSortBottomSheet(viewModel = filterSortViewModel)
-            }
-
-            if (isAiChatSheetVisible){
-                ChatBottomSheet(viewModel = searchViewModel)
+        if (isAiChatSheetVisible){
+            ChatBottomSheet(viewModel = searchViewModel)
         }
     }
 }
@@ -397,7 +407,7 @@ fun ResourceCard(resource: Resource) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
-            ) {
+            ){
                 Column(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(pxToDp(4))
@@ -518,7 +528,9 @@ private fun TwoDropdownFilterSection(
     selectedSubProperty: String?,
     onSubPropertySelected: (String?) -> Unit,
     savedFilters: List<FilterTag>,
-    onRemoveSavedFilter: (FilterTag) -> Unit
+    onRemoveSavedFilter: (FilterTag) -> Unit,
+    getSubPropertyCount: (String, String) -> Int,
+    selectedMainPropertyForCount: String
 ) {
     var propertiesExpanded by remember { mutableStateOf(false) }
     val chipSpacing = ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 14.dp)
@@ -569,18 +581,19 @@ private fun TwoDropdownFilterSection(
             }
         }
         
-        // Sub-Properties Chips (multiple chips, not dropdown)
+        // Sub-Properties Tabs (tab-style, like BookingScreen)
         if (selectedMainProperty != "All" && subProperties.isNotEmpty()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(chipSpacing),
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 subProperties.forEach { subProperty ->
-                    SelectableChip(
+                    val count = getSubPropertyCount(selectedMainPropertyForCount, subProperty)
+                    SubPropertyTab(
                         label = subProperty,
+                        count = count,
                         selected = selectedSubProperty == subProperty,
                         onClick = { 
                             onSubPropertySelected(
@@ -630,6 +643,55 @@ private fun SavedFilterChip(
             )
         }
     )
+}
+
+@Composable
+private fun SubPropertyTab(
+    label: String,
+    count: Int,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable { onClick() }
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(pxToDp(10))
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(pxToDp(8))
+            ) {
+                CustomLabel(
+                    header = label,
+                    fontSize = 12.sp,
+                    headerColor = if (selected) primaryColor else categoryIconColor
+                )
+                // Badge showing count
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = if (selected) primaryColor else categoryIconColor.copy(alpha = 0.2f),
+                            shape = CircleShape
+                        )
+                        .padding(
+                            horizontal = ResponsiveLayout.getResponsivePadding(6.dp, 8.dp, 10.dp),
+                            vertical = ResponsiveLayout.getResponsivePadding(2.dp, 3.dp, 4.dp)
+                        )
+                ) {
+                    Text(
+                        text = count.toString(),
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(10.sp, 11.sp, 12.sp),
+                        color = if (selected) whiteColor else categoryIconColor,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
