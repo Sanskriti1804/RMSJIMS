@@ -32,7 +32,7 @@ fun AdminModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.UserDetailScreen.route
+        startDestination = Screen.ResourceManagementScreen.route
     ) {
         // Admin-specific screens
         composable(Screen.AdminDashboardScreen.route) {

@@ -8,6 +8,8 @@
         <item name="android:windowSplashScreenIconBackgroundColor">@color/white</item>
         <item name="android:windowSplashScreenBrandingImage">@drawable/jims_logo</item>
         <item name="android:windowSplashScreenAnimationDuration">3000</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
 <!--    <style name="Theme.RMSJIMS" parent="Theme.Material3.DayNight.NoActionBar">-->
