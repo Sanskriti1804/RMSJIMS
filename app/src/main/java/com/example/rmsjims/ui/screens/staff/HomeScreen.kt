@@ -1,53 +1,77 @@
 package com.example.rmsjims.ui.screens.staff
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import android.util.Log
-import com.example.rmsjims.data.model.UiState
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import com.example.rmsjims.data.model.PropertyRequest
+import com.example.rmsjims.data.model.PropertyRequestGroup
+import com.example.rmsjims.data.model.PropertyRequestProvider
 import com.example.rmsjims.data.model.UserRole
-import com.example.rmsjims.data.schema.ItemCategories
 import com.example.rmsjims.navigation.Screen
-import com.example.rmsjims.ui.components.AppButton
-import com.example.rmsjims.ui.components.AppCategoryImage
 import com.example.rmsjims.ui.components.AppCircularIcon
 import com.example.rmsjims.ui.components.AppFAB
 import com.example.rmsjims.ui.components.AppSearchBar
 import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomNavigationBar
+import com.example.rmsjims.ui.components.CustomSmallLabel
+import com.example.rmsjims.ui.screens.assistant.PropertyRequestsContent
+import com.example.rmsjims.ui.theme.chipColor
+import com.example.rmsjims.ui.theme.labelColor
+import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.onSurfaceVariant
-import com.example.rmsjims.ui.theme.categoryColor
+import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.titleColor
 import com.example.rmsjims.ui.theme.whiteColor
 import com.example.rmsjims.util.ResponsiveLayout
-import com.example.rmsjims.viewmodel.ItemCategoriesViewModel
+import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.viewmodel.FilterSortViewModel
 import com.example.rmsjims.viewmodel.SearchViewModel
 import com.example.rmsjims.viewmodel.UserSessionViewModel
@@ -56,17 +80,111 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    categoryViewModel: ItemCategoriesViewModel = koinViewModel(),
     filterSortViewModel: FilterSortViewModel = koinViewModel(),
     sessionViewModel: UserSessionViewModel = koinViewModel(),
     searchViewModel: SearchViewModel = koinViewModel()
 ) {
     val isFilterSheetVisible by filterSortViewModel.isSheetVisible
     val isAiChatSheetVisible by searchViewModel.isChatSheetVisible
-
     val userRole = sessionViewModel.userRole
 
-    val categories = categoryViewModel.categoriesState
+    val resources = remember {
+        listOf(
+            Resource(
+                name = "Lab Space A-101",
+                type = "Lab Space",
+                capacity = "20 students",
+                currentUsage = "12 students",
+                status = "Available",
+                location = "Building A, Floor 1"
+            ),
+            Resource(
+                name = "Conference Room B",
+                type = "Meeting Room",
+                capacity = "15 people",
+                currentUsage = "15 people",
+                status = "Fully Booked",
+                location = "Building B, Floor 2"
+            ),
+            Resource(
+                name = "Projector System",
+                type = "Equipment",
+                capacity = "1 unit",
+                currentUsage = "In use",
+                status = "In Use",
+                location = "Lab A-101"
+            ),
+            Resource(
+                name = "Storage Room C",
+                type = "Storage",
+                capacity = "100 items",
+                currentUsage = "65 items",
+                status = "Available",
+                location = "Building C, Basement"
+            ),
+            Resource(
+                name = "Computer Lab D-201",
+                type = "Lab Space",
+                capacity = "30 students",
+                currentUsage = "25 students",
+                status = "In Use",
+                location = "Building D, Floor 2"
+            ),
+            Resource(
+                name = "Library Study Room",
+                type = "Study Space",
+                capacity = "8 people",
+                currentUsage = "8 people",
+                status = "Fully Booked",
+                location = "Building E, Floor 1"
+            ),
+            Resource(
+                name = "Workshop Area",
+                type = "Workshop",
+                capacity = "15 people",
+                currentUsage = "10 people",
+                status = "Available",
+                location = "Building F, Ground Floor"
+            ),
+            Resource(
+                name = "Seminar Hall",
+                type = "Hall",
+                capacity = "100 people",
+                currentUsage = "0 people",
+                status = "Available",
+                location = "Building A, Floor 3"
+            )
+        )
+    }
+
+    val propertyOptions = remember {
+        listOf(
+            "All Properties",
+            "Main Campus",
+            "North Wing",
+            "South Wing",
+            "Annex Facility",
+            "Innovation Hub",
+            "Research Center",
+            "Administration Block"
+        )
+    }
+    var propertyExpanded by rememberSaveable { mutableStateOf(false) }
+    var selectedProperty by rememberSaveable { mutableStateOf(propertyOptions.first()) }
+    val savedFilters = remember { mutableStateListOf<FilterTag>() }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+
+    val propertyRequests = remember { PropertyRequestProvider.sampleRequests() }
+    val sections = remember(resources, propertyRequests) { buildResourceSections(resources, propertyRequests) }
+    val sectionStates = remember(sections) {
+        mutableStateMapOf<String, ResourceSectionState>().apply {
+            sections.forEach { section ->
+                val initialTab = section.tabs.firstOrNull()
+                val initialSub = initialTab?.subTabs?.firstOrNull()
+                put(section.title, ResourceSectionState(selectedTab = initialTab, selectedSubTab = initialSub))
+            }
+        }
+    }
 
     Scaffold(
         bottomBar = {
@@ -82,59 +200,140 @@ fun HomeScreen(
         },
         containerColor = whiteColor
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            // Top Search Row
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
+                .padding(paddingValues),
+            contentPadding = PaddingValues(
                         start = ResponsiveLayout.getHorizontalPadding(),
                         end = ResponsiveLayout.getHorizontalPadding(),
                         top = ResponsiveLayout.getVerticalPadding(),
                         bottom = ResponsiveLayout.getVerticalPadding()
-                    )
+            ),
+            verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(18.dp, 24.dp, 28.dp))
+        ) {
+            // Title: "Home"
+            item {
+                CustomLabel(
+                    header = "Home",
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(20.sp, 24.sp, 28.sp),
+                    headerColor = titleColor,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+
+            // Home screen's original search bar and filter bar
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
             ) {
                 AppSearchBar(
-                    query = "",
-                    onQueryChange = {},
+                        query = searchQuery,
+                        onQueryChange = { searchQuery = it },
                     modifier = Modifier
                         .height(ResponsiveLayout.getResponsiveSize(46.dp, 60.dp, 68.dp))
-                        .weight(1f),
+                            .weight(1f)
                   )
-
-                Spacer(modifier = Modifier.width(ResponsiveLayout.getCardSpacing()))
 
                 AppCircularIcon(
                     onClick = { filterSortViewModel.showSheet() }
+                    )
+                }
+            }
+
+            // Resource Management property filter bar
+            item {
+                FilterHeaderSection(
+                    propertyOptions = propertyOptions,
+                    selectedProperty = selectedProperty,
+                    propertyExpanded = propertyExpanded,
+                    savedFilters = savedFilters,
+                    onPropertyExpanded = { propertyExpanded = it },
+                    onPropertySelected = { selectedProperty = it },
+                    onRemoveSavedFilter = { filter -> savedFilters.remove(filter) }
                 )
             }
-            Spacer(modifier = Modifier.height(ResponsiveLayout.getVerticalPadding()))
 
-            CustomLabel(
-                "Explore by Category",
-                fontSize = ResponsiveLayout.getResponsiveFontSize(20.sp, 24.sp, 28.sp),
-                modifier = Modifier
-                    .padding(
-                        start = ResponsiveLayout.getHorizontalPadding()
-                    ),
-                headerColor = titleColor
-            )
+            item {
+                ResourceSummaryRow(resources = resources)
+            }
 
-            if (userRole == UserRole.ADMIN) {
-                AppButton(
-                    buttonText = "Manage Lab",
-                    onClick = { },
-                    modifier = Modifier
-                        .padding(
-                            horizontal = ResponsiveLayout.getHorizontalPadding(), 
-                            vertical = ResponsiveLayout.getVerticalPadding()
+            sections.forEach { section ->
+                item(key = section.title) {
+                    val state = sectionStates[section.title] ?: ResourceSectionState()
+                    val isSectionPinned = state.selectedSubTab != null || savedFilters.any { it.section == section.title }
+                    val selectedTab = state.selectedTab ?: section.tabs.firstOrNull()
+                    val badgeCount = state.selectedSubTab?.count ?: selectedTab?.count ?: section.totalCount
+
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp))
+                    ) {
+                        SectionDivider(
+                            title = section.title,
+                            badgeCount = badgeCount,
+                            isHighlighted = isSectionPinned
                         )
-                        .fillMaxWidth()
+                        SectionTabRow(
+                            tabs = section.tabs,
+                            selectedTab = selectedTab,
+                            onTabSelected = { tab ->
+                                val currentState = sectionStates[section.title] ?: ResourceSectionState()
+                                val retainedSub = currentState.selectedSubTab?.takeIf { sub ->
+                                    tab.subTabs.any { it.label == sub.label }
+                                }
+                                val resolvedSub = retainedSub ?: tab.subTabs.firstOrNull()
+                                if (retainedSub == null) {
+                                    savedFilters.removeWhere { it.section == section.title }
+                                }
+                                sectionStates[section.title] = currentState.copy(
+                                    selectedTab = tab,
+                                    selectedSubTab = resolvedSub
+                                )
+                            }
+                        )
+                        selectedTab?.subTabs?.takeIf { it.isNotEmpty() }?.let { subTabs ->
+                            SectionSubTabRow(
+                                subTabs = subTabs,
+                                selectedSubTab = state.selectedSubTab,
+                                onSubTabSelected = { subTab ->
+                                    val currentState = sectionStates[section.title] ?: ResourceSectionState()
+                                    sectionStates[section.title] = currentState.copy(selectedSubTab = subTab)
+                                    savedFilters.updateFilter(section.title, subTab)
+                                }
+                            )
+                        }
+                        val propertyRequestItems = state.selectedSubTab?.propertyRequests?.takeIf { it.isNotEmpty() }
+                        if (propertyRequestItems != null) {
+                            PropertyRequestsContent(
+                                requests = propertyRequestItems,
+                                showPriorityTag = state.selectedSubTab?.showPriorityTag == true,
+                                showQuickToggle = state.selectedSubTab?.showQuickToggle == true,
+                                showVerificationAction = state.selectedSubTab?.showVerificationAction == true,
+                                navController = navController
+                            )
+                        } else {
+                            val contentItems = state.selectedSubTab?.content?.takeIf { it.isNotEmpty() }
+                                ?: selectedTab?.content
+                            ResourceSectionContent(
+                                items = contentItems.orEmpty()
+                            )
+                        }
+                    }
+                }
+            }
+
+            item {
+                SectionDivider(
+                    title = "All Resources",
+                    badgeCount = resources.size,
+                    isHighlighted = searchQuery.isNotEmpty()
                 )
+            }
+
+            items(resources) { resource ->
+                ResourceCard(resource = resource)
+            }
             }
 
             if (isFilterSheetVisible) {
@@ -143,150 +342,951 @@ fun HomeScreen(
 
             if (isAiChatSheetVisible){
                 ChatBottomSheet(viewModel = searchViewModel)
+        }
+    }
+}
+
+@Composable
+fun ResourceCard(resource: Resource) {
+    val statusColor = when (resource.status) {
+        "Available" -> Color(0xFF26BB64)
+        "In Use", "Fully Booked" -> Color(0xFFE67824)
+        else -> onSurfaceColor
+    }
+    
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = onSurfaceVariant
+        ),
+        shape = RectangleShape
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                horizontal = ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp),
+                vertical = ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)
+            ),
+            verticalArrangement = Arrangement.spacedBy(pxToDp(12))
+        ) {
+            // Header Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(pxToDp(4))
+                ) {
+                    CustomLabel(
+                        header = resource.name,
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(16.sp, 18.sp, 20.sp),
+                        headerColor = onSurfaceColor
+                    )
+                    CustomLabel(
+                        header = resource.type,
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                        headerColor = onSurfaceColor.copy(0.6f)
+                    )
+                }
+                
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = statusColor.copy(0.2f),
+                            shape = RoundedCornerShape(pxToDp(12))
+                        )
+                        .padding(
+                            horizontal = pxToDp(12),
+                            vertical = pxToDp(6)
+                        )
+                ) {
+                    CustomLabel(
+                        header = resource.status,
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                        headerColor = statusColor
+                    )
+                }
             }
-
-            when (categories) {
-                is UiState.Loading -> {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                    }
-                }
-
-                is UiState.Success -> {
-                    // Use real data if available, otherwise fallback to demo data
-                    val effectiveCategories = if (categories.data.isNotEmpty()) {
-                        categories.data
-                    } else {
-                        getDemoCategories()
-                    }
-
-                    LazyVerticalGrid(
-                        columns = ResponsiveLayout.getGridColumns(),
-                        contentPadding = ResponsiveLayout.getContentPadding(),
-                        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
-                        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
-                    ) {
-                        items(effectiveCategories) { item ->
-                            AppCategoryCard(
-                                title = item.name,
-                                onClick = { navController.navigate(Screen.EquipmentScreen.createRoute(item.name) )}
-                            )
-                        }
-                    }
-                }
-
-                is UiState.Error -> {
-                    // Fallback to demo data on error
-                    Log.e("HomeScreen", "Error loading categories", categories.exception)
-                    Log.w("HomeScreen", "Using demo data fallback due to error")
-
-                    val demoCategories = getDemoCategories()
-
-                    LazyVerticalGrid(
-                        columns = ResponsiveLayout.getGridColumns(),
-                        contentPadding = ResponsiveLayout.getContentPadding(),
-                        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
-                        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
-                    ) {
-                        items(demoCategories) { item ->
-                            AppCategoryCard(
-                                title = item.name,
-                                onClick = { navController.navigate(Screen.EquipmentScreen.createRoute(item.name) )}
-                            )
-                        }
-                    }
-                }
+            
+            // Details
+            Column(
+                verticalArrangement = Arrangement.spacedBy(pxToDp(8))
+            ) {
+                DetailRow("Location", resource.location)
+                DetailRow("Capacity", resource.capacity)
+                DetailRow("Current Usage", resource.currentUsage)
             }
         }
     }
 }
 
 @Composable
-fun AppCategoryCard(
-    onClick: () -> Unit = {},
-    title : String,
-    containerColor: Color = onSurfaceVariant,
-    shape: Shape = RectangleShape
-){
-    Card(
-        modifier = Modifier
-            .height(ResponsiveLayout.getResponsiveSize(110.dp, 160.dp, 200.dp)),
-        onClick = onClick,
-        shape = shape,
-        colors = CardDefaults.cardColors(
-            containerColor = containerColor
+private fun ResourceSummaryRow(resources: List<Resource>) {
+    val totalResources = resources.size
+    val availableResources = resources.count { it.status == "Available" }
+    val engagedResources = resources.count { it.status == "In Use" || it.status == "Fully Booked" }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
+    ) {
+        ResourceSummaryCard(
+            label = "Total Resources",
+            value = "$totalResources",
+            accentColor = primaryColor
         )
+        ResourceSummaryCard(
+            label = "Available",
+            value = "$availableResources",
+            accentColor = Color(0xFF26BB64)
+        )
+        ResourceSummaryCard(
+            label = "In Use",
+            value = "$engagedResources",
+            accentColor = Color(0xFFE67824)
+        )
+    }
+}
+
+@Composable
+private fun ResourceSummaryCard(
+    label: String,
+    value: String,
+    accentColor: Color
+) {
+    Card(
+        modifier = Modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = onSurfaceVariant
+        ),
+        shape = RoundedCornerShape(pxToDp(12))
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                horizontal = ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp),
+                vertical = ResponsiveLayout.getResponsivePadding(18.dp, 22.dp, 26.dp)
+            ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(pxToDp(6))
+        ) {
+            CustomLabel(
+                header = value,
+                headerColor = accentColor,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = ResponsiveLayout.getResponsiveFontSize(20.sp, 24.sp, 28.sp)
+            )
+            CustomSmallLabel(
+                header = label,
+                headerColor = labelColor,
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@Composable
+private fun FilterHeaderSection(
+    propertyOptions: List<String>,
+    selectedProperty: String,
+    propertyExpanded: Boolean,
+    savedFilters: List<FilterTag>,
+    onPropertyExpanded: (Boolean) -> Unit,
+    onPropertySelected: (String) -> Unit,
+    onRemoveSavedFilter: (FilterTag) -> Unit
+) {
+    val chipSpacing = ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 14.dp)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(chipSpacing),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        PropertySelectorChip(
+            selectedProperty = selectedProperty,
+            expanded = propertyExpanded,
+            propertyOptions = propertyOptions,
+            onExpandedChange = onPropertyExpanded,
+            onPropertySelected = onPropertySelected
+        )
+
+        savedFilters.forEach { filter ->
+            SavedFilterChip(
+                filter = filter,
+                onRemove = onRemoveSavedFilter
+            )
+        }
+    }
+}
+
+@Composable
+private fun PropertySelectorChip(
+    selectedProperty: String,
+    expanded: Boolean,
+    propertyOptions: List<String>,
+    onExpandedChange: (Boolean) -> Unit,
+    onPropertySelected: (String) -> Unit
+) {
+    Box {
+        SelectableChip(
+            label = selectedProperty,
+            selected = true,
+            onClick = { onExpandedChange(true) },
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.ArrowDropDown,
+                    contentDescription = "Select property",
+                    tint = primaryColor
+                )
+            }
+        )
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { onExpandedChange(false) },
+            modifier = Modifier.background(color = whiteColor)
+        ) {
+            propertyOptions.forEach { property ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = property,
+                            color = if (property == selectedProperty) primaryColor else onSurfaceColor
+                        )
+                    },
+                    onClick = {
+                        onPropertySelected(property)
+                        onExpandedChange(false)
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SavedFilterChip(
+    filter: FilterTag,
+    onRemove: (FilterTag) -> Unit
+) {
+    SelectableChip(
+        label = "${filter.label} (${filter.count})",
+        selected = true,
+        onClick = { onRemove(filter) },
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = "Remove ${filter.label}",
+                tint = primaryColor
+            )
+        }
+    )
+}
+
+@Composable
+private fun SelectableChip(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    leadingIcon: (@Composable () -> Unit)? = null,
+    trailingIcon: (@Composable () -> Unit)? = null
+) {
+    val backgroundColor = if (selected) primaryColor.copy(alpha = 0.12f) else Color.Transparent
+    val borderColor = if (selected) primaryColor else chipColor
+    Surface(
+        shape = RoundedCornerShape(pxToDp(18)),
+        color = backgroundColor,
+        border = BorderStroke(width = pxToDp(1), color = borderColor),
+        onClick = onClick
+    ) {
+        Row(
+            modifier = Modifier.padding(
+                horizontal = ResponsiveLayout.getResponsivePadding(14.dp, 16.dp, 18.dp),
+                vertical = ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)
+            ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(pxToDp(8))
+        ) {
+            leadingIcon?.invoke()
+            CustomLabel(
+                header = label,
+                headerColor = if (selected) primaryColor else onSurfaceColor,
+                fontSize = ResponsiveLayout.getResponsiveFontSize(13.sp, 14.sp, 15.sp),
+                fontWeight = FontWeight.Medium,
+                maxLine = 1
+            )
+            trailingIcon?.invoke()
+        }
+    }
+}
+
+@Composable
+private fun SectionDivider(
+    title: String,
+    badgeCount: Int,
+    isHighlighted: Boolean
+) {
+    val badgeBackground = if (isHighlighted) primaryColor else onSurfaceColor.copy(alpha = 0.08f)
+    val badgeContentColor = if (isHighlighted) whiteColor else onSurfaceColor
+
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Spacer(modifier = Modifier.height(pxToDp(2)))
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        vertical = ResponsiveLayout.getResponsivePadding(6.dp, 8.dp, 10.dp)
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(pxToDp(12))
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(ResponsiveLayout.getResponsivePadding(16.dp, 24.dp, 32.dp))
-        ){
+                        .weight(1f)
+                        .height(pxToDp(1))
+                        .background(onSurfaceColor.copy(alpha = 0.1f))
+                )
+                CustomLabel(
+                    header = title,
+                    headerColor = onSurfaceColor,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(16.sp, 18.sp, 20.sp)
+                )
+                Surface(
+                    color = badgeBackground,
+                    shape = RoundedCornerShape(pxToDp(12))
+                ) {
+                    Text(
+                        text = badgeCount.toString(),
+                        color = badgeContentColor,
+                        modifier = Modifier.padding(
+                            horizontal = ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 14.dp),
+                            vertical = ResponsiveLayout.getResponsivePadding(4.dp, 6.dp, 8.dp)
+                        ),
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 13.sp, 14.sp)
+                    )
+                }
+            }
+        }
+    }
+}
 
-            CustomLabel(
-                header = title,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .fillMaxWidth(0.8f),
-                fontSize = ResponsiveLayout.getResponsiveFontSize(16.sp, 18.sp, 20.sp),
-                headerColor = categoryColor
-            )
-
-            AppCategoryImage(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .fillMaxWidth(0.4f)
-                    .aspectRatio(1f)
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SectionTabRow(
+    tabs: List<ResourceSectionTab>,
+    selectedTab: ResourceSectionTab?,
+    onTabSelected: (ResourceSectionTab) -> Unit
+) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(12.dp, 14.dp, 16.dp)),
+        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
+    ) {
+        tabs.forEach { tab ->
+            val isSelected = selectedTab?.label == tab.label
+            SelectableChip(
+                label = tab.label,
+                selected = isSelected,
+                onClick = { onTabSelected(tab) }
             )
         }
     }
 }
 
-// Demo/fallback categories - used when Supabase returns empty or on error
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun getDemoCategories(): List<ItemCategories> {
-    return remember {
-        listOf(
-            ItemCategories(
-                id = 1,
-                name = "Electronics",
-                createdAt = "2024-01-01T00:00:00Z"
-            ),
-            ItemCategories(
-                id = 2,
-                name = "Lab Equipment",
-                createdAt = "2024-01-02T00:00:00Z"
-            ),
-            ItemCategories(
-                id = 3,
-                name = "Photography",
-                createdAt = "2024-01-03T00:00:00Z"
-            ),
-            ItemCategories(
-                id = 4,
-                name = "Tools",
-                createdAt = "2024-01-04T00:00:00Z"
-            ),
-            ItemCategories(
-                id = 5,
-                name = "Computer Hardware",
-                createdAt = "2024-01-05T00:00:00Z"
-            ),
-            ItemCategories(
-                id = 6,
-                name = "Safety Equipment",
-                createdAt = "2024-01-06T00:00:00Z"
-            ),
-            ItemCategories(
-                id = 7,
-                name = "Measurement Devices",
-                createdAt = "2024-01-07T00:00:00Z"
-            ),
-            ItemCategories(
-                id = 8,
-                name = "Storage Solutions",
-                createdAt = "2024-01-08T00:00:00Z"
+private fun SectionSubTabRow(
+    subTabs: List<ResourceSectionSubTab>,
+    selectedSubTab: ResourceSectionSubTab?,
+    onSubTabSelected: (ResourceSectionSubTab) -> Unit
+) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 14.dp)),
+        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
+    ) {
+        subTabs.forEach { subTab ->
+            val isSelected = selectedSubTab?.label == subTab.label
+            SelectableChip(
+                label = "${subTab.label} (${subTab.count})",
+                selected = isSelected,
+                onClick = { onSubTabSelected(subTab) }
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ResourceSectionContent(
+    items: List<ResourceContentItem>
+) {
+    if (items.isEmpty()) {
+        EmptySectionState()
+        return
+    }
+
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing()),
+        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(12.dp, 14.dp, 16.dp))
+    ) {
+        items.forEach { item ->
+            ResourceInfoCard(item = item)
+        }
+    }
+}
+
+@Composable
+private fun EmptySectionState() {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = onSurfaceVariant),
+        shape = RoundedCornerShape(pxToDp(12))
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                horizontal = ResponsiveLayout.getResponsivePadding(18.dp, 22.dp, 26.dp),
+                vertical = ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)
+            ),
+            verticalArrangement = Arrangement.spacedBy(pxToDp(6))
+        ) {
+            CustomLabel(
+                header = "Nothing to show yet",
+                headerColor = onSurfaceColor,
+                fontWeight = FontWeight.SemiBold
+            )
+            CustomSmallLabel(
+                header = "Adjust the filters to view resources or logs for this section.",
+                headerColor = labelColor.copy(alpha = 0.8f),
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+@Composable
+private fun ResourceInfoCard(item: ResourceContentItem) {
+    Card(
+        modifier = Modifier.widthIn(
+            min = ResponsiveLayout.getResponsiveSize(180.dp, 220.dp, 260.dp)
+        ),
+        colors = CardDefaults.cardColors(containerColor = onSurfaceVariant),
+        shape = RoundedCornerShape(pxToDp(12))
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                horizontal = ResponsiveLayout.getResponsivePadding(18.dp, 22.dp, 26.dp),
+                vertical = ResponsiveLayout.getResponsivePadding(18.dp, 22.dp, 26.dp)
+            ),
+            verticalArrangement = Arrangement.spacedBy(pxToDp(6))
+        ) {
+            CustomLabel(
+                header = item.title,
+                headerColor = onSurfaceColor,
+                fontWeight = FontWeight.SemiBold,
+                maxLine = 2
+            )
+            Text(
+                text = item.subtitle,
+                color = labelColor,
+                fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 13.sp, 14.sp),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+            CustomSmallLabel(
+                header = item.meta,
+                headerColor = primaryColor,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+            )
+        }
+    }
+}
+
+private fun MutableList<FilterTag>.updateFilter(section: String, subTab: ResourceSectionSubTab) {
+    val tag = FilterTag(section, subTab.label, subTab.count)
+    val existingIndex = indexOfFirst { it.section == section }
+    if (existingIndex >= 0) {
+        this[existingIndex] = tag
+    } else {
+        add(tag)
+    }
+}
+
+private fun MutableList<FilterTag>.removeWhere(predicate: (FilterTag) -> Boolean) {
+    val iterator = iterator()
+    while (iterator.hasNext()) {
+        if (predicate(iterator.next())) {
+            iterator.remove()
+        }
+    }
+}
+
+private fun buildResourceSections(
+    resources: List<Resource>,
+    propertyRequests: PropertyRequestGroup
+): List<ResourceSection> {
+    val recentlyAddedItems = resources.map {
+        ResourceContentItem(
+            title = it.name,
+            subtitle = "${it.type} - ${it.location}",
+            meta = "${it.status} - ${it.capacity}"
+        )
+    }
+
+    return listOf(
+        ResourceSection(
+            title = "All",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "All Resources",
+                    count = resources.size,
+                    content = recentlyAddedItems.take(4)
+                )
+            )
+        ),
+        ResourceSection(
+            title = "Approvals",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "Pending Approvals",
+                    count = propertyRequests.pendingApprovals.size + propertyRequests.newRequests.size + propertyRequests.priorityRequests.size + propertyRequests.flaggedRequests.size,
+                    subTabs = listOf(
+                        ResourceSectionSubTab(
+                            label = "Pending Approvals",
+                            count = propertyRequests.pendingApprovals.size,
+                            propertyRequests = propertyRequests.pendingApprovals
+                        ),
+                        ResourceSectionSubTab(
+                            label = "New Requests",
+                            count = propertyRequests.newRequests.size,
+                            propertyRequests = propertyRequests.newRequests
+                        ),
+                        ResourceSectionSubTab(
+                            label = "Priority Requests",
+                            count = propertyRequests.priorityRequests.size,
+                            propertyRequests = propertyRequests.priorityRequests,
+                            showPriorityTag = true,
+                            showQuickToggle = true
+                        ),
+                        ResourceSectionSubTab(
+                            label = "Flagged Requests",
+                            count = propertyRequests.flaggedRequests.size,
+                            propertyRequests = propertyRequests.flaggedRequests,
+                            showVerificationAction = true
+                        )
+                    )
+                )
+            )
+        ),
+        ResourceSection(
+            title = "Department",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "Computer Applications",
+                    count = 9,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Development Cluster",
+                            subtitle = "Full-stack lab with cloud ready nodes",
+                            meta = "6 collaborative pods"
+                        ),
+                        ResourceContentItem(
+                            title = "AI & Analytics Lab",
+                            subtitle = "High performance systems for ML workloads",
+                            meta = "4 GPU rigs available"
+                        )
+                    ),
+                    subTabs = listOf(
+                        ResourceSectionSubTab(
+                            label = "MCA",
+                            count = 4,
+                            content = listOf(
+                                ResourceContentItem(
+                                    title = "Advanced Programming Lab",
+                                    subtitle = "Hands-on sessions for distributed systems",
+                                    meta = "18/24 seats reserved"
+                                )
+                            )
+                        ),
+                        ResourceSectionSubTab(
+                            label = "BCA",
+                            count = 3,
+                            content = listOf(
+                                ResourceContentItem(
+                                    title = "Design Thinking Studio",
+                                    subtitle = "Collaborative space for solution sprints",
+                                    meta = "Toolkit refreshed this week"
+                                )
+                            )
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Management Studies",
+                    count = 6,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Strategy Lab",
+                            subtitle = "Simulation tools for business cases",
+                            meta = "Upcoming module: Market Analytics"
+                        )
+                    )
+                )
+            )
+        ),
+        ResourceSection(
+            title = "Building",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "Building A",
+                    count = 3,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Lab Space A-101",
+                            subtitle = "Lab Space - Building A, Floor 1",
+                            meta = "Available - 20 students"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Building B",
+                    count = 2,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Conference Room B",
+                            subtitle = "Meeting Room - Building B, Floor 2",
+                            meta = "Fully Booked - 15 people"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Building C",
+                    count = 1,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Storage Room C",
+                            subtitle = "Storage - Building C, Basement",
+                            meta = "Available - 100 items"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Building D",
+                    count = 1,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Computer Lab D-201",
+                            subtitle = "Lab Space - Building D, Floor 2",
+                            meta = "In Use - 30 students"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Building E",
+                    count = 1,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Library Study Room",
+                            subtitle = "Study Space - Building E, Floor 1",
+                            meta = "Fully Booked - 8 people"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Building F",
+                    count = 1,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Workshop Area",
+                            subtitle = "Workshop - Building F, Ground Floor",
+                            meta = "Available - 15 people"
+                        )
+                    )
+                )
+            )
+        ),
+        ResourceSection(
+            title = "Resource Type",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "Laboratories",
+                    count = 8,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Embedded Systems Lab",
+                            subtitle = "Microcontroller kits, oscilloscopes, logic analyzers",
+                            meta = "5 kits reserved"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Equipment",
+                    count = 10,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "3D Printers",
+                            subtitle = "FDM and SLA printers with material inventory",
+                            meta = "7 jobs queued"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Spaces",
+                    count = 6,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Collaboration Pods",
+                            subtitle = "Smart pods for hybrid collaboration",
+                            meta = "Auto-release after 15 min idle"
+                        )
+                    )
+                )
+            )
+        ),
+        ResourceSection(
+            title = "Status",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "Available",
+                    count = 14,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Innovation Pod 02",
+                            subtitle = "Configured for quick huddles",
+                            meta = "Open until 8 PM"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "In Use",
+                    count = 9,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Composite Lab",
+                            subtitle = "Live booking by Mechanical Engineering",
+                            meta = "Ends at 16:30"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Under Maintenance",
+                    count = 3,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Spectrometer",
+                            subtitle = "Awaiting calibration vendor",
+                            meta = "ETA: Thursday"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Reserved",
+                    count = 6,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Board Room",
+                            subtitle = "Reserved for placement briefing",
+                            meta = "Tomorrow 10 AM"
+                        )
+                    )
+                )
+            )
+        ),
+        ResourceSection(
+            title = "Urgency",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "High Priority",
+                    count = 5,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Critical Server Patch",
+                            subtitle = "Security fix rollout pending",
+                            meta = "Action in next 4 hours"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Medium / Low",
+                    count = 11,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Furniture Refresh",
+                            subtitle = "Ergonomic chairs for labs",
+                            meta = "Scheduled next week"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Critical",
+                    count = 2,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Power Back-up Audit",
+                            subtitle = "Generator load tests pending",
+                            meta = "Block access until cleared"
+                        )
+                    )
+                )
+            )
+        ),
+        ResourceSection(
+            title = "History & Logs",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "Usage Log",
+                    count = 24,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Lab Space A-101",
+                            subtitle = "Booked by CSE Dept",
+                            meta = "Logged: 11:30 AM"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "User Activity",
+                    count = 16,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Facility Manager",
+                            subtitle = "Approved 3 requests",
+                            meta = "Last login 09:12 AM"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "Machine History",
+                    count = 12,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "CNC Router",
+                            subtitle = "Runtime stats updated",
+                            meta = "Last service 28 days ago"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "System Logs",
+                    count = 8,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Integration Sync",
+                            subtitle = "Third-party inventory updated",
+                            meta = "Status: Success"
+                        )
+                    )
+                )
+            )
+        ),
+        ResourceSection(
+            title = "Recently Added",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "New Machines",
+                    count = recentlyAddedItems.count { it.title.contains("Lab", ignoreCase = true) || it.subtitle.contains("Equipment", ignoreCase = true) },
+                    content = recentlyAddedItems.take(2)
+                ),
+                ResourceSectionTab(
+                    label = "New Users",
+                    count = 4,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Workshop Technicians",
+                            subtitle = "4 technicians onboarded",
+                            meta = "Clearance complete"
+                        )
+                    )
+                ),
+                ResourceSectionTab(
+                    label = "New Departments",
+                    count = 1,
+                    content = listOf(
+                        ResourceContentItem(
+                            title = "Sustainability Cell",
+                            subtitle = "Green initiatives task force",
+                            meta = "Workspace allocated"
+                        )
+                    )
+                )
+            )
+        )
+    )
+}
+
+data class FilterTag(
+    val section: String,
+    val label: String,
+    val count: Int
+)
+
+data class ResourceSection(
+    val title: String,
+    val tabs: List<ResourceSectionTab>
+) {
+    val totalCount: Int = tabs.sumOf { it.count }
+}
+
+data class ResourceSectionTab(
+    val label: String,
+    val count: Int,
+    val content: List<ResourceContentItem> = emptyList(),
+    val subTabs: List<ResourceSectionSubTab> = emptyList()
+)
+
+data class ResourceSectionSubTab(
+    val label: String,
+    val count: Int,
+    val content: List<ResourceContentItem> = emptyList(),
+    val propertyRequests: List<PropertyRequest> = emptyList(),
+    val showPriorityTag: Boolean = false,
+    val showQuickToggle: Boolean = false,
+    val showVerificationAction: Boolean = false
+)
+
+data class ResourceSectionState(
+    val selectedTab: ResourceSectionTab? = null,
+    val selectedSubTab: ResourceSectionSubTab? = null
+)
+
+data class ResourceContentItem(
+    val title: String,
+    val subtitle: String,
+    val meta: String
+)
+
+// Resource data class
+data class Resource(
+    val name: String,
+    val type: String,
+    val capacity: String,
+    val currentUsage: String,
+    val status: String,
+    val location: String
+)
+
+@Composable
+fun DetailRow(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        CustomLabel(
+            header = "$label:",
+            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+            headerColor = onSurfaceColor.copy(0.7f)
+        )
+        CustomLabel(
+            header = value,
+            fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+            headerColor = onSurfaceColor
         )
     }
 }
@@ -295,6 +1295,5 @@ private fun getDemoCategories(): List<ItemCategories> {
 @Composable
 fun HomeScreenPreview() {
     val navController : NavHostController = rememberNavController()
-    HomeScreen(navController =  navController)
+    HomeScreen(navController = navController)
 }
-
