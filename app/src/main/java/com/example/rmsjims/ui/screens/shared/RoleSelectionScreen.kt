@@ -16,7 +16,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,20 +39,7 @@ fun RoleSelectionScreen(
     navController: NavHostController,
     sessionViewModel: UserSessionViewModel = koinViewModel()
 ) {
-    val role = sessionViewModel.userRole
-
-    LaunchedEffect(role) {
-        if (role != UserRole.UNASSIGNED) {
-            val targetRoute = role.startDestination()
-            navController.navigate(targetRoute) {
-                popUpTo(Screen.RoleSelectionScreen.route) { inclusive = true }
-            }
-        }
-    }
-
-    if (role != UserRole.UNASSIGNED) {
-        return
-    }
+    // Always show role selection UI - do not check saved role or auto-navigate
 
     val options = remember {
         listOf(
@@ -110,7 +96,27 @@ fun RoleSelectionScreen(
                     RoleCard(
                         option = option,
                         onRoleSelected = { selectedRole ->
-                            sessionViewModel.updateRole(selectedRole)
+                            // Navigate directly without saving to session manager
+                            when (selectedRole) {
+                                UserRole.ADMIN -> {
+                                    navController.navigate(Screen.AdminNavGraph.route) {
+                                        popUpTo(Screen.RoleSelectionScreen.route) { inclusive = true }
+                                    }
+                                }
+                                UserRole.ASSISTANT -> {
+                                    navController.navigate(Screen.AssistantNavGraph.route) {
+                                        popUpTo(Screen.RoleSelectionScreen.route) { inclusive = true }
+                                    }
+                                }
+                                UserRole.STAFF -> {
+                                    navController.navigate(Screen.StaffNavGraph.route) {
+                                        popUpTo(Screen.RoleSelectionScreen.route) { inclusive = true }
+                                    }
+                                }
+                                UserRole.UNASSIGNED -> {
+                                    // Stay on role selection
+                                }
+                            }
                         }
                     )
                 }
@@ -160,11 +166,3 @@ private data class RoleOption(
     val role: UserRole
 )
 
-private fun UserRole.startDestination(): String {
-    return when (this) {
-        UserRole.ADMIN -> Screen.AdminDashboardScreen.route
-        UserRole.STAFF -> Screen.UsageApprovalScreen.route
-        UserRole.ASSISTANT -> Screen.ResourceManagementScreen.route
-        UserRole.UNASSIGNED -> Screen.RoleSelectionScreen.route
-    }
-}

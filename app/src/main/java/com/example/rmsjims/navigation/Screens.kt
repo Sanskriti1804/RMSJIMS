@@ -41,5 +41,10 @@ sealed class Screen(val route : String) {
     object PermissionsOverviewScreen : Screen("permissions_overview/{selectedRole}") {
         fun createRoute(selectedRole: String) = "permissions_overview/$selectedRole"
     }
+    
+    // Role-based navigation graph routes
+    object AdminNavGraph : Screen("admin_nav_graph")
+    object AssistantNavGraph : Screen("assistant_nav_graph")
+    object StaffNavGraph : Screen("staff_nav_graph")
 
 }

@@ -14,6 +14,12 @@ import com.example.rmsjims.ui.screens.assistant.MaintenanceDetailScreen
 import com.example.rmsjims.ui.screens.assistant.ResourceManagementScreen
 import com.example.rmsjims.ui.screens.assistant.TicketManagementScreen
 import com.example.rmsjims.ui.screens.assistant.UsageApprovalScreen
+import com.example.rmsjims.ui.screens.staff.ProdDescScreen
+import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
+import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
+import com.example.rmsjims.ui.screens.assistant.TicketScreen
+import com.example.rmsjims.viewmodel.UserSessionViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AssistantModuleApp() {
@@ -23,6 +29,7 @@ fun AssistantModuleApp() {
         navController = navController,
         startDestination = Screen.ResourceManagementScreen.route
     ) {
+        // Assistant-specific screens
         composable(Screen.AssistantScreen.route) {
             AssistantScreen(navController = navController)
         }
@@ -54,6 +61,21 @@ fun AssistantModuleApp() {
         }
         composable(Screen.TicketManagementScreen.route) {
             TicketManagementScreen(navController = navController)
+        }
+
+        // Shared screens - merged directly into AssistantNavGraph
+        composable(Screen.ProductDescriptionScreen.route) {
+            val sessionViewModel: UserSessionViewModel = koinViewModel()
+            ProdDescScreen(navController = navController, sessionViewModel = sessionViewModel)
+        }
+        composable(Screen.ProjectInfoScreen.route) {
+            ProjectInfoScreen(navController = navController)
+        }
+        composable(Screen.RaiseTicketScreen.route) {
+            RaiseTicketScreen(navController = navController)
+        }
+        composable(Screen.TicketScreen.route) {
+            TicketScreen()
         }
     }
 }

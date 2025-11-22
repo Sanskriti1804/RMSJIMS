@@ -10,6 +10,8 @@ import com.example.rmsjims.ui.screens.staff.ProdDescScreen
 import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
 import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
 import com.example.rmsjims.ui.screens.assistant.TicketScreen
+import com.example.rmsjims.viewmodel.UserSessionViewModel
+import org.koin.androidx.compose.koinViewModel
 import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.admin.EquipmentAssignmentScreen
 import com.example.rmsjims.ui.screens.admin.SystemSettingScreen
@@ -29,8 +31,9 @@ fun AdminModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.LoginScreen.route
+        startDestination = Screen.AdminDashboardScreen.route
     ) {
+        // Admin-specific screens
         composable(Screen.AdminDashboardScreen.route) {
             AdminDashboardScreen(navController = navController)
         }
@@ -47,46 +50,19 @@ fun AdminModuleApp() {
             UserDetailScreen(navController = navController)
         }
 
-        composable(Screen.MachineStatusScreen.route) {
-            MachineStatusScreen(navController = navController)
+        // Shared screens - merged directly into AdminNavGraph
+        composable(Screen.ProductDescriptionScreen.route) {
+            val sessionViewModel: UserSessionViewModel = koinViewModel()
+            ProdDescScreen(navController = navController, sessionViewModel = sessionViewModel)
         }
-        composable(
-            Screen.MachineDetailScreen.route,
-            arguments = listOf(navArgument("machineId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val machineId = backStackEntry.arguments?.getString("machineId") ?: ""
-            MachineDetailScreen(machineId = machineId, navController = navController)
-        }
-        composable(Screen.MaintenanceApprovalScreen.route) {
-            MaintenanceApprovalScreen(navController = navController)
-        }
-        composable(
-            Screen.MaintenanceDetailScreen.route,
-            arguments = listOf(navArgument("requestId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val requestId = backStackEntry.arguments?.getString("requestId") ?: ""
-            MaintenanceDetailScreen(requestId = requestId, navController = navController)
-        }
-        composable(Screen.UsageApprovalScreen.route) {
-            UsageApprovalScreen(navController = navController)
-        }
-        composable(Screen.ResourceManagementScreen.route) {
-            ResourceManagementScreen(navController = navController)
-        }
-        composable(Screen.TicketManagementScreen.route) {
-            TicketManagementScreen(navController = navController)
+        composable(Screen.ProjectInfoScreen.route) {
+            ProjectInfoScreen(navController = navController)
         }
         composable(Screen.RaiseTicketScreen.route) {
             RaiseTicketScreen(navController = navController)
         }
         composable(Screen.TicketScreen.route) {
             TicketScreen()
-        }
-        composable(Screen.ProjectInfoScreen.route) {
-            ProjectInfoScreen(navController = navController)
-        }
-        composable(Screen.ProductDescriptionScreen.route) {
-            ProdDescScreen(navController = navController)
         }
     }
 }

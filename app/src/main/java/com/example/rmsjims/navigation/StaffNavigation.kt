@@ -19,6 +19,7 @@ import com.example.rmsjims.ui.screens.assistant.TicketScreen
 import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.CalendarViewModel
+import com.example.rmsjims.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -30,6 +31,7 @@ fun StaffModuleApp() {
         navController = navController,
         startDestination = Screen.HomeScreen.route
     ) {
+        // Staff-specific screens (with bottom navigation)
         composable(Screen.HomeScreen.route) {
             HomeScreen(navController = navController)
         }
@@ -49,18 +51,6 @@ fun StaffModuleApp() {
         composable(Screen.ProfileScreen.route) {
             ProfileScreen(navController = navController)
         }
-        composable(Screen.ProjectInfoScreen.route) {
-            ProjectInfoScreen(navController = navController)
-        }
-        composable(Screen.RaiseTicketScreen.route) {
-            RaiseTicketScreen(navController = navController)
-        }
-        composable(Screen.TicketScreen.route) {
-            TicketScreen()
-        }
-        composable(Screen.ProductDescriptionScreen.route) {
-            ProdDescScreen(navController = navController)
-        }
         composable(Screen.CalendarScreen.route) {
             val calendarViewModel: CalendarViewModel = koinViewModel()
             val bookingViewModel: BookingScreenViewmodel = koinViewModel()
@@ -69,6 +59,21 @@ fun StaffModuleApp() {
                 viewModel = calendarViewModel,
                 bookingViewmodel = bookingViewModel
             )
+        }
+
+        // Shared screens - merged directly into StaffNavGraph
+        composable(Screen.ProductDescriptionScreen.route) {
+            val sessionViewModel: UserSessionViewModel = koinViewModel()
+            ProdDescScreen(navController = navController, sessionViewModel = sessionViewModel)
+        }
+        composable(Screen.ProjectInfoScreen.route) {
+            ProjectInfoScreen(navController = navController)
+        }
+        composable(Screen.RaiseTicketScreen.route) {
+            RaiseTicketScreen(navController = navController)
+        }
+        composable(Screen.TicketScreen.route) {
+            TicketScreen()
         }
     }
 }
