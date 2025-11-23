@@ -37,6 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
 import com.example.rmsjims.R
 import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.CustomLabel
@@ -132,8 +137,32 @@ fun UserDetailScreen(
             item {
                 AdminActionsCard(
                     user = user,
-                    onCallClick = { /* Handle call */ },
-                    onEmailClick = { /* Handle email */ },
+                    onCallClick = {
+                        val context = LocalContext.current
+                        // Copy phone to clipboard
+                        val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Phone", user.phone)
+                        clipboard.setPrimaryClip(clip)
+                        
+                        // Open dialer app with number on keypad
+                        val intent = Intent(Intent.ACTION_DIAL).apply {
+                            data = Uri.parse("tel:${user.phone}")
+                        }
+                        context.startActivity(intent)
+                    },
+                    onEmailClick = {
+                        val context = LocalContext.current
+                        // Copy email to clipboard
+                        val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Email", user.email)
+                        clipboard.setPrimaryClip(clip)
+                        
+                        // Open mail app with email in 'To' field
+                        val intent = Intent(Intent.ACTION_SENDTO).apply {
+                            data = Uri.parse("mailto:${user.email}")
+                        }
+                        context.startActivity(intent)
+                    },
                     onNotificationClick = { showNotificationDialog = true },
                     onSuspendClick = { showSuspendDialog = true },
                     onReinstateClick = { /* Handle reinstate */ },
@@ -408,8 +437,8 @@ fun StatChip(label: String, count: Int, color: Color) {
 @Composable
 fun AdminActionsCard(
     user: User,
-    onCallClick: () -> Unit,
-    onEmailClick: () -> Unit,
+    onCallClick: @Composable () -> Unit,
+    onEmailClick: @Composable () -> Unit,
     onNotificationClick: () -> Unit,
     onSuspendClick: () -> Unit,
     onReinstateClick: () -> Unit,
@@ -446,12 +475,12 @@ fun AdminActionsCard(
             ) {
                 AppButton(
                     buttonText = "Call User",
-                    onClick = onCallClick,
+                    onClick = onCallClick as () -> Unit,
                     modifier = Modifier.weight(1f)
                 )
                 AppButton(
                     buttonText = "Email User",
-                    onClick = onEmailClick,
+                    onClick = onEmailClick as () -> Unit,
                     modifier = Modifier.weight(1f)
                 )
             }
