@@ -43,7 +43,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
+import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import com.example.rmsjims.R
 import com.example.rmsjims.data.model.UiState
@@ -386,7 +391,9 @@ fun InChargeCard(
                             InChargeRow(
                                 label = "Asst.",
                                 name = demoFacility.lab_incharge,
-                                icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
+                                icons = listOf(R.drawable.ic_mail, R.drawable.ic_call),
+                                email = demoFacility.lab_incharge_email,
+                                phone = demoFacility.lab_incharge_phone
                             )
                         }
                         is UiState.Success -> {
@@ -407,7 +414,9 @@ fun InChargeCard(
                                 InChargeRow(
                                     label = "Asst.",
                                     name = currentFacility.lab_incharge,
-                                    icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
+                                    icons = listOf(R.drawable.ic_mail, R.drawable.ic_call),
+                                    email = currentFacility.lab_incharge_email,
+                                    phone = currentFacility.lab_incharge_phone
                                 )
                             }
                         }
@@ -444,8 +453,12 @@ fun InChargeCard(
 fun InChargeRow(
     label: String,
     name: String,
-    icons: List<Int> = listOf(R.drawable.ic_mail)
+    icons: List<Int> = listOf(R.drawable.ic_mail),
+    email: String? = null,
+    phone: String? = null
 ) {
+    val context = LocalContext.current
+    
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -469,15 +482,47 @@ fun InChargeRow(
                 modifier = Modifier.padding(pxToDp(10))
             )
 
-            icons.forEach {
-                val adjustedIconSize = if (it == R.drawable.ic_call) pxToDp(16) else pxToDp(20)
+            icons.forEach { iconRes ->
+                val adjustedIconSize = if (iconRes == R.drawable.ic_call) pxToDp(16) else pxToDp(20)
                 AppCircularIcon(
-                    painter = painterResource(it),
+                    painter = painterResource(iconRes),
                     boxSize = pxToDp(28),
                     iconPadding = pxToDp(4),
                     iconSize = adjustedIconSize,
                     tint = primaryColor,
-                    boxColor = circularBoxColor
+                    boxColor = circularBoxColor,
+                    onClick = {
+                        when (iconRes) {
+                            R.drawable.ic_mail -> {
+                                email?.let { emailAddress ->
+                                    // Copy email to clipboard
+                                    val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                    val clip = ClipData.newPlainText("Email", emailAddress)
+                                    clipboard.setPrimaryClip(clip)
+                                    
+                                    // Open mail app with email in 'To' field
+                                    val intent = Intent(Intent.ACTION_SENDTO).apply {
+                                        data = Uri.parse("mailto:$emailAddress")
+                                    }
+                                    context.startActivity(intent)
+                                }
+                            }
+                            R.drawable.ic_call -> {
+                                phone?.let { phoneNumber ->
+                                    // Copy phone to clipboard
+                                    val clipboard = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                    val clip = ClipData.newPlainText("Phone", phoneNumber)
+                                    clipboard.setPrimaryClip(clip)
+                                    
+                                    // Open dialer app with number on keypad
+                                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                                        data = Uri.parse("tel:$phoneNumber")
+                                    }
+                                    context.startActivity(intent)
+                                }
+                            }
+                        }
+                    }
                 )
             }
         }
