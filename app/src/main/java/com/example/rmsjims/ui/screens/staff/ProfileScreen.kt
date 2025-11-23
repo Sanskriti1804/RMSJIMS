@@ -81,7 +81,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)))
 
             // Booking History Section
-            BookingHistorySection()
+//            BookingHistorySection()
 
             Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)))
         }
