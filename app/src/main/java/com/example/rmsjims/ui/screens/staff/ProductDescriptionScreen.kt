@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -114,7 +116,12 @@ fun ProdDescScreen(
                         navController.navigate(Screen.CalendarScreen.route)
                     },
                     buttonText = "BOOK NOW",
-                    modifier = Modifier.padding(ResponsiveLayout.getHorizontalPadding())
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = ResponsiveLayout.getHorizontalPadding(),
+                            vertical = ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)
+                        )
                 )
             }
             else{
@@ -122,17 +129,24 @@ fun ProdDescScreen(
                     onEditClick = {},
                     onDeleteClick = {},
                     onBookClick = {},
-                    modifier = Modifier.padding(ResponsiveLayout.getHorizontalPadding())
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = ResponsiveLayout.getHorizontalPadding(),
+                            vertical = ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)
+                        )
                 )
             }
         },
         containerColor = whiteColor
     ) { paddingValues ->
+        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(ResponsiveLayout.getHorizontalPadding()),
+                .padding(ResponsiveLayout.getHorizontalPadding())
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp))
         ) {
             Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(20.dp, 24.dp, 28.dp)))
@@ -147,6 +161,9 @@ fun ProdDescScreen(
             InChargeCard()
             AdditionalInfoCard()
             UseCard()
+            
+            // Add bottom padding for booking button
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(80.dp, 90.dp, 100.dp)))
         }
     }
 }
@@ -226,6 +243,7 @@ fun ProductDescriptionCard(
 ) {
     val facilitiesViewModel : FacilitiesViewModel = koinViewModel ()
     val facilitiesList = facilitiesViewModel.facilitiesState
+    var isFavorite by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier
@@ -288,9 +306,11 @@ fun ProductDescriptionCard(
             AppCategoryIcon(
                 painter = painterResource(R.drawable.ic_favorite),
                 iconDescription = "Save Icon",
+                tint = if (isFavorite) primaryColor else onSurfaceColor,
                 modifier = Modifier
                     .padding(pxToDp(2))
-                    .align(Alignment.TopEnd),
+                    .align(Alignment.TopEnd)
+                    .clickable { isFavorite = !isFavorite },
                 iconSize = pxToDp(20),
             )
         }
@@ -626,22 +646,19 @@ fun ActionCard(
         modifier = Modifier
             .fillMaxWidth(),
     ) {
-        Column() {
+        Column(
+            modifier = Modifier.padding(pxToDp(12))
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(pxToDp(18))
             ) {
                 AppButton(
-                    onClick = onEditClick,
-                    containerColor = onSurfaceVariant,
-                    contentColor = editCardTextColor,
-                    buttonText = "EDIT"
-                )
-                AppButton(
                     onClick = onDeleteClick,
                     containerColor = onSurfaceVariant,
                     contentColor = errorColor,
-                    buttonText = "DELETE"
+                    buttonText = "DELETE",
+                    modifier = Modifier.weight(1f)
                 )
             }
 
@@ -649,7 +666,8 @@ fun ActionCard(
 
             AppButton(
                 onClick = onBookClick,
-                buttonText = "BOOK"
+                buttonText = "BOOK",
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

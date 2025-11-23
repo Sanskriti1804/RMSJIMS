@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.Card
@@ -55,12 +57,13 @@ fun ProfileScreen(
             CustomNavigationBar(navController = navController)
         },
     ) { paddingValues ->
-
+        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(ResponsiveLayout.getHorizontalPadding())
                 .padding(paddingValues)
+                .verticalScroll(scrollState)
         ) {
             Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(27.dp, 32.dp, 38.dp)))
 

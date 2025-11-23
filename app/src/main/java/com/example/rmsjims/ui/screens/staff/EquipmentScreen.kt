@@ -23,15 +23,20 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -70,7 +75,6 @@ import com.example.rmsjims.data.schema.Items
 import com.example.rmsjims.viewmodel.FacilitiesViewModel
 import com.example.rmsjims.viewmodel.FilterSortViewModel
 import com.example.rmsjims.viewmodel.ItemsViewModel
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import org.koin.androidx.compose.koinViewModel
@@ -87,7 +91,9 @@ fun EquipmentScreen(
 ){
     var isFilterSheetVisible by filterSortViewModel.isSheetVisible
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    var isSaved by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val savedItems = remember { mutableStateMapOf<Int, Boolean>() }
 
     val items = itemViewModel.itemsState
     val facilitiesState = facilitiesViewModel.facilitiesState
@@ -107,6 +113,9 @@ fun EquipmentScreen(
                 navController = navController
             )
         },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -169,8 +178,16 @@ fun EquipmentScreen(
                                 equipName = item.name,
                                 available = if (item.is_available == true) "Available" else "Not Available",
                                 onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                                isSaved = savedItems[item.id] ?: false,
                                 saveClick = {
-                                    isSaved = !isSaved
+                                    val newSavedState = !(savedItems[item.id] ?: false)
+                                    savedItems[item.id] = newSavedState
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = "Equipment saved to your collection",
+                                            duration = androidx.compose.material3.SnackbarDuration.Short
+                                        )
+                                    }
                                 },
                                 facilityName = itemViewModel.getFacilityNameForEquipment(item, facilities)
                             )
@@ -198,8 +215,16 @@ fun EquipmentScreen(
                                 equipName = item.name,
                                 available = if (item.is_available == true) "Available" else "Not Available",
                                 onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                                isSaved = savedItems[item.id] ?: false,
                                 saveClick = {
-                                    isSaved = !isSaved
+                                    val newSavedState = !(savedItems[item.id] ?: false)
+                                    savedItems[item.id] = newSavedState
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = "Equipment saved to your collection",
+                                            duration = androidx.compose.material3.SnackbarDuration.Short
+                                        )
+                                    }
                                 },
                                 facilityName = itemViewModel.getFacilityNameForEquipment(item, facilities)
                             )
