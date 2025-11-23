@@ -133,7 +133,9 @@ fun ProdDescScreen(
                 ActionCard(
                     onEditClick = {},
                     onDeleteClick = {},
-                    onBookClick = {},
+                    onBookClick = {
+                        navController.navigate(Screen.CalendarScreen.route)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(
@@ -690,25 +692,13 @@ fun ActionCard(
     Card(
         modifier = Modifier
             .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = whiteColor
+        )
     ) {
         Column(
             modifier = Modifier.padding(pxToDp(12))
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(pxToDp(18))
-            ) {
-                AppButton(
-                    onClick = onDeleteClick,
-                    containerColor = onSurfaceVariant,
-                    contentColor = errorColor,
-                    buttonText = "DELETE",
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
             AppButton(
                 onClick = onBookClick,
                 buttonText = "BOOK",
