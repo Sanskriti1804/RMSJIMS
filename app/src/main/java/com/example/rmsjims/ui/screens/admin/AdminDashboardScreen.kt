@@ -96,7 +96,7 @@ fun AdminDashboardScreen(
         FunctionalityCard(
             title = "Booking Management",
             iconRes = R.drawable.ic_ticket_thread,
-            route = Screen.BookingsScreen.route
+            route = Screen.AdminBookingsScreen.route
         ),
         FunctionalityCard(
             title = "User Management",
@@ -145,7 +145,7 @@ fun AdminDashboardScreen(
                 },
                 onAddBooking = { 
                     fabExpanded = false
-                    navController.navigate(Screen.BookingsScreen.route)
+                    navController.navigate(Screen.AdminBookingsScreen.route)
                 }
             )
         },
