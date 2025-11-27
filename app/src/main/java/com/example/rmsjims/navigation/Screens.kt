@@ -16,7 +16,6 @@ sealed class Screen(val route : String) {
     object AdminDashboardScreen : Screen("admin_dashboard")
     object AdminBookingsScreen : Screen("admin_bookings")
     object EquipmentManagementScreen : Screen("equipment_management")
-    object EquipmentAssignmentScreen : Screen("equipment_assignment")
     object SystemSettingScreen : Screen("system_setting")
     object UserManagementScreen : Screen("user_management")
     object UserDetailScreen : Screen("user_detail/{userId}") {

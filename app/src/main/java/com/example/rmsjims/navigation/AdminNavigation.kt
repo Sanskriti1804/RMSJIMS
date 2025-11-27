@@ -15,7 +15,6 @@ import org.koin.androidx.compose.koinViewModel
 import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.admin.AdminBookingManagementScreen
 import com.example.rmsjims.ui.screens.admin.EquipmentManagementScreen
-import com.example.rmsjims.ui.screens.admin.EquipmentAssignmentScreen
 import com.example.rmsjims.ui.screens.admin.SystemSettingScreen
 import com.example.rmsjims.ui.screens.admin.UserDetailScreen
 import com.example.rmsjims.ui.screens.admin.UserManagementScreen
@@ -65,9 +64,6 @@ fun AdminModuleApp() {
         }
         composable(Screen.EquipmentManagementScreen.route) {
             EquipmentManagementScreen(navController = navController)
-        }
-        composable(Screen.EquipmentAssignmentScreen.route) {
-            EquipmentAssignmentScreen(navController = navController)
         }
         composable(Screen.SystemSettingScreen.route) {
             SystemSettingScreen(navController = navController)
