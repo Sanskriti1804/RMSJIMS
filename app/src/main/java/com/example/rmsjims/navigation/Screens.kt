@@ -15,6 +15,7 @@ sealed class Screen(val route : String) {
     object ProfileScreen : Screen("profile")
     object AdminDashboardScreen : Screen("admin_dashboard")
     object AdminBookingsScreen : Screen("admin_bookings")
+    object EquipmentManagementScreen : Screen("equipment_management")
     object EquipmentAssignmentScreen : Screen("equipment_assignment")
     object SystemSettingScreen : Screen("system_setting")
     object UserManagementScreen : Screen("user_management")
@@ -27,6 +28,7 @@ sealed class Screen(val route : String) {
         fun createRoute(machineId: String) = "machine_detail/$machineId"
     }
     object MaintenanceApprovalScreen : Screen("maintenance_approval")
+    object NewEquipmentScreen : Screen("new_equipment")
     object MaintenanceDetailScreen : Screen("maintenance_detail/{requestId}") {
         fun createRoute(requestId: String) = "maintenance_detail/$requestId"
     }

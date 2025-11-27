@@ -91,7 +91,7 @@ fun AdminDashboardScreen(
         FunctionalityCard(
             title = "Equipment Management",
             iconRes = R.drawable.ic_storage,
-            route = Screen.EquipmentAssignmentScreen.route
+            route = Screen.EquipmentManagementScreen.route
         ),
         FunctionalityCard(
             title = "Booking Management",

@@ -11,6 +11,7 @@ import com.example.rmsjims.ui.screens.assistant.MachineDetailScreen
 import com.example.rmsjims.ui.screens.assistant.MachineStatusScreen
 import com.example.rmsjims.ui.screens.assistant.MaintenanceApprovalScreen
 import com.example.rmsjims.ui.screens.assistant.MaintenanceDetailScreen
+import com.example.rmsjims.ui.screens.assistant.NewEquipmentScreen
 import com.example.rmsjims.ui.screens.assistant.TicketManagementScreen
 import com.example.rmsjims.ui.screens.assistant.UsageApprovalScreen
 import com.example.rmsjims.ui.screens.staff.ProdDescScreen
@@ -52,6 +53,9 @@ fun AssistantModuleApp() {
         // Assistant-specific screens
         composable(Screen.AssistantScreen.route) {
             AssistantScreen(navController = navController)
+        }
+        composable(Screen.NewEquipmentScreen.route) {
+            NewEquipmentScreen(navController = navController)
         }
         composable(Screen.MachineStatusScreen.route) {
             MachineStatusScreen(navController = navController)
