@@ -137,7 +137,7 @@ fun AdminDashboardScreen(
                 onExpandedChange = { fabExpanded = it },
                 onAddEquipment = { 
                     fabExpanded = false
-                    // Navigate to add equipment screen
+                    navController.navigate(Screen.NewEquipmentScreen.route)
                 },
                 onAddUser = { 
                     fabExpanded = false

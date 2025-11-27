@@ -28,6 +28,7 @@ import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
 import com.example.rmsjims.ui.screens.staff.HomeScreen
 import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.ui.screens.staff.ProfileScreen
+import com.example.rmsjims.ui.screens.assistant.NewEquipmentScreen
 
 @Composable
 fun AdminModuleApp() {
@@ -132,6 +133,9 @@ fun AdminModuleApp() {
         }
         composable(Screen.TicketScreen.route) {
             TicketScreen()
+        }
+        composable(Screen.NewEquipmentScreen.route) {
+            NewEquipmentScreen(navController = navController)
         }
     }
 }
