@@ -36,7 +36,7 @@ fun AdminModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.AdminBookingsScreen.route
+        startDestination = Screen.HomeScreen.route
     ) {
         // Bottom navigation screens
         composable(Screen.HomeScreen.route) {
