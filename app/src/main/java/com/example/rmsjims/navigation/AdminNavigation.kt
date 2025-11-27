@@ -120,6 +120,10 @@ fun AdminModuleApp() {
             val sessionViewModel: UserSessionViewModel = koinViewModel()
             ProdDescScreen(navController = navController, sessionViewModel = sessionViewModel)
         }
+        composable(Screen.ProductDescriptionEditScreen.route) {
+            val sessionViewModel: UserSessionViewModel = koinViewModel()
+            ProdDescScreen(navController = navController, sessionViewModel = sessionViewModel)
+        }
         composable(Screen.ProjectInfoScreen.route) {
             ProjectInfoScreen(navController = navController)
         }
