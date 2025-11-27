@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppCircularIcon
 import com.example.rmsjims.ui.components.AppSearchBar
 import com.example.rmsjims.ui.components.CustomLabel
@@ -187,7 +188,11 @@ fun EquipmentManagementScreen(
                 EquipmentManagementCard(
                     equipmentName = "Equipment ${index + 1}",
                     status = "Available",
-                    location = "Building A, Lab 101"
+                    location = "Building A, Lab 101",
+                    equipmentId = "EQ-${index + 1}",
+                    onClick = {
+                        navController.navigate(Screen.ProductDescriptionScreen.route)
+                    }
                 )
             }
         }
@@ -411,10 +416,14 @@ private fun SelectableChip(
 private fun EquipmentManagementCard(
     equipmentName: String,
     status: String,
-    location: String
+    location: String,
+    equipmentId: String,
+    onClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
             containerColor = onSurfaceVariant
         ),
