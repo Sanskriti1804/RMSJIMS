@@ -1,11 +1,9 @@
 package com.example.rmsjims.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,40 +25,35 @@ fun CustomTopBar(
     containerColor: Color = whiteColor,
     titleColor: Color = headerColor,
 ){
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = ResponsiveLayout.getResponsivePadding(15.dp, 18.dp, 22.dp))
-                .background(containerColor),
-            verticalAlignment = Alignment.Top
-        ) {
-            if (onNavigationClick != null) {
-                AppNavBackIcon(
-                    onClick = onNavigationClick,
-                    modifier = Modifier
-                        .padding(
-                            start = ResponsiveLayout.getResponsivePadding(17.dp, 20.dp, 24.dp), 
-                            end = ResponsiveLayout.getResponsivePadding(11.dp, 14.dp, 17.dp), 
-                            top = ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)
-                        )
-                        .align(Alignment.CenterVertically)
-
-                )
-            }
-            else{
-                Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsivePadding(16.dp, 18.dp, 20.dp)))
-
-            }
-
-            CustomLabel(
-                header = title,
-                headerColor = titleColor,
-                fontSize = ResponsiveLayout.getResponsiveFontSize(25.sp, 28.sp, 32.sp),
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = ResponsiveLayout.getResponsivePadding(15.dp, 18.dp, 22.dp))
+            .background(containerColor)
+    ) {
+        // Back button positioned absolutely on the left
+        if (onNavigationClick != null) {
+            AppNavBackIcon(
+                onClick = onNavigationClick,
                 modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(top = ResponsiveLayout.getResponsivePadding(17.dp, 20.dp, 24.dp))
+                    .align(Alignment.CenterStart)
+                    .padding(
+                        start = ResponsiveLayout.getResponsivePadding(17.dp, 20.dp, 24.dp),
+                        top = ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)
+                    )
             )
         }
+
+        // Title centered horizontally across the full width
+        CustomLabel(
+            header = title,
+            headerColor = titleColor,
+            fontSize = ResponsiveLayout.getResponsiveFontSize(25.sp, 28.sp, 32.sp),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(top = ResponsiveLayout.getResponsivePadding(17.dp, 20.dp, 24.dp))
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
