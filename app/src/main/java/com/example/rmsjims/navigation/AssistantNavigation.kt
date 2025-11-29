@@ -30,7 +30,7 @@ fun AssistantModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.HomeScreen.route
+        startDestination = Screen.UsageApprovalScreen.route
     ) {
         // Bottom navigation screens
         composable(Screen.HomeScreen.route) {
@@ -49,7 +49,6 @@ fun AssistantModuleApp() {
         composable(Screen.ProfileScreen.route) {
             ProfileScreen(navController = navController)
         }
-        
         // Assistant-specific screens
         composable(Screen.AssistantScreen.route) {
             AssistantScreen(navController = navController)

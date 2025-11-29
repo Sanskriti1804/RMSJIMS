@@ -40,7 +40,7 @@ fun SharedNavGraph(
             SplashScreen(
                 onSplashComplete = {
                     // Navigate to Login screen after splash
-                    navController.navigate(Screen.AboutAppScreen.route) {
+                    navController.navigate(Screen.LoginScreen.route) {
                         popUpTo(Screen.SplashScreen.route) { inclusive = true }
                     }
                 }
