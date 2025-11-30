@@ -29,7 +29,9 @@ fun CustomTopBar(
     containerColor: Color = whiteColor,
     titleColor: Color = headerColor,
     navController: NavHostController? = null,
-    onSettingsClick: (() -> Unit)? = null
+    onSettingsClick: (() -> Unit)? = null,
+    onNotificationClick: (() -> Unit)? = null,
+    isProfileScreen: Boolean = false
 ){
     Box(
         modifier = Modifier
@@ -58,11 +60,19 @@ fun CustomTopBar(
                 .padding(top = ResponsiveLayout.getResponsivePadding(17.dp, 20.dp, 24.dp))
         )
 
-        // Settings icon positioned absolutely on the right - always show
+        // Right icon: Settings for profile screens, Notification for all other screens
         AppCircularIcon(
-            painter = painterResource(R.drawable.ic_settings),
-            iconDescription = "Settings",
-            onClick = onSettingsClick ?: {},
+            painter = if (isProfileScreen) {
+                painterResource(R.drawable.ic_settings)
+            } else {
+                painterResource(R.drawable.ic_notification)
+            },
+            iconDescription = if (isProfileScreen) "Settings" else "Notifications",
+            onClick = if (isProfileScreen) {
+                onSettingsClick ?: {}
+            } else {
+                onNotificationClick ?: {}
+            },
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(

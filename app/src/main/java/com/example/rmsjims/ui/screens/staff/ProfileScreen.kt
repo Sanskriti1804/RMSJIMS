@@ -57,7 +57,8 @@ fun ProfileScreen(
         topBar = {
             CustomTopBar(
                 title = "Profile",
-                navController = navController
+                navController = navController,
+                isProfileScreen = true
             )
         },
         bottomBar = {
