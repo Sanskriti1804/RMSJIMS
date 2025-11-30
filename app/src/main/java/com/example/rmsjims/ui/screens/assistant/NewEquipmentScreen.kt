@@ -47,6 +47,12 @@ import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.whiteColor
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.util.pxToDp
+import com.example.rmsjims.ui.components.rememberImagePicker
+import android.net.Uri
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.Image
+import androidx.compose.ui.draw.clip
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -131,7 +137,9 @@ fun NewEquipmentScreen(
             // Image field with icon
             ImageField(
                 selectedImageUri = selectedImageUri,
-                onImageSelected = { selectedImageUri = it }
+                onImageSelected = { uri -> 
+                    selectedImageUri = uri?.toString()
+                }
             )
             
             AppTextField(
@@ -247,26 +255,12 @@ fun NewEquipmentScreen(
                     modifier = Modifier.weight(1f)
                 )
                 
-                Box(
-                    modifier = Modifier
-                        .size(ResponsiveLayout.getResponsiveSize(52.dp, 60.dp, 68.dp))
-                        .background(
-                            color = onSurfaceVariant,
-                            shape = RoundedCornerShape(pxToDp(8))
-                        )
-                        .clickable {
-                            // Open gallery to select warranty image
-                            warrantyImageUri = "warranty_image_${System.currentTimeMillis()}"
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add Warranty Image",
-                        tint = primaryColor,
-                        modifier = Modifier.size(pxToDp(24))
-                    )
-                }
+                WarrantyImageButton(
+                    warrantyImageUri = warrantyImageUri,
+                    onImageSelected = { uri ->
+                        warrantyImageUri = uri?.toString()
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(13.dp, 16.dp, 20.dp)))
@@ -277,8 +271,10 @@ fun NewEquipmentScreen(
 @Composable
 fun ImageField(
     selectedImageUri: String?,
-    onImageSelected: (String) -> Unit
+    onImageSelected: (Uri?) -> Unit
 ) {
+    val imagePicker = rememberImagePicker(onImageSelected = onImageSelected)
+    
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -293,33 +289,81 @@ fun ImageField(
                 shape = RoundedCornerShape(pxToDp(8))
             )
             .clickable {
-                // Open gallery to select image
-                onImageSelected("image_${System.currentTimeMillis()}")
+                imagePicker.onPickFromGallery()
             },
         contentAlignment = Alignment.Center
     ) {
-        if (selectedImageUri != null) {
-            // Show selected image preview (placeholder for now)
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CustomLabel(
-                    header = "Image Selected",
-                    headerColor = primaryColor,
-                    fontSize = 14.sp
-                )
-            }
+        val safeUri = selectedImageUri?.let {
+            runCatching { Uri.parse(it) }.getOrNull()
+        }
+
+        if (safeUri != null) {
+            AsyncImage(
+                model = safeUri,
+                contentDescription = "Selected Image",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(pxToDp(8))),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            CustomLabel(
+                header = "Image Selected",
+                headerColor = primaryColor,
+                fontSize = 14.sp
+            )
+        }
+
+    }
+}
+
+@Composable
+fun WarrantyImageButton(
+    warrantyImageUri: String?,
+    onImageSelected: (Uri?) -> Unit
+) {
+    val imagePicker = rememberImagePicker(onImageSelected = onImageSelected)
+
+    val parsedUri = remember(warrantyImageUri) {
+        try {
+            warrantyImageUri?.let { Uri.parse(it) }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .size(ResponsiveLayout.getResponsiveSize(52.dp, 60.dp, 68.dp))
+            .background(
+                color = onSurfaceVariant,
+                shape = RoundedCornerShape(pxToDp(8))
+            )
+            .clickable {
+                imagePicker.onPickFromGallery()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        if (parsedUri != null) {
+            AsyncImage(
+                model = parsedUri,
+                contentDescription = "Warranty Image",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(pxToDp(8))),
+                contentScale = ContentScale.Crop
+            )
         } else {
             Icon(
                 imageVector = Icons.Default.Add,
-                contentDescription = "Add Image",
+                contentDescription = "Add Warranty Image",
                 tint = primaryColor,
-                modifier = Modifier.size(pxToDp(32))
+                modifier = Modifier.size(pxToDp(24))
             )
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

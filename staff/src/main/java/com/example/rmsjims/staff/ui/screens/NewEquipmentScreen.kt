@@ -37,11 +37,18 @@ import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.whiteColor
 import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.util.ResponsiveLayout
+import com.example.rmsjims.ui.components.rememberImagePicker
+import android.net.Uri
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.Image
+import androidx.compose.ui.draw.clip
 
 @SuppressLint("RememberReturnType")
 @Composable
 fun NewEquipmentScreen() {
     var value by remember { mutableStateOf("") }
+    var selectedImageUri by remember { mutableStateOf<String?>(null) }
     val fontSize = 14.sp
 
     Scaffold(
@@ -66,7 +73,12 @@ fun NewEquipmentScreen() {
             verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(13.dp, 16.dp, 20.dp))
         ) {
             // 🔵 Image Upload Card
-            AddImageCard()
+            AddImageCard(
+                selectedImageUri = selectedImageUri,
+                onImageSelected = { uri ->
+                    selectedImageUri = uri?.toString()
+                }
+            )
 
             // 🟠 Fields follow same pattern
             AppTextField(
@@ -136,8 +148,11 @@ fun NewEquipmentScreen() {
 @Composable
 fun AddImageCard(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    selectedImageUri: String? = null,
+    onImageSelected: (Uri?) -> Unit
 ) {
+    val imagePicker = rememberImagePicker(onImageSelected = onImageSelected)
+    
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -145,29 +160,65 @@ fun AddImageCard(
         colors = CardDefaults.cardColors(
             containerColor = onSurfaceVariant
         ),
-        onClick = onClick,
+        onClick = {
+            imagePicker.onPickFromGallery()
+        },
         shape = RoundedCornerShape(pxToDp(4))
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_add_image),
-                contentDescription = "Add Image",
-                modifier = Modifier.size(pxToDp(37)),
+        if (selectedImageUri != null) {
+            try {
+                val uri = Uri.parse(selectedImageUri)
+                AsyncImage(
+                    model = uri,
+                    contentDescription = "Selected Image",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(pxToDp(4))),
+                    contentScale = ContentScale.Crop
+                )
+            } catch (e: Exception) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_add_image),
+                        contentDescription = "Add Image",
+                        modifier = Modifier.size(pxToDp(37)),
+                    )
 
-            )
+                    Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
+                    CustomLabel(
+                        header = "Add Image",
+                        fontSize = 12.sp,
+                        headerColor = onSurfaceColor.copy(0.7f)
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_add_image),
+                    contentDescription = "Add Image",
+                    modifier = Modifier.size(pxToDp(37)),
+                )
 
-            CustomLabel(
-                header = "Add Image",
-                fontSize = 12.sp,
-                headerColor = onSurfaceColor.copy(0.7f)
-            )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                CustomLabel(
+                    header = "Add Image",
+                    fontSize = 12.sp,
+                    headerColor = onSurfaceColor.copy(0.7f)
+                )
+            }
         }
     }
 }

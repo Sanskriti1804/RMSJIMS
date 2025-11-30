@@ -59,6 +59,10 @@ import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.viewmodel.BranchViewModel
 import com.example.rmsjims.viewmodel.DepartmentViewModel
+import com.example.rmsjims.ui.components.rememberImagePicker
+import android.net.Uri
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -171,8 +175,8 @@ fun RaiseTicketScreen(
             ImageUploadSection(
                 selectedImages = selectedImages,
                 onImageAdd = { imageUri -> 
-                    if (!selectedImages.contains(imageUri)) {
-                        selectedImages.add(imageUri)
+                    if (imageUri != null && !selectedImages.contains(imageUri.toString())) {
+                        selectedImages.add(imageUri.toString())
                     }
                 },
                 onImageRemove = { imageUri -> selectedImages.remove(imageUri) }
@@ -298,9 +302,11 @@ fun PriorityChip(
 @Composable
 fun ImageUploadSection(
     selectedImages: List<String>,
-    onImageAdd: (String) -> Unit,
+    onImageAdd: (Uri?) -> Unit,
     onImageRemove: (String) -> Unit
 ) {
+    val imagePicker = rememberImagePicker(onImageSelected = onImageAdd)
+    
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(pxToDp(12))
@@ -320,9 +326,7 @@ fun ImageUploadSection(
                 icon = painterResource(R.drawable.ic_camera),
                 label = "Camera",
                 onClick = { 
-                    // In a real app, this would request camera permission and open camera
-                    // For UI demonstration, adding a placeholder image URI
-                    onImageAdd("camera_placeholder_${System.currentTimeMillis()}")
+                    imagePicker.onPickFromCamera()
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -330,9 +334,7 @@ fun ImageUploadSection(
                 icon = painterResource(R.drawable.ic_add),
                 label = "Gallery",
                 onClick = { 
-                    // In a real app, this would request gallery permission and open gallery
-                    // For UI demonstration, adding a placeholder image URI
-                    onImageAdd("gallery_placeholder_${System.currentTimeMillis()}")
+                    imagePicker.onPickFromGallery()
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -408,18 +410,27 @@ fun ImagePreviewItem(
                     shape = RoundedCornerShape(pxToDp(8))
                 )
         ) {
-            // In a real app, load actual image from URI
-            // For demo, showing a placeholder
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_add),
+            val uri = runCatching { Uri.parse(imageUri) }.getOrNull()
+
+            if (uri != null) {
+                AsyncImage(
+                    model = uri,
                     contentDescription = "Image Preview",
-                    tint = cardColor,
-                    modifier = Modifier.size(pxToDp(32))
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
                 )
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_add),
+                        contentDescription = "Image Preview",
+                        tint = cardColor,
+                        modifier = Modifier.size(pxToDp(32))
+                    )
+                }
             }
         }
         
