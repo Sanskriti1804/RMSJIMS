@@ -19,8 +19,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
@@ -53,10 +53,38 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.size
 import com.example.rmsjims.data.model.PropertyRequest
 import com.example.rmsjims.data.model.PropertyRequestGroup
 import com.example.rmsjims.data.model.PropertyRequestProvider
 import com.example.rmsjims.data.model.UserRole
+import com.example.rmsjims.data.model.BookingGroup
+import com.example.rmsjims.data.model.BookingGroupProvider
+import com.example.rmsjims.data.model.EquipmentGroup
+import com.example.rmsjims.data.model.EquipmentGroupProvider
+import com.example.rmsjims.data.model.TicketGroupData
+import com.example.rmsjims.data.model.TicketGroupDataProvider
+import com.example.rmsjims.data.model.BookingItem
+import com.example.rmsjims.data.model.TicketItem
+import com.example.rmsjims.data.model.BookingPriority
+import com.example.rmsjims.data.model.BookingStatus
+import com.example.rmsjims.data.model.BookingDates
+import com.example.rmsjims.data.model.ProductInfo
+import com.example.rmsjims.data.model.Status
+import com.example.rmsjims.data.model.InChargeInfo
+import com.example.rmsjims.data.model.TicketPriority
+import com.example.rmsjims.data.model.TicketStatus
+import com.example.rmsjims.data.model.TicketCategory
+import com.example.rmsjims.data.schema.Items
+import coil.compose.AsyncImage
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.layout.ContentScale
+import com.example.rmsjims.R
+import com.example.rmsjims.navigation.Screen
+import kotlinx.serialization.json.buildJsonObject
 import com.example.rmsjims.ui.components.AppCircularIcon
 import com.example.rmsjims.ui.components.AppFAB
 import com.example.rmsjims.ui.components.AppSearchBar
@@ -166,13 +194,13 @@ fun HomeScreen(
     val mainPropertyCategories = remember {
         listOf(
             "All",
-            "Approvals",
+            "Booking",
+            "Equipment",
+            "Ticket",
             "Department",
-            "Building",
             "Resource Type",
             "Status",
             "Urgency",
-            "History & Logs",
             "Recently Added",
             "Buildings"
         )
@@ -188,8 +216,9 @@ fun HomeScreen(
             "Building" -> listOf("Building A", "Building B", "Building C", "Building D", "Building E", "Building F", "Main Campus", "North Wing")
             "Resource Type" -> listOf("Laboratories", "Equipment", "Spaces", "Meeting Rooms", "Storage", "Workshops", "Study Areas")
             "Urgency" -> listOf("High Priority", "Medium Priority", "Low Priority", "Critical")
-            "Approvals" -> listOf("Pending Approvals", "New Requests", "Priority Requests", "Flagged Requests", "Approved Usages", "Rejected Requests")
-            "History & Logs" -> listOf("Usage Log", "User Activity", "Machine History", "System Logs")
+            "Booking" -> listOf("Pending Approvals", "New Requests", "Priority Requests", "Flagged Requests", "Approved Usages", "Rejected Requests")
+            "Equipment" -> listOf("Pending Approvals", "New Requests", "Priority Requests", "Flagged Requests", "Approved Usages", "Rejected Requests")
+            "Ticket" -> listOf("Pending Approvals", "New Requests", "Priority Requests", "Flagged Requests", "Approved Usages", "Rejected Requests")
             "Recently Added" -> listOf("New Machines", "New Users", "New Departments", "New Equipment")
             "Buildings" -> listOf("Building A", "Building B", "Building C", "Building D", "Building E", "Building F", "Main Campus", "North Wing")
             else -> emptyList()
@@ -197,7 +226,12 @@ fun HomeScreen(
     }
 
     val propertyRequests = remember { PropertyRequestProvider.sampleRequests() }
-    val sections = remember(resources, propertyRequests) { buildResourceSections(resources, propertyRequests) }
+    val bookingGroup = remember { BookingGroupProvider.sampleBookings() }
+    val equipmentGroup = remember { EquipmentGroupProvider.sampleEquipments() }
+    val ticketGroupData = remember { TicketGroupDataProvider.sampleTickets() }
+    val sections = remember(resources, propertyRequests, bookingGroup, equipmentGroup, ticketGroupData) { 
+        buildResourceSections(resources, propertyRequests, bookingGroup, equipmentGroup, ticketGroupData) 
+    }
     val sectionStates = remember(sections) {
         mutableStateMapOf<String, ResourceSectionState>().apply {
             sections.forEach { section ->
@@ -345,21 +379,54 @@ fun HomeScreen(
                         }
                         
                         // Show content only for the effective sub-tab (filtered by top-level selection)
-                        val propertyRequestItems = effectiveSubTab?.propertyRequests?.takeIf { it.isNotEmpty() }
-                        if (propertyRequestItems != null) {
-                            PropertyRequestsContent(
-                                requests = propertyRequestItems,
-                                showPriorityTag = effectiveSubTab.showPriorityTag,
-                                showQuickToggle = effectiveSubTab.showQuickToggle,
-                                showVerificationAction = effectiveSubTab.showVerificationAction,
-                                navController = navController
-                            )
-                        } else {
-                            val contentItems = effectiveSubTab?.content?.takeIf { it.isNotEmpty() }
-                                ?: (if (selectedSubProperty == null) selectedTab?.content else emptyList())
-                            ResourceSectionContent(
-                                items = contentItems.orEmpty()
-                            )
+                        when {
+                            effectiveSubTab?.cardType == CardType.MIXED -> {
+                                MixedItemsContent(
+                                    bookings = effectiveSubTab.bookingItems,
+                                    tickets = effectiveSubTab.ticketItems,
+                                    navController = navController
+                                )
+                            }
+                            effectiveSubTab?.bookingItems?.isNotEmpty() == true -> {
+                                BookingItemsContent(
+                                    bookings = effectiveSubTab.bookingItems,
+                                    navController = navController
+                                )
+                            }
+                            effectiveSubTab?.equipmentItems?.isNotEmpty() == true -> {
+                                EquipmentItemsContent(
+                                    equipment = effectiveSubTab.equipmentItems,
+                                    navController = navController
+                                )
+                            }
+                            effectiveSubTab?.ticketItems?.isNotEmpty() == true -> {
+                                TicketItemsContent(
+                                    tickets = effectiveSubTab.ticketItems,
+                                    navController = navController
+                                )
+                            }
+                            effectiveSubTab?.buildingItems?.isNotEmpty() == true -> {
+                                BuildingItemsContent(
+                                    buildings = effectiveSubTab.buildingItems,
+                                    navController = navController
+                                )
+                            }
+                            effectiveSubTab?.propertyRequests?.isNotEmpty() == true -> {
+                                PropertyRequestsContent(
+                                    requests = effectiveSubTab.propertyRequests,
+                                    showPriorityTag = effectiveSubTab.showPriorityTag,
+                                    showQuickToggle = effectiveSubTab.showQuickToggle,
+                                    showVerificationAction = effectiveSubTab.showVerificationAction,
+                                    navController = navController
+                                )
+                            }
+                            else -> {
+                                val contentItems = effectiveSubTab?.content?.takeIf { it.isNotEmpty() }
+                                    ?: (if (selectedSubProperty == null) selectedTab?.content else emptyList())
+                                ResourceSectionContent(
+                                    items = contentItems.orEmpty()
+                                )
+                            }
                         }
                     }
                 }
@@ -877,6 +944,269 @@ private fun EmptySectionState() {
 }
 
 @Composable
+private fun MixedItemsContent(
+    bookings: List<BookingItem>,
+    tickets: List<TicketItem>,
+    navController: NavHostController
+) {
+    if (bookings.isEmpty() && tickets.isEmpty()) {
+        EmptySectionState()
+        return
+    }
+    
+    Column(
+        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
+    ) {
+        bookings.forEach { booking ->
+            InfoCard(
+                bookingItem = booking,
+                onEditBooking = { navController.navigate(Screen.CalendarScreen.route) },
+                onExtendBooking = { /* Handle extend booking */ },
+                onReRequestBooking = { /* Handle re-request booking */ }
+            )
+        }
+        tickets.forEach { ticket ->
+            SimpleTicketCard(
+                ticket = ticket,
+                onClick = { /* Navigate to ticket details */ }
+            )
+        }
+    }
+}
+
+@Composable
+private fun BookingItemsContent(
+    bookings: List<BookingItem>,
+    navController: NavHostController
+) {
+    if (bookings.isEmpty()) {
+        EmptySectionState()
+        return
+    }
+    
+    Column(
+        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
+    ) {
+        bookings.forEach { booking ->
+            InfoCard(
+                bookingItem = booking,
+                onEditBooking = { navController.navigate(Screen.CalendarScreen.route) },
+                onExtendBooking = { /* Handle extend booking */ },
+                onReRequestBooking = { /* Handle re-request booking */ }
+            )
+        }
+    }
+}
+
+@Composable
+private fun EquipmentItemsContent(
+    equipment: List<Items>,
+    navController: NavHostController
+) {
+    if (equipment.isEmpty()) {
+        EmptySectionState()
+        return
+    }
+    
+    LazyVerticalGrid(
+        columns = ResponsiveLayout.getGridColumns(),
+        contentPadding = PaddingValues(horizontal = ResponsiveLayout.getHorizontalPadding()),
+        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
+    ) {
+        items(equipment) { item ->
+            EquipmentCard(
+                image = if (item.image_url.isNotEmpty()) item.image_url else R.drawable.temp,
+                equipName = item.name,
+                available = if (item.is_available == true) "Available" else "Not Available",
+                onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                isSaved = false,
+                saveClick = { /* Handle save */ },
+                facilityName = "Lab Facility"
+            )
+        }
+    }
+}
+
+@Composable
+private fun TicketItemsContent(
+    tickets: List<TicketItem>,
+    navController: NavHostController
+) {
+    if (tickets.isEmpty()) {
+        EmptySectionState()
+        return
+    }
+    
+    Column(
+        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
+    ) {
+        tickets.forEach { ticket ->
+            SimpleTicketCard(
+                ticket = ticket,
+                onClick = { /* Navigate to ticket details */ }
+            )
+        }
+    }
+}
+
+@Composable
+private fun BuildingItemsContent(
+    buildings: List<BuildingItem>,
+    navController: NavHostController
+) {
+    if (buildings.isEmpty()) {
+        EmptySectionState()
+        return
+    }
+    
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(horizontal = ResponsiveLayout.getHorizontalPadding()),
+        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
+    ) {
+        items(buildings) { building ->
+            BuildingCard(
+                building = building,
+                onClick = { /* Navigate to building details */ }
+            )
+        }
+    }
+}
+
+@Composable
+private fun SimpleTicketCard(
+    ticket: TicketItem,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
+        colors = CardDefaults.cardColors(containerColor = onSurfaceVariant),
+        shape = RoundedCornerShape(pxToDp(12))
+    ) {
+        Column(
+            modifier = Modifier.padding(ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)),
+            verticalArrangement = Arrangement.spacedBy(pxToDp(12))
+        ) {
+            CustomLabel(
+                header = ticket.title,
+                headerColor = onSurfaceColor,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = ResponsiveLayout.getResponsiveFontSize(16.sp, 18.sp, 20.sp)
+            )
+            CustomSmallLabel(
+                header = ticket.description,
+                headerColor = onSurfaceColor.copy(alpha = 0.6f),
+                modifier = Modifier
+            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(pxToDp(8)),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = ticket.priority.dispColor.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(pxToDp(8))
+                        )
+                        .padding(horizontal = pxToDp(8), vertical = pxToDp(4))
+                ) {
+                    CustomLabel(
+                        header = ticket.priority.dispName,
+                        headerColor = ticket.priority.dispColor,
+                        fontSize = 12.sp
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = ticket.status.dispColor.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(pxToDp(8))
+                        )
+                        .padding(horizontal = pxToDp(8), vertical = pxToDp(4))
+                ) {
+                    CustomLabel(
+                        header = ticket.status.dispName,
+                        headerColor = ticket.status.dispColor,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BuildingCard(
+    building: BuildingItem,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
+        colors = CardDefaults.cardColors(containerColor = onSurfaceVariant),
+        shape = RoundedCornerShape(pxToDp(12))
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(ResponsiveLayout.getResponsiveSize(120.dp, 140.dp, 160.dp))
+                    .background(onSurfaceVariant)
+            ) {
+                if (building.imageUrl.isNotEmpty()) {
+                    AsyncImage(
+                        model = building.imageUrl,
+                        contentDescription = building.name,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Building Image",
+                            tint = primaryColor,
+                            modifier = Modifier.size(pxToDp(48))
+                        )
+                    }
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp)),
+                verticalArrangement = Arrangement.spacedBy(pxToDp(6))
+            ) {
+                CustomLabel(
+                    header = building.name,
+                    headerColor = onSurfaceColor,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp)
+                )
+                CustomSmallLabel(
+                    header = building.department,
+                    headerColor = onSurfaceColor.copy(alpha = 0.6f),
+                    modifier = Modifier
+                )
+                CustomSmallLabel(
+                    header = "${building.equipmentCount} Equipment",
+                    headerColor = primaryColor,
+                    modifier = Modifier
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun ResourceInfoCard(item: ResourceContentItem) {
     Card(
         modifier = Modifier.widthIn(
@@ -934,9 +1264,175 @@ private fun MutableList<FilterTag>.removeWhere(predicate: (FilterTag) -> Boolean
     }
 }
 
+// Dummy data helper functions
+private fun getDummyEquipmentItems(): List<Items> {
+    return listOf(
+        Items(
+            id = 1,
+            facility_id = 1,
+            parent_categoy_id = 1,
+            category_id = 1,
+            name = "Canon EOS R50 V",
+            specification = buildJsonObject { },
+            description = "Professional camera for photography studio",
+            image_url = "",
+            usage_instructions = "Handle with care",
+            is_available = true,
+            createdAt = "2024-01-01T00:00:00Z"
+        ),
+        Items(
+            id = 2,
+            facility_id = 2,
+            parent_categoy_id = 1,
+            category_id = 1,
+            name = "Sony Alpha A7III",
+            specification = buildJsonObject { },
+            description = "High-resolution mirrorless camera",
+            image_url = "",
+            usage_instructions = "Check battery before use",
+            is_available = true,
+            createdAt = "2024-01-02T00:00:00Z"
+        ),
+        Items(
+            id = 3,
+            facility_id = 1,
+            parent_categoy_id = 1,
+            category_id = 1,
+            name = "Nikon D850",
+            specification = buildJsonObject { },
+            description = "DSLR camera with advanced features",
+            image_url = "",
+            usage_instructions = "Use provided lens cap",
+            is_available = false,
+            createdAt = "2024-01-03T00:00:00Z"
+        ),
+        Items(
+            id = 4,
+            facility_id = 1,
+            parent_categoy_id = 1,
+            category_id = 1,
+            name = "Canon EOS 5D Mark IV",
+            specification = buildJsonObject { },
+            description = "Professional full-frame camera",
+            image_url = "",
+            usage_instructions = "Review manual before operation",
+            is_available = true,
+            createdAt = "2024-01-04T00:00:00Z"
+        )
+    )
+}
+
+private fun getDummyBookingItems(): List<BookingItem> {
+    return listOf(
+        BookingItem(
+            id = "1",
+            productInfo = ProductInfo(
+                R.drawable.temp,
+                "Canon EOS R50 V", "IDC", "Photo Studio", Status.PENDING
+            ),
+            inChargeInfo = InChargeInfo(
+                profName = "Sumant Rao",
+                asstName = "Akash Kumar Swami",
+                asstIcons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
+            ),
+            bookingDates = BookingDates("2025-08-01", "2025-08-10"),
+            bookingStatus = BookingStatus.VERIFICATION_PENDING,
+            priority = BookingPriority.HIGH
+        ),
+        BookingItem(
+            id = "2",
+            productInfo = ProductInfo(
+                R.drawable.temp,
+                "Sony Alpha A7III", "LAB-A", "Electronics Lab", Status.BOOKED
+            ),
+            inChargeInfo = InChargeInfo(
+                profName = "Dr. Smith",
+                asstName = "Jane Doe",
+                asstIcons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
+            ),
+            bookingDates = BookingDates("2025-07-15", "2025-08-15"),
+            bookingStatus = BookingStatus.APPROVED,
+            priority = BookingPriority.MEDIUM
+        )
+    )
+}
+
+private fun getDummyTicketItems(): List<TicketItem> {
+    return listOf(
+        TicketItem(
+            id = "TICK-001",
+            title = "Equipment Not Working",
+            description = "Oscilloscope in Lab B-205 is not displaying correctly. Need immediate attention.",
+            status = TicketStatus.PENDING,
+            priority = TicketPriority.HIGH,
+            category = TicketCategory.TECHNICAL
+        ),
+        TicketItem(
+            id = "TICK-002",
+            title = "Maintenance Request",
+            description = "3D Printer needs regular maintenance and calibration.",
+            status = TicketStatus.ACTIVE,
+            priority = TicketPriority.MEDIUM,
+            category = TicketCategory.TECHNICAL
+        ),
+        TicketItem(
+            id = "TICK-003",
+            title = "Equipment Setup Help",
+            description = "Need assistance setting up new DNA Sequencer in Lab C-301.",
+            status = TicketStatus.PENDING,
+            priority = TicketPriority.LOW,
+            category = TicketCategory.NON_TECHNICAL
+        )
+    )
+}
+
+private fun getDummyBuildingItems(): List<BuildingItem> {
+    return listOf(
+        BuildingItem(
+            id = "B1",
+            name = "Building A",
+            department = "Engineering",
+            equipmentCount = 25
+        ),
+        BuildingItem(
+            id = "B2",
+            name = "Building B",
+            department = "Sciences",
+            equipmentCount = 18
+        ),
+        BuildingItem(
+            id = "B3",
+            name = "Building C",
+            department = "Computer Science",
+            equipmentCount = 32
+        ),
+        BuildingItem(
+            id = "B4",
+            name = "Building D",
+            department = "Management",
+            equipmentCount = 12
+        ),
+        BuildingItem(
+            id = "B5",
+            name = "Building E",
+            department = "Library",
+            equipmentCount = 8
+        ),
+        BuildingItem(
+            id = "B6",
+            name = "Building F",
+            department = "Workshop",
+            equipmentCount = 15
+        )
+    )
+}
+
 private fun buildResourceSections(
     resources: List<Resource>,
-    propertyRequests: PropertyRequestGroup
+    propertyRequests: PropertyRequestGroup,
+    bookingGroup: BookingGroup,
+    equipmentGroup: EquipmentGroup,
+    ticketGroupData: TicketGroupData
 ): List<ResourceSection> {
     val recentlyAddedItems = resources.map {
         ResourceContentItem(
@@ -958,34 +1454,93 @@ private fun buildResourceSections(
             )
         ),
         ResourceSection(
-            title = "Approvals",
+            title = "Booking",
             tabs = listOf(
                 ResourceSectionTab(
                     label = "Pending Approvals",
-                    count = propertyRequests.pendingApprovals.size + propertyRequests.newRequests.size + propertyRequests.priorityRequests.size + propertyRequests.flaggedRequests.size,
+                    count = getDummyBookingItems().size,
                     subTabs = listOf(
                         ResourceSectionSubTab(
                             label = "Pending Approvals",
-                            count = propertyRequests.pendingApprovals.size,
-                            propertyRequests = propertyRequests.pendingApprovals
+                            count = getDummyBookingItems().size,
+                            bookingItems = getDummyBookingItems(),
+                            cardType = CardType.BOOKING
                         ),
                         ResourceSectionSubTab(
                             label = "New Requests",
-                            count = propertyRequests.newRequests.size,
-                            propertyRequests = propertyRequests.newRequests
+                            count = getDummyBookingItems().size,
+                            bookingItems = getDummyBookingItems(),
+                            cardType = CardType.BOOKING
                         ),
                         ResourceSectionSubTab(
                             label = "Priority Requests",
-                            count = propertyRequests.priorityRequests.size,
-                            propertyRequests = propertyRequests.priorityRequests,
+                            count = getDummyBookingItems().size,
+                            bookingItems = getDummyBookingItems(),
+                            showPriorityTag = true,
+                            showQuickToggle = true,
+                            cardType = CardType.BOOKING
+                        ),
+                        ResourceSectionSubTab(
+                            label = "Flagged Requests",
+                            count = getDummyBookingItems().size,
+                            bookingItems = getDummyBookingItems(),
+                            showVerificationAction = true,
+                            cardType = CardType.BOOKING
+                        )
+                    )
+                )
+            )
+        ),
+        ResourceSection(
+            title = "Equipment",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "All Equipment",
+                    count = getDummyEquipmentItems().size * 4,
+                    subTabs = listOf(
+                        ResourceSectionSubTab(
+                            label = "Pending Approvals",
+                            count = getDummyEquipmentItems().size,
+                            equipmentItems = getDummyEquipmentItems(),
+                            cardType = CardType.EQUIPMENT
+                        ),
+                        ResourceSectionSubTab(
+                            label = "New Requests",
+                            count = getDummyEquipmentItems().size,
+                            equipmentItems = getDummyEquipmentItems(),
+                            cardType = CardType.EQUIPMENT
+                        ),
+                        ResourceSectionSubTab(
+                            label = "Priority Requests",
+                            count = getDummyEquipmentItems().size,
+                            equipmentItems = getDummyEquipmentItems(),
+                            cardType = CardType.EQUIPMENT,
                             showPriorityTag = true,
                             showQuickToggle = true
                         ),
                         ResourceSectionSubTab(
                             label = "Flagged Requests",
-                            count = propertyRequests.flaggedRequests.size,
-                            propertyRequests = propertyRequests.flaggedRequests,
+                            count = getDummyEquipmentItems().size,
+                            equipmentItems = getDummyEquipmentItems(),
+                            cardType = CardType.EQUIPMENT,
                             showVerificationAction = true
+                        )
+                    )
+                )
+            )
+        ),
+        ResourceSection(
+            title = "Ticket",
+            tabs = listOf(
+                ResourceSectionTab(
+                    label = "All Tickets",
+                    count = getDummyTicketItems().size,
+                    subTabs = listOf(
+                        ResourceSectionSubTab(
+                            label = "All Tickets",
+                            count = getDummyTicketItems().size,
+                            ticketItems = getDummyTicketItems(),
+                            cardType = CardType.TICKET
                         )
                     )
                 )
@@ -1048,77 +1603,6 @@ private fun buildResourceSections(
             )
         ),
         ResourceSection(
-            title = "Building",
-            tabs = listOf(
-                ResourceSectionTab(
-                    label = "Building A",
-                    count = 3,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Lab Space A-101",
-                            subtitle = "Lab Space - Building A, Floor 1",
-                            meta = "Available - 20 students"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "Building B",
-                    count = 2,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Conference Room B",
-                            subtitle = "Meeting Room - Building B, Floor 2",
-                            meta = "Fully Booked - 15 people"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "Building C",
-                    count = 1,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Storage Room C",
-                            subtitle = "Storage - Building C, Basement",
-                            meta = "Available - 100 items"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "Building D",
-                    count = 1,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Computer Lab D-201",
-                            subtitle = "Lab Space - Building D, Floor 2",
-                            meta = "In Use - 30 students"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "Building E",
-                    count = 1,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Library Study Room",
-                            subtitle = "Study Space - Building E, Floor 1",
-                            meta = "Fully Booked - 8 people"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "Building F",
-                    count = 1,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Workshop Area",
-                            subtitle = "Workshop - Building F, Ground Floor",
-                            meta = "Available - 15 people"
-                        )
-                    )
-                )
-            )
-        ),
-        ResourceSection(
             title = "Resource Type",
             tabs = listOf(
                 ResourceSectionTab(
@@ -1160,46 +1644,20 @@ private fun buildResourceSections(
             title = "Status",
             tabs = listOf(
                 ResourceSectionTab(
-                    label = "Available",
-                    count = 14,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Innovation Pod 02",
-                            subtitle = "Configured for quick huddles",
-                            meta = "Open until 8 PM"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "In Use",
-                    count = 9,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Composite Lab",
-                            subtitle = "Live booking by Mechanical Engineering",
-                            meta = "Ends at 16:30"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "Under Maintenance",
-                    count = 3,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Spectrometer",
-                            subtitle = "Awaiting calibration vendor",
-                            meta = "ETA: Thursday"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "Reserved",
-                    count = 6,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Board Room",
-                            subtitle = "Reserved for placement briefing",
-                            meta = "Tomorrow 10 AM"
+                    label = "All Status",
+                    count = getDummyEquipmentItems().size,
+                    subTabs = listOf(
+                        ResourceSectionSubTab(
+                            label = "Available",
+                            count = getDummyEquipmentItems().filter { it.is_available == true }.size,
+                            equipmentItems = getDummyEquipmentItems().filter { it.is_available == true },
+                            cardType = CardType.EQUIPMENT
+                        ),
+                        ResourceSectionSubTab(
+                            label = "In Use",
+                            count = getDummyEquipmentItems().filter { it.is_available == false }.size,
+                            equipmentItems = getDummyEquipmentItems().filter { it.is_available == false },
+                            cardType = CardType.EQUIPMENT
                         )
                     )
                 )
@@ -1209,84 +1667,49 @@ private fun buildResourceSections(
             title = "Urgency",
             tabs = listOf(
                 ResourceSectionTab(
-                    label = "High Priority",
-                    count = 5,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Critical Server Patch",
-                            subtitle = "Security fix rollout pending",
-                            meta = "Action in next 4 hours"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "Medium / Low",
-                    count = 11,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Furniture Refresh",
-                            subtitle = "Ergonomic chairs for labs",
-                            meta = "Scheduled next week"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "Critical",
-                    count = 2,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Power Back-up Audit",
-                            subtitle = "Generator load tests pending",
-                            meta = "Block access until cleared"
+                    label = "All Urgency",
+                    count = getDummyBookingItems().size + getDummyTicketItems().size,
+                    subTabs = listOf(
+                        ResourceSectionSubTab(
+                            label = "High Priority",
+                            count = getDummyBookingItems().filter { it.priority == BookingPriority.HIGH }.size + 
+                                   getDummyTicketItems().filter { it.priority == TicketPriority.HIGH }.size,
+                            bookingItems = getDummyBookingItems().filter { it.priority == BookingPriority.HIGH },
+                            ticketItems = getDummyTicketItems().filter { it.priority == TicketPriority.HIGH },
+                            cardType = CardType.MIXED
+                        ),
+                        ResourceSectionSubTab(
+                            label = "Medium Priority",
+                            count = getDummyBookingItems().filter { it.priority == BookingPriority.MEDIUM }.size + 
+                                   getDummyTicketItems().filter { it.priority == TicketPriority.MEDIUM }.size,
+                            bookingItems = getDummyBookingItems().filter { it.priority == BookingPriority.MEDIUM },
+                            ticketItems = getDummyTicketItems().filter { it.priority == TicketPriority.MEDIUM },
+                            cardType = CardType.MIXED
+                        ),
+                        ResourceSectionSubTab(
+                            label = "Low Priority",
+                            count = getDummyBookingItems().filter { it.priority == BookingPriority.LOW }.size + 
+                                   getDummyTicketItems().filter { it.priority == TicketPriority.LOW }.size,
+                            bookingItems = getDummyBookingItems().filter { it.priority == BookingPriority.LOW },
+                            ticketItems = getDummyTicketItems().filter { it.priority == TicketPriority.LOW },
+                            cardType = CardType.MIXED
                         )
                     )
                 )
             )
         ),
         ResourceSection(
-            title = "History & Logs",
+            title = "Buildings",
             tabs = listOf(
                 ResourceSectionTab(
-                    label = "Usage Log",
-                    count = 24,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Lab Space A-101",
-                            subtitle = "Booked by CSE Dept",
-                            meta = "Logged: 11:30 AM"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "User Activity",
-                    count = 16,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Facility Manager",
-                            subtitle = "Approved 3 requests",
-                            meta = "Last login 09:12 AM"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "Machine History",
-                    count = 12,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "CNC Router",
-                            subtitle = "Runtime stats updated",
-                            meta = "Last service 28 days ago"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "System Logs",
-                    count = 8,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Integration Sync",
-                            subtitle = "Third-party inventory updated",
-                            meta = "Status: Success"
+                    label = "All Buildings",
+                    count = getDummyBuildingItems().size,
+                    subTabs = listOf(
+                        ResourceSectionSubTab(
+                            label = "All Buildings",
+                            count = getDummyBuildingItems().size,
+                            buildingItems = getDummyBuildingItems(),
+                            cardType = CardType.BUILDING
                         )
                     )
                 )
@@ -1296,29 +1719,37 @@ private fun buildResourceSections(
             title = "Recently Added",
             tabs = listOf(
                 ResourceSectionTab(
-                    label = "New Machines",
-                    count = recentlyAddedItems.count { it.title.contains("Lab", ignoreCase = true) || it.subtitle.contains("Equipment", ignoreCase = true) },
-                    content = recentlyAddedItems.take(2)
-                ),
-                ResourceSectionTab(
-                    label = "New Users",
-                    count = 4,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Workshop Technicians",
-                            subtitle = "4 technicians onboarded",
-                            meta = "Clearance complete"
-                        )
-                    )
-                ),
-                ResourceSectionTab(
-                    label = "New Departments",
-                    count = 1,
-                    content = listOf(
-                        ResourceContentItem(
-                            title = "Sustainability Cell",
-                            subtitle = "Green initiatives task force",
-                            meta = "Workspace allocated"
+                    label = "All Recently Added",
+                    count = recentlyAddedItems.size,
+                    subTabs = listOf(
+                        ResourceSectionSubTab(
+                            label = "New Buildings",
+                            count = getDummyBuildingItems().take(2).size,
+                            buildingItems = getDummyBuildingItems().take(2),
+                            cardType = CardType.BUILDING
+                        ),
+                        ResourceSectionSubTab(
+                            label = "New Equipment",
+                            count = getDummyEquipmentItems().take(2).size,
+                            equipmentItems = getDummyEquipmentItems().take(2),
+                            cardType = CardType.EQUIPMENT
+                        ),
+                        ResourceSectionSubTab(
+                            label = "New Categories",
+                            count = 3,
+                            content = listOf(
+                                ResourceContentItem(
+                                    title = "Workshop Technicians",
+                                    subtitle = "4 technicians onboarded",
+                                    meta = "Clearance complete"
+                                ),
+                                ResourceContentItem(
+                                    title = "Sustainability Cell",
+                                    subtitle = "Green initiatives task force",
+                                    meta = "Workspace allocated"
+                                )
+                            ),
+                            cardType = CardType.CONTENT
                         )
                     )
                 )
@@ -1352,9 +1783,32 @@ data class ResourceSectionSubTab(
     val count: Int,
     val content: List<ResourceContentItem> = emptyList(),
     val propertyRequests: List<PropertyRequest> = emptyList(),
+    val bookingItems: List<BookingItem> = emptyList(),
+    val equipmentItems: List<com.example.rmsjims.data.schema.Items> = emptyList(),
+    val ticketItems: List<TicketItem> = emptyList(),
+    val buildingItems: List<BuildingItem> = emptyList(),
     val showPriorityTag: Boolean = false,
     val showQuickToggle: Boolean = false,
-    val showVerificationAction: Boolean = false
+    val showVerificationAction: Boolean = false,
+    val cardType: CardType = CardType.CONTENT
+)
+
+enum class CardType {
+    CONTENT,
+    PROPERTY_REQUEST,
+    BOOKING,
+    EQUIPMENT,
+    TICKET,
+    BUILDING,
+    MIXED
+}
+
+data class BuildingItem(
+    val id: String,
+    val name: String,
+    val department: String,
+    val equipmentCount: Int,
+    val imageUrl: String = ""
 )
 
 data class ResourceSectionState(
