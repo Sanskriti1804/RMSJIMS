@@ -17,6 +17,7 @@ import com.example.rmsjims.data.remote.api.ItemsApi
 import com.example.rmsjims.data.remote.apiservice.FacilitesApiService
 import com.example.rmsjims.data.remote.apiservice.ItemImagesApiService
 import com.example.rmsjims.data.remote.apiservice.ItemSubCategoriesApiService
+import com.example.rmsjims.repository.AuthRepository
 import com.example.rmsjims.repository.BranchRepository
 import com.example.rmsjims.repository.ItemCategoriesRepository
 import com.example.rmsjims.repository.DepartmentRepository
@@ -24,6 +25,7 @@ import com.example.rmsjims.repository.FacilitiesRepository
 import com.example.rmsjims.repository.ItemImagesRepository
 import com.example.rmsjims.repository.ItemSubCategoriesRepository
 import com.example.rmsjims.repository.ItemsRepository
+import com.example.rmsjims.viewmodel.AuthViewModel
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.BranchViewModel
 import com.example.rmsjims.viewmodel.CalendarViewModel
@@ -55,6 +57,7 @@ val appModule = module {
     single<ItemSubCategoriesApiService> { ItemSubCategoriesApi(get()) }
 
     single { BranchRepository (get()) }
+    single { AuthRepository() }
     single { ItemCategoriesRepository(get()) }
     single { ItemsRepository(get()) }
     single { DepartmentRepository(get()) }
@@ -75,6 +78,7 @@ val appModule = module {
     viewModel { BranchViewModel(get()) }
     viewModel { FacilitiesViewModel(get()) }
     viewModel { DepartmentViewModel(get()) }
+    viewModel { AuthViewModel(get()) }
 }
 
 
