@@ -110,6 +110,9 @@ fun EquipmentScreen(
 
     val items = itemViewModel.itemsState
     val facilitiesState = facilitiesViewModel.facilitiesState
+    
+    // State for selected category (default to "All" which is id = 1)
+    var selectedCategoryId by remember { mutableIntStateOf(1) }
 
     Scaffold (
         topBar = {
@@ -178,7 +181,13 @@ fun EquipmentScreen(
                 )
             }
 
-            CategoryRow(categories = categories)
+            CategoryRow(
+                categories = categories,
+                selectedCategoryId = selectedCategoryId,
+                onCategorySelected = { categoryId ->
+                    selectedCategoryId = categoryId
+                }
+            )
 
             when (items) {
                 is UiState.Loading -> {
@@ -189,8 +198,29 @@ fun EquipmentScreen(
 
                 is UiState.Success -> {
                     val facilities = (facilitiesState as? UiState.Success)?.data ?: emptyList()
+                    
+                    // Filter items based on selected category
+                    val filteredItems = remember(items.data, selectedCategoryId) {
+                        if (selectedCategoryId == 1) {
+                            // "All" category - show all items
+                            items.data
+                        } else {
+                            // Get the selected category name from categories list
+                            val selectedCategory = categories.find { it.id == selectedCategoryId }
+                            val categoryName = selectedCategory?.label
+                            
+                            // Filter by category_name (matching the selected category name)
+                            if (categoryName != null) {
+                                items.data.filter { 
+                                    it.category_name?.equals(categoryName, ignoreCase = true) == true
+                                }
+                            } else {
+                                items.data
+                            }
+                        }
+                    }
 
-                    if (items.data.isEmpty()) {
+                    if (filteredItems.isEmpty()) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -198,7 +228,7 @@ fun EquipmentScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             CustomLabel(
-                                header = "No equipment available",
+                                header = "No equipment available in this category",
                                 headerColor = onSurfaceColor.copy(alpha = 0.6f),
                                 fontSize = 16.sp
                             )
@@ -210,7 +240,7 @@ fun EquipmentScreen(
                             verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
                             horizontalArrangement = ResponsiveLayout.getGridArrangement(),
                         ) {
-                            items(items.data) { item ->
+                            items(filteredItems) { item ->
                                 EquipmentCard(
                                     image = if (item.image_url.isNotEmpty()) item.image_url else R.drawable.temp,
                                     equipName = item.name,
@@ -302,8 +332,11 @@ fun CategoryItem(
 }
 
 @Composable
-fun CategoryRow(categories: List<EquipmentCategory>) {
-    var selectedCategoryId by remember { mutableIntStateOf(categories.first().id) }
+fun CategoryRow(
+    categories: List<EquipmentCategory>,
+    selectedCategoryId: Int = categories.first().id,
+    onCategorySelected: (Int) -> Unit
+) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -322,7 +355,7 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.clickable {
-                    selectedCategoryId = category.id
+                    onCategorySelected(category.id)
                     coroutineScope.launch {
                         listState.animateScrollToItem(index)
                     }
@@ -331,7 +364,12 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
                 CategoryItem(
                     category = category,
                     isSelected = category.id == selectedCategoryId,
-                    onClick = {  }
+                    onClick = { 
+                        onCategorySelected(category.id)
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(index)
+                        }
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(8.dp, 10.dp, 12.dp)))

@@ -10,6 +10,7 @@ data class Items(
     val facility_id: Int? = null,
     val parent_categoy_id: Int? = null,
     val category_id: Int? = null,
+    @SerialName("category_name") val category_name: String? = null,
     val name: String,
     val specification : JsonObject? = null,
     val description : String,
