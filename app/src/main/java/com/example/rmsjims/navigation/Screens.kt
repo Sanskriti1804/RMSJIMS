@@ -45,6 +45,7 @@ sealed class Screen(val route : String) {
         fun createRoute(selectedRole: String) = "permissions_overview/$selectedRole"
     }
     object SplashScreen : Screen("splash")
+    object SavedCollectionScreen : Screen("saved_collection")
     
     // Navigation graph routes
     object SharedNavGraph : Screen("shared_nav_graph")

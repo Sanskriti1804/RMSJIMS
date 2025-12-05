@@ -39,7 +39,9 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
+import com.example.rmsjims.data.local.SavedItemsManager
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -95,7 +97,17 @@ fun EquipmentScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val savedItemsManager = remember { SavedItemsManager(context) }
     val savedItems = remember { mutableStateMapOf<Int, Boolean>() }
+    
+    // Load saved items on initialization
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        val savedIds = savedItemsManager.getSavedItemIds()
+        savedIds.forEach { id ->
+            savedItems[id] = true
+        }
+    }
 
     val items = itemViewModel.itemsState
     val facilitiesState = facilitiesViewModel.facilitiesState
@@ -200,11 +212,11 @@ fun EquipmentScreen(
                                 onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
                                 isSaved = savedItems[item.id] ?: false,
                                 saveClick = {
-                                    val newSavedState = !(savedItems[item.id] ?: false)
+                                    val newSavedState = savedItemsManager.toggleItem(item.id)
                                     savedItems[item.id] = newSavedState
                                     coroutineScope.launch {
                                         snackbarHostState.showSnackbar(
-                                            message = "Equipment saved to your collection",
+                                            message = if (newSavedState) "Equipment saved to your collection" else "Equipment removed from collection",
                                             duration = androidx.compose.material3.SnackbarDuration.Short
                                         )
                                     }
@@ -237,11 +249,11 @@ fun EquipmentScreen(
                                 onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
                                 isSaved = savedItems[item.id] ?: false,
                                 saveClick = {
-                                    val newSavedState = !(savedItems[item.id] ?: false)
+                                    val newSavedState = savedItemsManager.toggleItem(item.id)
                                     savedItems[item.id] = newSavedState
                                     coroutineScope.launch {
                                         snackbarHostState.showSnackbar(
-                                            message = "Equipment saved to your collection",
+                                            message = if (newSavedState) "Equipment saved to your collection" else "Equipment removed from collection",
                                             duration = androidx.compose.material3.SnackbarDuration.Short
                                         )
                                     }

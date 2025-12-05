@@ -29,6 +29,7 @@ import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
 import com.example.rmsjims.ui.screens.staff.HomeScreen
 import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.ui.screens.staff.ProfileScreen
+import com.example.rmsjims.ui.screens.staff.SavedCollectionScreen
 import com.example.rmsjims.ui.screens.assistant.NewEquipmentScreen
 
 @Composable
@@ -55,6 +56,9 @@ fun AdminModuleApp() {
         }
         composable(Screen.ProfileScreen.route) {
             ProfileScreen(navController = navController)
+        }
+        composable(Screen.SavedCollectionScreen.route) {
+            SavedCollectionScreen(navController = navController)
         }
         
         // Admin-specific screens
