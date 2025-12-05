@@ -307,4 +307,3 @@ private fun getDemoEquipmentItems(): List<Items> {
         )
     }
 
-
