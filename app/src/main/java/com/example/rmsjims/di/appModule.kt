@@ -71,7 +71,7 @@ val appModule = module {
     viewModel { ItemSubCategoriesViewModel(get()) }
     viewModel { ItemImagesViewModel(get()) }
     viewModel { UserSessionViewModel(get()) }
-    viewModel { BookingScreenViewmodel() }
+    viewModel { BookingScreenViewmodel(get()) }
     viewModel { CalendarViewModel() }
     viewModel { FilterSortViewModel() }
     viewModel { SearchViewModel() }
