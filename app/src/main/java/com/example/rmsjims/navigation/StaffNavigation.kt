@@ -17,6 +17,7 @@ import com.example.rmsjims.ui.screens.staff.ProjectInfoScreen
 import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
 import com.example.rmsjims.ui.screens.assistant.TicketScreen
 import com.example.rmsjims.ui.screens.staff.EquipmentScreen
+import com.example.rmsjims.ui.screens.staff.SavedCollectionScreen
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.CalendarViewModel
 import com.example.rmsjims.viewmodel.UserSessionViewModel
@@ -50,6 +51,9 @@ fun StaffModuleApp() {
         }
         composable(Screen.ProfileScreen.route) {
             ProfileScreen(navController = navController)
+        }
+        composable(Screen.SavedCollectionScreen.route) {
+            SavedCollectionScreen(navController = navController)
         }
         composable(Screen.CalendarScreen.route) {
             val calendarViewModel: CalendarViewModel = koinViewModel()

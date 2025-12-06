@@ -72,12 +72,11 @@ fun AdminDashboardScreen(
     navController: NavHostController,
     adminName: String = "Admin" // Default admin name, can be passed from ViewModel
 ) {
-    var searchQuery by remember { mutableStateOf("") }
     var fabExpanded by remember { mutableStateOf(false) }
     
     // Organization info
-    val organizationName = "GYMS"
-    val location = "Mumbai, India" // Placeholder
+    val organizationName = "JIMS"
+    val location = "Rohini, Delhi"
     val currentDate = SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.getDefault()).format(Date())
     
     // Functionality cards
@@ -98,28 +97,16 @@ fun AdminDashboardScreen(
             route = Screen.UserManagementScreen.route
         ),
         FunctionalityCard(
-            title = "System Settings",
-            iconRes = R.drawable.ic_vector,
-            route = Screen.SystemSettingScreen.route
-        ),
-        FunctionalityCard(
             title = "Operations & Costs",
             iconRes = R.drawable.ic_assigned_time,
             route = Screen.ResourceManagementScreen.route
-        ),
-        FunctionalityCard(
-            title = "Logs, Audits & Tickets",
-            iconRes = R.drawable.ic_chat,
-            route = Screen.TicketManagementScreen.route
         )
     )
 
     Scaffold(
         topBar = {
             AdminDashboardTopBar(
-                onNotificationClick = { /* Handle notification click */ },
-                searchQuery = searchQuery,
-                onSearchQueryChange = { searchQuery = it }
+                onNotificationClick = { /* Handle notification click */ }
             )
         },
         bottomBar = {
@@ -202,9 +189,7 @@ fun AdminDashboardScreen(
 
 @Composable
 fun AdminDashboardTopBar(
-    onNotificationClick: () -> Unit,
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit
+    onNotificationClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -242,15 +227,6 @@ fun AdminDashboardTopBar(
                 modifier = Modifier,
             )
         }
-        
-        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)))
-        
-        // Search Bar
-        AppSearchBar(
-            query = searchQuery,
-            onQueryChange = onSearchQueryChange,
-            placeholder = "Search equipment..."
-        )
     }
 }
 

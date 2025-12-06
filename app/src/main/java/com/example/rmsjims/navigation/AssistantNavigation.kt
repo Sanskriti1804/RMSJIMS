@@ -21,6 +21,7 @@ import com.example.rmsjims.ui.screens.assistant.TicketScreen
 import com.example.rmsjims.ui.screens.staff.HomeScreen
 import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.ui.screens.staff.ProfileScreen
+import com.example.rmsjims.ui.screens.staff.SavedCollectionScreen
 import com.example.rmsjims.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -48,6 +49,9 @@ fun AssistantModuleApp() {
         }
         composable(Screen.ProfileScreen.route) {
             ProfileScreen(navController = navController)
+        }
+        composable(Screen.SavedCollectionScreen.route) {
+            SavedCollectionScreen(navController = navController)
         }
         // Assistant-specific screens
         composable(Screen.AssistantScreen.route) {

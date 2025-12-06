@@ -84,7 +84,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.layout.ContentScale
 import com.example.rmsjims.R
 import com.example.rmsjims.navigation.Screen
-import kotlinx.serialization.json.buildJsonObject
 import com.example.rmsjims.ui.components.AppCircularIcon
 import com.example.rmsjims.ui.components.AppFAB
 import com.example.rmsjims.ui.components.AppSearchBar
@@ -105,6 +104,9 @@ import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.viewmodel.FilterSortViewModel
 import com.example.rmsjims.viewmodel.SearchViewModel
 import com.example.rmsjims.viewmodel.UserSessionViewModel
+import com.example.rmsjims.viewmodel.ItemsViewModel
+import com.example.rmsjims.viewmodel.BookingScreenViewmodel
+import com.example.rmsjims.data.model.UiState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -112,11 +114,25 @@ fun HomeScreen(
     navController: NavHostController,
     filterSortViewModel: FilterSortViewModel = koinViewModel(),
     sessionViewModel: UserSessionViewModel = koinViewModel(),
-    searchViewModel: SearchViewModel = koinViewModel()
+    searchViewModel: SearchViewModel = koinViewModel(),
+    itemsViewModel: ItemsViewModel = koinViewModel(),
+    bookingViewModel: BookingScreenViewmodel = koinViewModel()
 ) {
     val isFilterSheetVisible by filterSortViewModel.isSheetVisible
     val isAiChatSheetVisible by searchViewModel.isChatSheetVisible
     val userRole = sessionViewModel.userRole
+    
+    // Get real equipment data from ViewModel
+    val itemsState = itemsViewModel.itemsState
+    val realEquipmentItems = when (itemsState) {
+        is UiState.Success -> itemsState.data
+        else -> emptyList()
+    }
+    
+    // Get recently added equipment (last 4 items sorted by createdAt)
+    val recentlyAddedEquipment = remember(realEquipmentItems) {
+        realEquipmentItems.sortedByDescending { it.createdAt }.take(4)
+    }
 
     val resources = remember {
         listOf(
@@ -227,8 +243,8 @@ fun HomeScreen(
     val bookingGroup = remember { BookingGroupProvider.sampleBookings() }
     val equipmentGroup = remember { EquipmentGroupProvider.sampleEquipments() }
     val ticketGroupData = remember { TicketGroupDataProvider.sampleTickets() }
-    val sections = remember(resources, propertyRequests, bookingGroup, equipmentGroup, ticketGroupData) { 
-        buildResourceSections(resources, propertyRequests, bookingGroup, equipmentGroup, ticketGroupData) 
+    val sections = remember(resources, propertyRequests, bookingGroup, equipmentGroup, ticketGroupData, recentlyAddedEquipment) { 
+        buildResourceSections(resources, propertyRequests, bookingGroup, equipmentGroup, ticketGroupData, recentlyAddedEquipment) 
     }
     val sectionStates = remember(sections) {
         mutableStateMapOf<String, ResourceSectionState>().apply {
@@ -1373,63 +1389,6 @@ private fun MutableList<FilterTag>.removeWhere(predicate: (FilterTag) -> Boolean
     }
 }
 
-// Dummy data helper functions
-private fun getDummyEquipmentItems(): List<Items> {
-    return listOf(
-        Items(
-            id = 1,
-            facility_id = 1,
-            parent_categoy_id = 1,
-            category_id = 1,
-            name = "Canon EOS R50 V",
-            specification = buildJsonObject { },
-            description = "Professional camera for photography studio",
-            image_url = "",
-            usage_instructions = "Handle with care",
-            is_available = true,
-            createdAt = "2024-01-01T00:00:00Z"
-        ),
-        Items(
-            id = 2,
-            facility_id = 2,
-            parent_categoy_id = 1,
-            category_id = 1,
-            name = "Sony Alpha A7III",
-            specification = buildJsonObject { },
-            description = "High-resolution mirrorless camera",
-            image_url = "",
-            usage_instructions = "Check battery before use",
-            is_available = true,
-            createdAt = "2024-01-02T00:00:00Z"
-        ),
-        Items(
-            id = 3,
-            facility_id = 1,
-            parent_categoy_id = 1,
-            category_id = 1,
-            name = "Nikon D850",
-            specification = buildJsonObject { },
-            description = "DSLR camera with advanced features",
-            image_url = "",
-            usage_instructions = "Use provided lens cap",
-            is_available = false,
-            createdAt = "2024-01-03T00:00:00Z"
-        ),
-        Items(
-            id = 4,
-            facility_id = 1,
-            parent_categoy_id = 1,
-            category_id = 1,
-            name = "Canon EOS 5D Mark IV",
-            specification = buildJsonObject { },
-            description = "Professional full-frame camera",
-            image_url = "",
-            usage_instructions = "Review manual before operation",
-            is_available = true,
-            createdAt = "2024-01-04T00:00:00Z"
-        )
-    )
-}
 
 private fun getDummyBookingItems(): List<BookingItem> {
     return listOf(
@@ -1703,69 +1662,14 @@ private fun getRecentlyAddedBuildings(): List<BuildingItem> {
     )
 }
 
-private fun getRecentlyAddedEquipment(): List<Items> {
-    return listOf(
-        Items(
-            id = 101,
-            facility_id = 1,
-            parent_categoy_id = 1,
-            category_id = 1,
-            name = "3D Bioprinter",
-            specification = buildJsonObject { },
-            description = "Advanced 3D bioprinter for medical research",
-            image_url = "",
-            usage_instructions = "Requires specialized training",
-            is_available = true,
-            createdAt = "2024-12-01T00:00:00Z"
-        ),
-        Items(
-            id = 102,
-            facility_id = 2,
-            parent_categoy_id = 1,
-            category_id = 1,
-            name = "Quantum Computer Simulator",
-            specification = buildJsonObject { },
-            description = "High-performance quantum computing simulator",
-            image_url = "",
-            usage_instructions = "For advanced research projects only",
-            is_available = true,
-            createdAt = "2024-12-02T00:00:00Z"
-        ),
-        Items(
-            id = 103,
-            facility_id = 1,
-            parent_categoy_id = 1,
-            category_id = 1,
-            name = "AI Training Server",
-            specification = buildJsonObject { },
-            description = "Dedicated server for machine learning model training",
-            image_url = "",
-            usage_instructions = "Book in advance",
-            is_available = true,
-            createdAt = "2024-12-03T00:00:00Z"
-        ),
-        Items(
-            id = 104,
-            facility_id = 3,
-            parent_categoy_id = 1,
-            category_id = 1,
-            name = "Advanced Spectrophotometer",
-            specification = buildJsonObject { },
-            description = "Precision measurement equipment for chemistry lab",
-            image_url = "",
-            usage_instructions = "Handle with care",
-            is_available = true,
-            createdAt = "2024-12-04T00:00:00Z"
-        )
-    )
-}
 
 private fun buildResourceSections(
     resources: List<Resource>,
     propertyRequests: PropertyRequestGroup,
     bookingGroup: BookingGroup,
     equipmentGroup: EquipmentGroup,
-    ticketGroupData: TicketGroupData
+    ticketGroupData: TicketGroupData,
+    recentlyAddedEquipment: List<Items> = emptyList()
 ): List<ResourceSection> {
     val recentlyAddedItems = resources.map {
         ResourceContentItem(
@@ -2167,7 +2071,7 @@ private fun buildResourceSections(
             tabs = listOf(
                 ResourceSectionTab(
                     label = "All Recently Added",
-                    count = getRecentlyAddedEquipment().size + getRecentlyAddedBuildings().size + recentlyAddedItems.size,
+                    count = recentlyAddedEquipment.size + getRecentlyAddedBuildings().size + recentlyAddedItems.size,
                     subTabs = listOf(
                         ResourceSectionSubTab(
                             label = "New Buildings",
@@ -2178,16 +2082,16 @@ private fun buildResourceSections(
                         ),
                         ResourceSectionSubTab(
                             label = "New Equipment",
-                            count = getRecentlyAddedEquipment().size,
+                            count = recentlyAddedEquipment.size,
                             buildingItems = emptyList(),
-                            equipmentItems = getRecentlyAddedEquipment(),
+                            equipmentItems = recentlyAddedEquipment,
                             cardType = CardType.MIXED
                         ),
                         ResourceSectionSubTab(
                             label = "Mixed Recent",
-                            count = getRecentlyAddedEquipment().take(2).size + getRecentlyAddedBuildings().take(2).size,
+                            count = recentlyAddedEquipment.take(2).size + getRecentlyAddedBuildings().take(2).size,
                             buildingItems = getRecentlyAddedBuildings().take(2),
-                            equipmentItems = getRecentlyAddedEquipment().take(2),
+                            equipmentItems = recentlyAddedEquipment.take(2),
                             cardType = CardType.MIXED
                         )
                     )

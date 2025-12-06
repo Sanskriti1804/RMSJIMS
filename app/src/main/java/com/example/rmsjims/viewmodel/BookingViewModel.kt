@@ -1,11 +1,13 @@
 package com.example.rmsjims.viewmodel
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import com.example.rmsjims.R
+import com.example.rmsjims.data.local.BookingDatesManager
 import com.example.rmsjims.data.model.BookingDates
 import com.example.rmsjims.data.model.BookingItem
 import com.example.rmsjims.data.model.BookingPriority
@@ -17,7 +19,9 @@ import com.example.rmsjims.data.model.Status
 import com.example.rmsjims.data.model.TabItem
 
 
-class BookingScreenViewmodel : ViewModel() {
+class BookingScreenViewmodel(application: Application) : AndroidViewModel(application) {
+
+    private val bookingDatesManager = BookingDatesManager(application)
 
     private val _tabs = mutableStateListOf(
         TabItem(BookingTab.Booking_Requests, "Booking Requests", R.drawable.ic_booking_pending, true),
@@ -32,8 +36,9 @@ class BookingScreenViewmodel : ViewModel() {
     var selectedBookingDates by mutableStateOf<BookingDates?>(null)
         private set
 
-    fun updateSelectedBookingDates(dates: BookingDates) {
+    fun updateSelectedBookingDates(equipmentTitle: String, dates: BookingDates) {
         selectedBookingDates = dates
+        bookingDatesManager.saveBookingDates(equipmentTitle, dates)
     }
 
     // Sample bookings data
@@ -123,17 +128,14 @@ class BookingScreenViewmodel : ViewModel() {
                 BookingTab.Verified_Bookings -> allBookings.filter { it.bookingStatus == BookingStatus.APPROVED }
                 BookingTab.Canceled_Bookings -> allBookings.filter { it.bookingStatus == BookingStatus.REJECTED }
             }
-            // If we have selected booking dates and we're on Booking Requests tab, update the first booking's dates
-            return if (selectedBookingDates != null && selectedTab == BookingTab.Booking_Requests && bookings.isNotEmpty()) {
-                bookings.mapIndexed { index, booking ->
-                    if (index == 0) {
-                        booking.copy(bookingDates = selectedBookingDates!!)
-                    } else {
-                        booking
-                    }
+            // Load persisted booking dates for each equipment and update bookings accordingly
+            return bookings.map { booking ->
+                val persistedDates = bookingDatesManager.getBookingDates(booking.productInfo.title)
+                if (persistedDates != null) {
+                    booking.copy(bookingDates = persistedDates)
+                } else {
+                    booking
                 }
-            } else {
-                bookings
             }
         }
 

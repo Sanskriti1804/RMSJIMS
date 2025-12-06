@@ -39,7 +39,9 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
+import com.example.rmsjims.data.local.SavedItemsManager
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -78,7 +80,6 @@ import com.example.rmsjims.data.schema.Items
 import com.example.rmsjims.viewmodel.FacilitiesViewModel
 import com.example.rmsjims.viewmodel.FilterSortViewModel
 import com.example.rmsjims.viewmodel.ItemsViewModel
-import kotlinx.serialization.json.buildJsonObject
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -95,10 +96,23 @@ fun EquipmentScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val savedItemsManager = remember { SavedItemsManager(context) }
     val savedItems = remember { mutableStateMapOf<Int, Boolean>() }
+    
+    // Load saved items on initialization
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        val savedIds = savedItemsManager.getSavedItemIds()
+        savedIds.forEach { id ->
+            savedItems[id] = true
+        }
+    }
 
     val items = itemViewModel.itemsState
     val facilitiesState = facilitiesViewModel.facilitiesState
+    
+    // State for selected category (default to "All" which is id = 1)
+    var selectedCategoryId by remember { mutableIntStateOf(1) }
 
     Scaffold (
         topBar = {
@@ -167,7 +181,13 @@ fun EquipmentScreen(
                 )
             }
 
-            CategoryRow(categories = categories)
+            CategoryRow(
+                categories = categories,
+                selectedCategoryId = selectedCategoryId,
+                onCategorySelected = { categoryId ->
+                    selectedCategoryId = categoryId
+                }
+            )
 
             when (items) {
                 is UiState.Loading -> {
@@ -178,75 +198,93 @@ fun EquipmentScreen(
 
                 is UiState.Success -> {
                     val facilities = (facilitiesState as? UiState.Success)?.data ?: emptyList()
-
-                    // Use real data if available, otherwise fallback to demo data
-                    val effectiveItems = if (items.data.isNotEmpty()) {
-                        items.data
-                    } else {
-                        getDemoEquipmentItems()
+                    
+                    // Filter items based on selected category
+                    val filteredItems = remember(items.data, selectedCategoryId) {
+                        if (selectedCategoryId == 1) {
+                            // "All" category - show all items
+                            items.data
+                        } else {
+                            // Get the selected category name from categories list
+                            val selectedCategory = categories.find { it.id == selectedCategoryId }
+                            val categoryName = selectedCategory?.label
+                            
+                            // Filter by category_name (matching the selected category name)
+                            if (categoryName != null) {
+                                items.data.filter { 
+                                    it.category_name?.equals(categoryName, ignoreCase = true) == true
+                                }
+                            } else {
+                                items.data
+                            }
+                        }
                     }
 
-                    LazyVerticalGrid(
-                        columns = ResponsiveLayout.getGridColumns(),
-                        contentPadding = ResponsiveLayout.getContentPadding(),
-                        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
-                        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
-                    ) {
-                        items(effectiveItems) { item ->
-                            EquipmentCard(
-                                image = item.image_url,
-                                equipName = item.name,
-                                available = if (item.is_available == true) "Available" else "Not Available",
-                                onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
-                                isSaved = savedItems[item.id] ?: false,
-                                saveClick = {
-                                    val newSavedState = !(savedItems[item.id] ?: false)
-                                    savedItems[item.id] = newSavedState
-                                    coroutineScope.launch {
-                                        snackbarHostState.showSnackbar(
-                                            message = "Equipment saved to your collection",
-                                            duration = androidx.compose.material3.SnackbarDuration.Short
-                                        )
-                                    }
-                                },
-                                facilityName = itemViewModel.getFacilityNameForEquipment(item, facilities)
+                    if (filteredItems.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(ResponsiveLayout.getHorizontalPadding()),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CustomLabel(
+                                header = "No equipment available in this category",
+                                headerColor = onSurfaceColor.copy(alpha = 0.6f),
+                                fontSize = 16.sp
                             )
+                        }
+                    } else {
+                        LazyVerticalGrid(
+                            columns = ResponsiveLayout.getGridColumns(),
+                            contentPadding = ResponsiveLayout.getContentPadding(),
+                            verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+                            horizontalArrangement = ResponsiveLayout.getGridArrangement(),
+                        ) {
+                            items(filteredItems) { item ->
+                                EquipmentCard(
+                                    image = if (item.image_url.isNotEmpty()) item.image_url else R.drawable.temp,
+                                    equipName = item.name,
+                                    available = if (item.is_available == true) "Available" else "Not Available",
+                                    onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                                    isSaved = savedItems[item.id] ?: false,
+                                    saveClick = {
+                                        val newSavedState = savedItemsManager.toggleItem(item.id)
+                                        savedItems[item.id] = newSavedState
+                                        coroutineScope.launch {
+                                            snackbarHostState.showSnackbar(
+                                                message = if (newSavedState) "Equipment saved to your collection" else "Equipment removed from collection",
+                                                duration = androidx.compose.material3.SnackbarDuration.Short
+                                            )
+                                        }
+                                    },
+                                    facilityName = itemViewModel.getFacilityNameForEquipment(item, facilities)
+                                )
+                            }
                         }
                     }
                 }
 
                 is UiState.Error -> {
-                    // Fallback to demo data on error
                     Log.e("EquipmentScreen", "Error loading items", items.exception)
-                    Log.w("EquipmentScreen", "Using demo data fallback due to error")
-
-                    val facilities = (facilitiesState as? UiState.Success)?.data ?: emptyList()
-                    val demoItems = getDemoEquipmentItems()
-
-                    LazyVerticalGrid(
-                        columns = ResponsiveLayout.getGridColumns(),
-                        contentPadding = ResponsiveLayout.getContentPadding(),
-                        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
-                        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(ResponsiveLayout.getHorizontalPadding()),
+                        contentAlignment = Alignment.Center
                     ) {
-                        items(demoItems) { item ->
-                            EquipmentCard(
-                                image = item.image_url,
-                                equipName = item.name,
-                                available = if (item.is_available == true) "Available" else "Not Available",
-                                onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
-                                isSaved = savedItems[item.id] ?: false,
-                                saveClick = {
-                                    val newSavedState = !(savedItems[item.id] ?: false)
-                                    savedItems[item.id] = newSavedState
-                                    coroutineScope.launch {
-                                        snackbarHostState.showSnackbar(
-                                            message = "Equipment saved to your collection",
-                                            duration = androidx.compose.material3.SnackbarDuration.Short
-                                        )
-                                    }
-                                },
-                                facilityName = itemViewModel.getFacilityNameForEquipment(item, facilities)
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            CustomLabel(
+                                header = "Failed to load equipment",
+                                headerColor = onSurfaceColor.copy(alpha = 0.8f),
+                                fontSize = 16.sp
+                            )
+                            CustomLabel(
+                                header = items.exception.localizedMessage ?: "Please try again later",
+                                headerColor = onSurfaceColor.copy(alpha = 0.6f),
+                                fontSize = 14.sp
                             )
                         }
                     }
@@ -294,8 +332,11 @@ fun CategoryItem(
 }
 
 @Composable
-fun CategoryRow(categories: List<EquipmentCategory>) {
-    var selectedCategoryId by remember { mutableIntStateOf(categories.first().id) }
+fun CategoryRow(
+    categories: List<EquipmentCategory>,
+    selectedCategoryId: Int = categories.first().id,
+    onCategorySelected: (Int) -> Unit
+) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -314,7 +355,7 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.clickable {
-                    selectedCategoryId = category.id
+                    onCategorySelected(category.id)
                     coroutineScope.launch {
                         listState.animateScrollToItem(index)
                     }
@@ -323,7 +364,12 @@ fun CategoryRow(categories: List<EquipmentCategory>) {
                 CategoryItem(
                     category = category,
                     isSelected = category.id == selectedCategoryId,
-                    onClick = {  }
+                    onClick = { 
+                        onCategorySelected(category.id)
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(index)
+                        }
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(8.dp, 10.dp, 12.dp)))
@@ -447,92 +493,6 @@ fun EquipmentCard(
 }
 
 
-// Demo/fallback equipment items - used when Supabase returns empty or on error
-@Composable
-private fun getDemoEquipmentItems(): List<Items> {
-    return remember {
-        listOf(
-            Items(
-                id = 1,
-                facility_id = 1,
-                parent_categoy_id = 1,
-                category_id = 1,
-                name = "Canon EOS R50 V",
-                specification = buildJsonObject { },
-                description = "Professional camera for photography studio",
-                image_url = "https://via.placeholder.com/300?text=Canon+EOS+R50",
-                usage_instructions = "Handle with care",
-                is_available = true,
-                createdAt = "2024-01-01T00:00:00Z"
-            ),
-            Items(
-                id = 2,
-                facility_id = 2,
-                parent_categoy_id = 1,
-                category_id = 1,
-                name = "Sony Alpha A7III",
-                specification = buildJsonObject { },
-                description = "High-resolution mirrorless camera",
-                image_url = "https://via.placeholder.com/300?text=Sony+Alpha+A7III",
-                usage_instructions = "Check battery before use",
-                is_available = true,
-                createdAt = "2024-01-02T00:00:00Z"
-            ),
-            Items(
-                id = 3,
-                facility_id = 1,
-                parent_categoy_id = 1,
-                category_id = 1,
-                name = "Nikon D850",
-                specification = buildJsonObject { },
-                description = "DSLR camera with advanced features",
-                image_url = "https://via.placeholder.com/300?text=Nikon+D850",
-                usage_instructions = "Use provided lens cap",
-                is_available = false,
-                createdAt = "2024-01-03T00:00:00Z"
-            ),
-            Items(
-                id = 4,
-                facility_id = 1,
-                parent_categoy_id = 1,
-                category_id = 1,
-                name = "Canon EOS 5D Mark IV",
-                specification = buildJsonObject { },
-                description = "Professional full-frame camera",
-                image_url = "https://via.placeholder.com/300?text=Canon+5D+Mark+IV",
-                usage_instructions = "Review manual before operation",
-                is_available = true,
-                createdAt = "2024-01-04T00:00:00Z"
-            ),
-            Items(
-                id = 5,
-                facility_id = 3,
-                parent_categoy_id = 1,
-                category_id = 1,
-                name = "Fujifilm X-T4",
-                specification = buildJsonObject { },
-                description = "Compact mirrorless camera system",
-                image_url = "https://via.placeholder.com/300?text=Fujifilm+X-T4",
-                usage_instructions = "Ensure memory card is inserted",
-                is_available = true,
-                createdAt = "2024-01-05T00:00:00Z"
-            ),
-            Items(
-                id = 6,
-                facility_id = 2,
-                parent_categoy_id = 1,
-                category_id = 1,
-                name = "Panasonic Lumix GH6",
-                specification = buildJsonObject { },
-                description = "Video-focused mirrorless camera",
-                image_url = "https://via.placeholder.com/300?text=Panasonic+GH6",
-                usage_instructions = "Check SD card compatibility",
-                is_available = false,
-                createdAt = "2024-01-06T00:00:00Z"
-            )
-        )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable

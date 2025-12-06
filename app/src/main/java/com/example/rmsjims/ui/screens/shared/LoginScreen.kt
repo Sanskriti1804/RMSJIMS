@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -47,6 +48,8 @@ import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.onSurfaceVariant
 import com.example.rmsjims.ui.theme.whiteColor
 import com.example.rmsjims.util.ResponsiveLayout
+import com.example.rmsjims.viewmodel.AuthViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -61,6 +64,8 @@ fun LoginScreen(
     var showForgotPasswordDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+    val authViewModel: AuthViewModel = koinViewModel()
+    val authUiState by authViewModel.uiState.collectAsState()
     val rememberMeManager = remember(context) { RememberMeManager(context) }
     val adminEmail = stringResource(R.string.admin_email)
 
@@ -215,10 +220,19 @@ fun LoginScreen(
                 } else {
                     rememberMeManager.clearCredentials()
                 }
+
+                // Trigger Supabase email/password sign-in without changing navigation flow
+                if (username.isNotBlank() && password.isNotBlank()) {
+                    authViewModel.signInWithEmail(
+                        email = username,
+                        password = password
+                    )
+                }
+
                 navController.navigate(Screen.RoleSelectionScreen.route) {
                     popUpTo(Screen.LoginScreen.route) { inclusive = true }
                 }
-                      },
+            },
             buttonText = "LOGIN"
         )
 
@@ -242,12 +256,14 @@ fun LoginScreen(
             SocialLoginOption(
                 label = "Sign in with Google",
                 iconRes = R.drawable.ic_google,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                onClick = { authViewModel.signInWithGoogle() }
             )
             SocialLoginOption(
                 label = "Sign in with GitHub",
                 iconRes = R.drawable.ic_github,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                onClick = { authViewModel.signInWithGitHub() }
             )
         }
     }

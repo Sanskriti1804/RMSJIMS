@@ -113,7 +113,11 @@ fun CalendarScreen(
                         buttonText = "CONFIRM",
                         onClick = {
                             viewModel.confirmSelection()?.let { bookingDates ->
-                                bookingViewmodel.updateSelectedBookingDates(bookingDates)
+                                // Get the equipment title from the first pending booking (the one being created)
+                                val firstPendingBooking = bookingViewmodel.filteredBookings
+                                    .firstOrNull { it.bookingStatus == com.example.rmsjims.data.model.BookingStatus.VERIFICATION_PENDING }
+                                val equipmentTitle = firstPendingBooking?.productInfo?.title ?: "Canon EOS R50 V"
+                                bookingViewmodel.updateSelectedBookingDates(equipmentTitle, bookingDates)
                                 navController.navigate(Screen.BookingsScreen.route)
                             }
                         },

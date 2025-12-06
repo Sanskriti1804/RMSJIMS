@@ -8,6 +8,8 @@ package com.example.rmsjims.di
 import android.util.Log
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.gotrue.Auth
+import io.github.jan.supabase.gotrue.FlowType
 import io.github.jan.supabase.postgrest.Postgrest
 
 import org.koin.dsl.module
@@ -27,6 +29,14 @@ fun supabaseModule(
                 supabaseKey = supabaseKey
             ){
                 install(Postgrest)  //install the PostgREST plugin to query tables like a REST API
+
+                // Auth plugin for email/password and OAuth providers (Google, GitHub, etc.)
+                install(Auth) {
+                    flowType = FlowType.PKCE
+                    // This must match the redirect URL you configure in Supabase & the intent-filter in AndroidManifest
+                    scheme = "app"
+                    host = "auth-callback"
+                }
             }
             Log.d("SupabaseModule", "Supabase client created successfully")
             client
