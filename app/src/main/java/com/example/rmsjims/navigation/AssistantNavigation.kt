@@ -6,7 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.rmsjims.ui.screens.assistant.AssistantScreen
 import com.example.rmsjims.ui.screens.assistant.MachineStatusScreen
 import com.example.rmsjims.ui.screens.assistant.MaintenanceDetailScreen
 import com.example.rmsjims.ui.screens.assistant.NewEquipmentScreen
@@ -19,6 +18,9 @@ import com.example.rmsjims.ui.screens.staff.HomeScreen
 import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.ui.screens.staff.ProfileScreen
 import com.example.rmsjims.ui.screens.staff.SavedCollectionScreen
+import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
+import com.example.rmsjims.ui.screens.shared.AboutAppScreen
+import com.example.rmsjims.ui.screens.shared.RoleOverviewScreen
 import com.example.rmsjims.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -28,7 +30,7 @@ fun AssistantModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.UsageApprovalScreen.route
+        startDestination = Screen.HomeScreen.route
     ) {
         // Bottom navigation screens
         composable(Screen.HomeScreen.route) {
@@ -50,9 +52,8 @@ fun AssistantModuleApp() {
         composable(Screen.SavedCollectionScreen.route) {
             SavedCollectionScreen(navController = navController)
         }
-        // Assistant-specific screens
-        composable(Screen.AssistantScreen.route) {
-            AssistantScreen(navController = navController)
+        composable(Screen.AdminDashboardScreen.route) {
+            AdminDashboardScreen(navController = navController)
         }
         composable(Screen.NewEquipmentScreen.route) {
             NewEquipmentScreen(navController = navController)
@@ -84,6 +85,12 @@ fun AssistantModuleApp() {
         }
         composable(Screen.TicketScreen.route) {
             TicketScreen()
+        }
+        composable(Screen.AboutAppScreen.route) {
+            AboutAppScreen(navController = navController)
+        }
+        composable(Screen.RoleOverviewScreen.route) {
+            RoleOverviewScreen(navController = navController)
         }
     }
 }

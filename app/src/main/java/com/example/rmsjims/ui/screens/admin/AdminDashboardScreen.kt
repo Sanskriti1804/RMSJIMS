@@ -50,7 +50,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.rmsjims.R
+import com.example.rmsjims.data.model.UserRole
 import com.example.rmsjims.navigation.Screen
+import com.example.rmsjims.viewmodel.UserSessionViewModel
+import org.koin.androidx.compose.koinViewModel
 import com.example.rmsjims.ui.components.AppCircularIcon
 import com.example.rmsjims.ui.components.AppNavIcon
 import com.example.rmsjims.ui.components.AppSearchBar
@@ -70,8 +73,15 @@ import java.util.Locale
 @Composable
 fun AdminDashboardScreen(
     navController: NavHostController,
-    adminName: String = "Admin" // Default admin name, can be passed from ViewModel
+    adminName: String = "Admin", // Default admin name, can be passed from ViewModel
+    userRole: UserRole? = null,
+    sessionViewModel: UserSessionViewModel = koinViewModel()
 ) {
+    // Get user role - use provided role, then ViewModel, then default to ADMIN
+    val effectiveUserRole = userRole ?: sessionViewModel.userRole.let {
+        if (it != UserRole.UNASSIGNED) it else UserRole.ADMIN
+    }
+    
     var fabExpanded by remember { mutableStateOf(false) }
     
     // Organization info
@@ -106,6 +116,7 @@ fun AdminDashboardScreen(
     Scaffold(
         topBar = {
             AdminDashboardTopBar(
+                userRole = effectiveUserRole,
                 onNotificationClick = { /* Handle notification click */ }
             )
         },
@@ -189,8 +200,16 @@ fun AdminDashboardScreen(
 
 @Composable
 fun AdminDashboardTopBar(
+    userRole: UserRole = UserRole.ADMIN,
     onNotificationClick: () -> Unit
 ) {
+    // Determine dashboard label based on user role
+    val dashboardLabel = when (userRole) {
+        UserRole.ADMIN -> "Admin Dashboard"
+        UserRole.ASSISTANT -> "Assistant Dashboard"
+        else -> "Admin Dashboard"
+    }
+    
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -211,7 +230,7 @@ fun AdminDashboardTopBar(
             
             // Centered Title
             CustomLabel(
-                header = "Admin Dashboard",
+                header = dashboardLabel,
                 fontSize = ResponsiveLayout.getResponsiveFontSize(25.sp, 28.sp, 32.sp),
                 headerColor = headerColor,
                 fontWeight = FontWeight.SemiBold,

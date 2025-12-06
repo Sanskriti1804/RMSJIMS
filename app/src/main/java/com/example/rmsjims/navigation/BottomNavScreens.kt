@@ -44,11 +44,11 @@ fun getBottomNavItems(userRole: UserRole): List<BottomNavScreens> {
             label = "Bookings"
         )
     } else if (userRole == UserRole.ASSISTANT) {
-        // Assistant session: Assistant Screen
+        // Assistant session: Assistant Dashboard (reusing Admin Dashboard)
         BottomNavScreens(
-            route = Screen.AssistantScreen.route,
-            iconResId = R.drawable.ic_aichat,
-            label = "Assistant"
+            route = Screen.AdminDashboardScreen.route,
+            iconResId = R.drawable.ic_dashboard,
+            label = "Assistant Dashboard"
         )
     } else {
         // UNASSIGNED or fallback: Booking Screen

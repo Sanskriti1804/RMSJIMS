@@ -22,7 +22,6 @@ import com.example.rmsjims.ui.screens.admin.UserManagementScreen
 import com.example.rmsjims.ui.screens.assistant.MaintenanceDetailScreen
 import com.example.rmsjims.ui.screens.assistant.MachineStatusScreen
 import com.example.rmsjims.ui.screens.assistant.TicketManagementScreen
-import com.example.rmsjims.ui.screens.assistant.UsageApprovalScreen
 import com.example.rmsjims.ui.screens.staff.HomeScreen
 import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.ui.screens.staff.ProfileScreen
@@ -86,9 +85,6 @@ fun AdminModuleApp() {
         }
         composable(Screen.TicketManagementScreen.route) {
             TicketManagementScreen(navController = navController)
-        }
-        composable(Screen.UsageApprovalScreen.route) {
-            UsageApprovalScreen(navController = navController)
         }
         composable(Screen.MachineStatusScreen.route) {
             MachineStatusScreen(navController = navController)

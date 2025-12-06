@@ -55,11 +55,13 @@ fun CustomNavigationBar(
             vmRole
         } else {
             // Fallback: Detect role from current route
+            // Note: AdminDashboardScreen can be used by both ADMIN and ASSISTANT roles
+            // So we default to ADMIN if route matches but ViewModel role is UNASSIGNED
             val routeString = currentRoute ?: ""
             when {
-                routeString == Screen.AdminDashboardScreen.route -> UserRole.ADMIN
                 routeString == Screen.BookingsScreen.route -> UserRole.STAFF
                 routeString == Screen.AssistantScreen.route -> UserRole.ASSISTANT
+                routeString == Screen.AdminDashboardScreen.route -> UserRole.ADMIN // Default fallback
                 else -> UserRole.UNASSIGNED
             }
         }

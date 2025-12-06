@@ -31,6 +31,7 @@ import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomNavigationBar
 import com.example.rmsjims.ui.components.CustomTopBar
+import com.example.rmsjims.ui.screens.staff.DetailRow
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.onSurfaceVariant
 import com.example.rmsjims.ui.theme.primaryColor
