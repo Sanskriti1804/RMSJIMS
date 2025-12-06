@@ -89,8 +89,8 @@ fun AdminDashboardScreen(
     val location = "Rohini, Delhi"
     val currentDate = SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.getDefault()).format(Date())
     
-    // Functionality cards
-    val functionalityCards = listOf(
+    // Functionality cards - base cards for all roles
+    val baseCards = listOf(
         FunctionalityCard(
             title = "Equipment Management",
             iconRes = R.drawable.ic_storage,
@@ -112,6 +112,27 @@ fun AdminDashboardScreen(
             route = Screen.ResourceManagementScreen.route
         )
     )
+    
+    // Additional cards for Assistant role
+    val assistantCards = if (effectiveUserRole == UserRole.ASSISTANT) {
+        listOf(
+            FunctionalityCard(
+                title = "Ticket Management",
+                iconRes = R.drawable.ic_ticket_thread,
+                route = Screen.TicketManagementScreen.route
+            ),
+            FunctionalityCard(
+                title = "New Equipment",
+                iconRes = R.drawable.ic_storage,
+                route = Screen.NewEquipmentScreen.route
+            )
+        )
+    } else {
+        emptyList()
+    }
+    
+    // Combine cards based on role
+    val functionalityCards = baseCards + assistantCards
 
     Scaffold(
         topBar = {
@@ -177,14 +198,24 @@ fun AdminDashboardScreen(
                 )
             }
             
-            // Main Functionality Cards Grid (2 columns × 3 rows)
+            // Main Functionality Cards Grid (2 columns, dynamic rows based on role)
             item {
+                // Calculate height based on number of rows (2 columns)
+                val numberOfRows = (functionalityCards.size + 1) / 2 // Ceiling division
+                val baseHeight = ResponsiveLayout.getResponsiveSize(480.dp, 540.dp, 600.dp)
+                val additionalHeight = if (numberOfRows > 2) {
+                    ResponsiveLayout.getResponsiveSize(180.dp, 200.dp, 220.dp) // Height for additional row
+                } else {
+                    0.dp
+                }
+                val gridHeight = baseHeight + additionalHeight
+                
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(0.dp),
                     verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
                     horizontalArrangement = ResponsiveLayout.getGridArrangement(),
-                    modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(480.dp, 540.dp, 600.dp))
+                    modifier = Modifier.height(gridHeight)
                 ) {
                     items(functionalityCards) { card ->
                         FunctionalityCardItem(

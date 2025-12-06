@@ -31,7 +31,7 @@ fun AssistantModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.RequestDetailsScreen.route
+        startDestination = Screen.HomeScreen.route
     ) {
         // Bottom navigation screens
         composable(Screen.HomeScreen.route) {
