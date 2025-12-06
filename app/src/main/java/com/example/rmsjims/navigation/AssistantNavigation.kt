@@ -21,6 +21,7 @@ import com.example.rmsjims.ui.screens.staff.SavedCollectionScreen
 import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.shared.AboutAppScreen
 import com.example.rmsjims.ui.screens.shared.RoleOverviewScreen
+import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
 import com.example.rmsjims.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -30,7 +31,7 @@ fun AssistantModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.HomeScreen.route
+        startDestination = Screen.RequestDetailsScreen.route
     ) {
         // Bottom navigation screens
         composable(Screen.HomeScreen.route) {
@@ -91,6 +92,13 @@ fun AssistantModuleApp() {
         }
         composable(Screen.RoleOverviewScreen.route) {
             RoleOverviewScreen(navController = navController)
+        }
+        composable(
+            Screen.RequestDetailsScreen.route,
+            arguments = listOf(navArgument("requestId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val requestId = backStackEntry.arguments?.getString("requestId") ?: ""
+            RequestDetailsScreen(requestId = requestId, navController = navController)
         }
     }
 }

@@ -18,6 +18,7 @@ import com.example.rmsjims.ui.screens.staff.RaiseTicketScreen
 import com.example.rmsjims.ui.screens.assistant.TicketScreen
 import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.ui.screens.staff.SavedCollectionScreen
+import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.CalendarViewModel
 import com.example.rmsjims.viewmodel.UserSessionViewModel
@@ -78,6 +79,13 @@ fun StaffModuleApp() {
         }
         composable(Screen.TicketScreen.route) {
             TicketScreen()
+        }
+        composable(
+            Screen.RequestDetailsScreen.route,
+            arguments = listOf(navArgument("requestId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val requestId = backStackEntry.arguments?.getString("requestId") ?: ""
+            RequestDetailsScreen(requestId = requestId, navController = navController)
         }
     }
 }

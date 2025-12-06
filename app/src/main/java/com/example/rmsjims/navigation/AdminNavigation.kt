@@ -27,6 +27,7 @@ import com.example.rmsjims.ui.screens.staff.EquipmentScreen
 import com.example.rmsjims.ui.screens.staff.ProfileScreen
 import com.example.rmsjims.ui.screens.staff.SavedCollectionScreen
 import com.example.rmsjims.ui.screens.assistant.NewEquipmentScreen
+import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
 
 @Composable
 fun AdminModuleApp() {
@@ -116,6 +117,13 @@ fun AdminModuleApp() {
         }
         composable(Screen.NewEquipmentScreen.route) {
             NewEquipmentScreen(navController = navController)
+        }
+        composable(
+            Screen.RequestDetailsScreen.route,
+            arguments = listOf(navArgument("requestId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val requestId = backStackEntry.arguments?.getString("requestId") ?: ""
+            RequestDetailsScreen(requestId = requestId, navController = navController)
         }
     }
 }
