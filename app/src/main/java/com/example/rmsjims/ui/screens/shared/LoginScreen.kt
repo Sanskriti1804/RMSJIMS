@@ -98,15 +98,18 @@ fun LoginScreen(
     if (showForgotPasswordDialog) {
         Dialog(onDismissRequest = { showForgotPasswordDialog = false }) {
             Card(
-                shape = RoundedCornerShape(ResponsiveLayout.getResponsiveSize(18.dp, 22.dp, 26.dp)),
+                modifier = Modifier
+                    .fillMaxWidth(0.85f)
+                    .padding(ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)),
+                shape = RoundedCornerShape(4.dp),
                 backgroundColor = whiteColor,
                 elevation = 0.dp
             ) {
                 Column(
                     modifier = Modifier
                         .padding(
-                            vertical = ResponsiveLayout.getResponsiveSize(20.dp, 24.dp, 28.dp),
-                            horizontal = ResponsiveLayout.getResponsiveSize(22.dp, 26.dp, 30.dp)
+                            vertical = ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp),
+                            horizontal = ResponsiveLayout.getResponsiveSize(18.dp, 22.dp, 26.dp)
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -115,18 +118,19 @@ fun LoginScreen(
                         fontSize = ResponsiveLayout.getResponsiveFontSize(18.sp, 20.sp, 22.sp),
                         headerColor = onSurfaceColor
                     )
-                    Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)))
+                    Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp)))
                     CustomLabel(
-                        header = "You’ve already been mailed your assigned username and password. If you can’t find the email, click below to contact the administrator to reset your password.",
-                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-                        headerColor = onSurfaceVariant
+                        header = "Contact the administrator to recover your account.",
+                        fontSize = 14.sp,
+                        headerColor = onSurfaceColor.copy(alpha = 0.8f)
                     )
                     Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(18.dp, 22.dp, 26.dp)))
                     AppButton(
                         onClick = {
+                            val dummyEmail = "admin@jims.edu"
                             val intent = Intent(
                                 Intent.ACTION_SENDTO,
-                                Uri.parse("mailto:$adminEmail")
+                                Uri.parse("mailto:$dummyEmail")
                             ).apply {
                                 putExtra(Intent.EXTRA_SUBJECT, "Password Reset Request")
                                 putExtra(
