@@ -31,7 +31,7 @@ fun StaffModuleApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.RaiseTicketScreen.route
+        startDestination = Screen.HomeScreen.route
     ) {
         // Staff-specific screens (with bottom navigation)
         composable(Screen.HomeScreen.route) {
