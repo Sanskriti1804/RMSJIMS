@@ -28,7 +28,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SharedNavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = Screen.RoleSelectionScreen.route,
+    startDestination: String = Screen.AboutAppScreen.route,
     parentNavController: NavHostController
 ) {
     NavHost(
