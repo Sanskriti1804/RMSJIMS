@@ -36,7 +36,9 @@ android {
         val supabaseUrl = (localProps["SUPABASE_URL"] as? String)
             ?: System.getenv("SUPABASE_URL")
             ?: ""
-        val supabaseKey = (localProps["SUPABASE_KEY"] as? String)
+        val supabaseKey = (localProps["SUPABASE_ANON_KEY"] as? String)
+            ?: (localProps["SUPABASE_KEY"] as? String)
+            ?: System.getenv("SUPABASE_ANON_KEY")
             ?: System.getenv("SUPABASE_KEY")
             ?: ""
 
