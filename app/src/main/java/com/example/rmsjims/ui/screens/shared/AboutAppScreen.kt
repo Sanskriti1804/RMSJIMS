@@ -77,7 +77,7 @@ fun AboutAppScreen(
             ) { isIconState ->
                 FloatingActionButton(
                     onClick = {
-                        navController.navigate(Screen.RoleOverviewScreen.route)
+                        navController.navigate(Screen.RoleSelectionScreen.route)
                     },
                     modifier = if (isIconState) {
                         Modifier.wrapContentSize()

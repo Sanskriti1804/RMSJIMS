@@ -52,14 +52,17 @@ import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.onSurfaceVariant
 import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.whiteColor
+import com.example.rmsjims.data.model.UserRole
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.viewmodel.AuthViewModel
+import com.example.rmsjims.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginScreen(
     navController: NavHostController,
+    parentNavController: NavHostController? = null
 ){
 
     var username by remember { mutableStateOf("") }
@@ -73,6 +76,7 @@ fun LoginScreen(
     val authUiState by authViewModel.uiState.collectAsState()
     val rememberMeManager = remember(context) { RememberMeManager(context) }
     val adminEmail = stringResource(R.string.admin_email)
+    val sessionViewModel: UserSessionViewModel = koinViewModel()
 
     LaunchedEffect(Unit) {
         val rememberEnabled = rememberMeManager.isRememberMeEnabled()
@@ -88,8 +92,31 @@ fun LoginScreen(
 
     LaunchedEffect(autoLoginRequested) {
         if (autoLoginRequested && rememberMe && username.isNotBlank() && password.isNotBlank()) {
-            navController.navigate(Screen.RoleSelectionScreen.route) {
-                popUpTo(Screen.LoginScreen.route) { inclusive = true }
+            // Navigate to role-specific graph based on selected role
+            val selectedRole = sessionViewModel.userRole
+            val targetNavController = parentNavController ?: navController
+            when (selectedRole) {
+                UserRole.ADMIN -> {
+                    targetNavController.navigate(Screen.AdminNavGraph.route) {
+                        popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                    }
+                }
+                UserRole.ASSISTANT -> {
+                    targetNavController.navigate(Screen.AssistantNavGraph.route) {
+                        popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                    }
+                }
+                UserRole.STAFF -> {
+                    targetNavController.navigate(Screen.StaffNavGraph.route) {
+                        popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                    }
+                }
+                else -> {
+                    // If no role selected, navigate to role selection
+                    navController.navigate(Screen.RoleSelectionScreen.route) {
+                        popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                    }
+                }
             }
             autoLoginRequested = false
         }
@@ -254,8 +281,31 @@ fun LoginScreen(
                     )
                 }
 
-                navController.navigate(Screen.RoleSelectionScreen.route) {
-                    popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                // Navigate to role-specific graph based on selected role
+                val selectedRole = sessionViewModel.userRole
+                val targetNavController = parentNavController ?: navController
+                when (selectedRole) {
+                    UserRole.ADMIN -> {
+                        targetNavController.navigate(Screen.AdminNavGraph.route) {
+                            popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                        }
+                    }
+                    UserRole.ASSISTANT -> {
+                        targetNavController.navigate(Screen.AssistantNavGraph.route) {
+                            popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                        }
+                    }
+                    UserRole.STAFF -> {
+                        targetNavController.navigate(Screen.StaffNavGraph.route) {
+                            popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                        }
+                    }
+                    else -> {
+                        // If no role selected, navigate back to role selection
+                        navController.navigate(Screen.RoleSelectionScreen.route) {
+                            popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                        }
+                    }
                 }
             },
             buttonText = "LOGIN"

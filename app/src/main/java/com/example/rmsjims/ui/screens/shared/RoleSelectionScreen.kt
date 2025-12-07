@@ -103,27 +103,10 @@ fun RoleSelectionScreen(
                     RoleCard(
                         option = option,
                         onRoleSelected = { selectedRole ->
-                            // Save role to session manager and navigate
+                            // Save role to session manager and navigate to Login screen
                             sessionViewModel.updateRole(selectedRole)
-                            when (selectedRole) {
-                                UserRole.ADMIN -> {
-                                    navController.navigate(Screen.AdminNavGraph.route) {
-                                        popUpTo(Screen.RoleSelectionScreen.route) { inclusive = true }
-                                    }
-                                }
-                                UserRole.ASSISTANT -> {
-                                    navController.navigate(Screen.AssistantNavGraph.route) {
-                                        popUpTo(Screen.RoleSelectionScreen.route) { inclusive = true }
-                                    }
-                                }
-                                UserRole.STAFF -> {
-                                    navController.navigate(Screen.StaffNavGraph.route) {
-                                        popUpTo(Screen.RoleSelectionScreen.route) { inclusive = true }
-                                    }
-                                }
-                                UserRole.UNASSIGNED -> {
-                                    // Stay on role selection
-                                }
+                            navController.navigate(Screen.LoginScreen.route) {
+                                popUpTo(Screen.RoleSelectionScreen.route) { inclusive = true }
                             }
                         }
                     )
@@ -149,7 +132,7 @@ private fun RoleCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         onClick = { onRoleSelected(option.role) },
-        colors = CardDefaults.cardColors(containerColor = primaryColor.copy(alpha = 0.6f)),
+        colors = CardDefaults.cardColors(containerColor = primaryColor),
         shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(12.dp, 14.dp, 18.dp))
     ) {
         Box(

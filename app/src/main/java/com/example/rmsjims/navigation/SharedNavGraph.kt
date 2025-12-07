@@ -26,7 +26,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SharedNavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = Screen.LoginScreen.route,
+    startDestination: String = Screen.SplashScreen.route,
     parentNavController: NavHostController
 ) {
     NavHost(
@@ -37,8 +37,8 @@ fun SharedNavGraph(
         composable(Screen.SplashScreen.route) {
             SplashScreen(
                 onSplashComplete = {
-                    // Navigate to Login screen after splash
-                    navController.navigate(Screen.LoginScreen.route) {
+                    // Navigate to About App screen after splash
+                    navController.navigate(Screen.AboutAppScreen.route) {
                         popUpTo(Screen.SplashScreen.route) { inclusive = true }
                     }
                 }
@@ -48,7 +48,8 @@ fun SharedNavGraph(
         // Login Screen
         composable(Screen.LoginScreen.route) {
             LoginScreen(
-                navController = navController
+                navController = navController,
+                parentNavController = parentNavController
             )
         }
 
@@ -62,7 +63,7 @@ fun SharedNavGraph(
         composable(Screen.RoleSelectionScreen.route) {
             val sessionViewModel: UserSessionViewModel = koinViewModel()
             RoleSelectionScreen(
-                navController = parentNavController, // Use parent nav controller to navigate to role graphs
+                navController = navController, // Use local nav controller to navigate to Login screen
                 sessionViewModel = sessionViewModel
             )
         }
