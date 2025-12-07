@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -202,7 +203,7 @@ fun LoginScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
             CustomLabel(
@@ -210,6 +211,7 @@ fun LoginScreen(
                 headerColor = onSurfaceColor.copy(alpha = 0.8f),
                 fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
             )
+            Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsiveSize(8.dp, 10.dp, 12.dp)))
             Switch(
                 checked = rememberMe,
                 onCheckedChange = { isChecked ->
@@ -220,9 +222,10 @@ fun LoginScreen(
                         rememberMeManager.clearCredentials()
                     }
                 },
+                modifier = Modifier.scale(0.85f),
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = whiteColor,
-                    checkedTrackColor = Color(0xFF87CEEB).copy(alpha = 0.8f), // Light blue with alpha 0.8f
+                    checkedTrackColor = primaryColor,
                     uncheckedThumbColor = whiteColor,
                     uncheckedTrackColor = onSurfaceColor.copy(alpha = 0.3f)
                 )
@@ -324,12 +327,6 @@ private fun SocialLoginOption(
                 contentDescription = label,
                 modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(22.dp, 28.dp, 32.dp)),
                 colorFilter = ColorFilter.tint(primaryColor)
-            )
-            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(6.dp, 8.dp, 10.dp)))
-            CustomLabel(
-                header = label,
-                headerColor = primaryColor,
-                fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
             )
         }
     }

@@ -16,8 +16,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.rmsjims.ui.screens.shared.AboutAppScreen
 import com.example.rmsjims.ui.screens.shared.LoginScreen
-import com.example.rmsjims.ui.screens.shared.PermissionsOverviewScreen
-import com.example.rmsjims.ui.screens.shared.RoleOverviewScreen
 import com.example.rmsjims.ui.screens.shared.RoleSelectionScreen
 import com.example.rmsjims.ui.theme.app_background
 import com.example.rmsjims.viewmodel.UserSessionViewModel
@@ -28,7 +26,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SharedNavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = Screen.RoleSelectionScreen.route,
+    startDestination: String = Screen.LoginScreen.route,
     parentNavController: NavHostController
 ) {
     NavHost(
@@ -59,14 +57,6 @@ fun SharedNavGraph(
                 navController = navController
             )
         }
-
-        composable(Screen.RoleOverviewScreen.route) {
-            RoleOverviewScreen(
-                navController = navController
-            )
-        }
-
-
 
         // Role Selection Screen
         composable(Screen.RoleSelectionScreen.route) {

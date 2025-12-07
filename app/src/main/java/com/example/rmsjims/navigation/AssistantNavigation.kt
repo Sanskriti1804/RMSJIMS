@@ -20,7 +20,6 @@ import com.example.rmsjims.ui.screens.staff.ProfileScreen
 import com.example.rmsjims.ui.screens.staff.SavedCollectionScreen
 import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.shared.AboutAppScreen
-import com.example.rmsjims.ui.screens.shared.RoleOverviewScreen
 import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
 import com.example.rmsjims.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -89,9 +88,6 @@ fun AssistantModuleApp() {
         }
         composable(Screen.AboutAppScreen.route) {
             AboutAppScreen(navController = navController)
-        }
-        composable(Screen.RoleOverviewScreen.route) {
-            RoleOverviewScreen(navController = navController)
         }
         composable(
             Screen.RequestDetailsScreen.route,
