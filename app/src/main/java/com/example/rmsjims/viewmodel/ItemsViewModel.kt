@@ -23,6 +23,11 @@ class ItemsViewModel(
         getItems()
     }
 
+    fun refreshItems() {
+        Log.d("ItemsViewModel", "Refreshing items (retry requested)...")
+        getItems()
+    }
+
     private fun getItems(){
         viewModelScope.launch {
             itemsState = UiState.Loading
@@ -32,6 +37,10 @@ class ItemsViewModel(
                 Log.d("ItemsViewModel", "Received ${items.size} items from repository")
                 if (items.isEmpty()) {
                     Log.w("ItemsViewModel", "WARNING: Repository returned empty list!")
+                    Log.w("ItemsViewModel", "This might mean:")
+                    Log.w("ItemsViewModel", "  1. The 'items' table is empty")
+                    Log.w("ItemsViewModel", "  2. RLS policies are blocking access")
+                    Log.w("ItemsViewModel", "  3. Network/connection issues")
                 } else {
                     Log.d("ItemsViewModel", "First 3 items: ${items.take(3).map { it.name }}")
                 }

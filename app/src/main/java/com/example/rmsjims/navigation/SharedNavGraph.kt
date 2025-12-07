@@ -16,8 +16,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.rmsjims.ui.screens.shared.AboutAppScreen
 import com.example.rmsjims.ui.screens.shared.LoginScreen
-import com.example.rmsjims.ui.screens.shared.PermissionsOverviewScreen
-import com.example.rmsjims.ui.screens.shared.RoleOverviewScreen
 import com.example.rmsjims.ui.screens.shared.RoleSelectionScreen
 import com.example.rmsjims.ui.theme.app_background
 import com.example.rmsjims.viewmodel.UserSessionViewModel
@@ -39,8 +37,8 @@ fun SharedNavGraph(
         composable(Screen.SplashScreen.route) {
             SplashScreen(
                 onSplashComplete = {
-                    // Navigate to Login screen after splash
-                    navController.navigate(Screen.LoginScreen.route) {
+                    // Navigate to About App screen after splash
+                    navController.navigate(Screen.AboutAppScreen.route) {
                         popUpTo(Screen.SplashScreen.route) { inclusive = true }
                     }
                 }
@@ -50,7 +48,8 @@ fun SharedNavGraph(
         // Login Screen
         composable(Screen.LoginScreen.route) {
             LoginScreen(
-                navController = navController
+                navController = navController,
+                parentNavController = parentNavController
             )
         }
 
@@ -60,19 +59,11 @@ fun SharedNavGraph(
             )
         }
 
-        composable(Screen.RoleOverviewScreen.route) {
-            RoleOverviewScreen(
-                navController = navController
-            )
-        }
-
-
-
         // Role Selection Screen
         composable(Screen.RoleSelectionScreen.route) {
             val sessionViewModel: UserSessionViewModel = koinViewModel()
             RoleSelectionScreen(
-                navController = parentNavController, // Use parent nav controller to navigate to role graphs
+                navController = navController, // Use local nav controller to navigate to Login screen
                 sessionViewModel = sessionViewModel
             )
         }

@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import com.example.rmsjims.R
 import com.example.rmsjims.ui.theme.headerColor
 import com.example.rmsjims.ui.theme.onSurfaceColor
+import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.whiteColor
 import com.example.rmsjims.util.ResponsiveLayout
 
@@ -27,7 +28,7 @@ fun CustomTopBar(
     title: String,
     onNavigationClick: (() -> Unit)? = null,
     containerColor: Color = whiteColor,
-    titleColor: Color = headerColor,
+    titleColor: Color = primaryColor,
     navController: NavHostController? = null,
     onSettingsClick: (() -> Unit)? = null,
     onNotificationClick: (() -> Unit)? = null,

@@ -61,6 +61,7 @@ import com.example.rmsjims.data.model.EquipmentCategory
 import com.example.rmsjims.data.model.UiState
 import com.example.rmsjims.data.model.categories
 import com.example.rmsjims.navigation.Screen
+import com.example.rmsjims.ui.components.AppButton
 import com.example.rmsjims.ui.components.AppCategoryIcon
 import com.example.rmsjims.ui.components.AppCircularIcon
 import com.example.rmsjims.ui.components.AppSearchBar
@@ -266,6 +267,24 @@ fun EquipmentScreen(
 
                 is UiState.Error -> {
                     Log.e("EquipmentScreen", "Error loading items", items.exception)
+                    
+                    // Generate user-friendly error message
+                    val errorMessage = when {
+                        items.exception.message?.contains("401", ignoreCase = true) == true -> 
+                            "Authentication failed. Please check your connection settings."
+                        items.exception.message?.contains("403", ignoreCase = true) == true -> 
+                            "Access denied. Please contact your administrator."
+                        items.exception.message?.contains("404", ignoreCase = true) == true -> 
+                            "Equipment data not found. The server may be unavailable."
+                        items.exception.message?.contains("timeout", ignoreCase = true) == true -> 
+                            "Connection timeout. Please check your internet connection."
+                        items.exception.message?.contains("unknownhost", ignoreCase = true) == true -> 
+                            "Cannot connect to server. Please check your internet connection."
+                        items.exception.message?.contains("ioexception", ignoreCase = true) == true -> 
+                            "Network error. Please check your internet connection."
+                        else -> items.exception.localizedMessage ?: "Unable to load equipment. Please try again."
+                    }
+                    
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -274,7 +293,8 @@ fun EquipmentScreen(
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp)),
+                            modifier = Modifier.padding(ResponsiveLayout.getHorizontalPadding())
                         ) {
                             CustomLabel(
                                 header = "Failed to load equipment",
@@ -282,9 +302,24 @@ fun EquipmentScreen(
                                 fontSize = 16.sp
                             )
                             CustomLabel(
-                                header = items.exception.localizedMessage ?: "Please try again later",
+                                header = errorMessage,
                                 headerColor = onSurfaceColor.copy(alpha = 0.6f),
                                 fontSize = 14.sp
+                            )
+                            AppButton(
+                                buttonText = "Retry",
+                                onClick = {
+                                    Log.d("EquipmentScreen", "Retry button clicked, refreshing items...")
+                                    itemViewModel.refreshItems()
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = ResponsiveLayout.getResponsiveSize(8.dp, 12.dp, 16.dp))
+                            )
+                            CustomLabel(
+                                header = "Check Logcat for detailed error logs",
+                                headerColor = onSurfaceColor.copy(alpha = 0.4f),
+                                fontSize = 12.sp
                             )
                         }
                     }

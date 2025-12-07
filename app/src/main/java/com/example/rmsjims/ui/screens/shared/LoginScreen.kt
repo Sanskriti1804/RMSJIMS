@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Switch
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,15 +50,19 @@ import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.theme.app_background
 import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.onSurfaceVariant
+import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.whiteColor
+import com.example.rmsjims.data.model.UserRole
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.viewmodel.AuthViewModel
+import com.example.rmsjims.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LoginScreen(
     navController: NavHostController,
+    parentNavController: NavHostController? = null
 ){
 
     var username by remember { mutableStateOf("") }
@@ -68,6 +76,7 @@ fun LoginScreen(
     val authUiState by authViewModel.uiState.collectAsState()
     val rememberMeManager = remember(context) { RememberMeManager(context) }
     val adminEmail = stringResource(R.string.admin_email)
+    val sessionViewModel: UserSessionViewModel = koinViewModel()
 
     LaunchedEffect(Unit) {
         val rememberEnabled = rememberMeManager.isRememberMeEnabled()
@@ -83,8 +92,31 @@ fun LoginScreen(
 
     LaunchedEffect(autoLoginRequested) {
         if (autoLoginRequested && rememberMe && username.isNotBlank() && password.isNotBlank()) {
-            navController.navigate(Screen.RoleSelectionScreen.route) {
-                popUpTo(Screen.LoginScreen.route) { inclusive = true }
+            // Navigate to role-specific graph based on selected role
+            val selectedRole = sessionViewModel.userRole
+            val targetNavController = parentNavController ?: navController
+            when (selectedRole) {
+                UserRole.ADMIN -> {
+                    targetNavController.navigate(Screen.AdminNavGraph.route) {
+                        popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                    }
+                }
+                UserRole.ASSISTANT -> {
+                    targetNavController.navigate(Screen.AssistantNavGraph.route) {
+                        popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                    }
+                }
+                UserRole.STAFF -> {
+                    targetNavController.navigate(Screen.StaffNavGraph.route) {
+                        popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                    }
+                }
+                else -> {
+                    // If no role selected, navigate to role selection
+                    navController.navigate(Screen.RoleSelectionScreen.route) {
+                        popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                    }
+                }
             }
             autoLoginRequested = false
         }
@@ -93,15 +125,18 @@ fun LoginScreen(
     if (showForgotPasswordDialog) {
         Dialog(onDismissRequest = { showForgotPasswordDialog = false }) {
             Card(
-                shape = RoundedCornerShape(ResponsiveLayout.getResponsiveSize(18.dp, 22.dp, 26.dp)),
+                modifier = Modifier
+                    .fillMaxWidth(0.85f)
+                    .padding(ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)),
+                shape = RoundedCornerShape(4.dp),
                 backgroundColor = whiteColor,
                 elevation = 0.dp
             ) {
                 Column(
                     modifier = Modifier
                         .padding(
-                            vertical = ResponsiveLayout.getResponsiveSize(20.dp, 24.dp, 28.dp),
-                            horizontal = ResponsiveLayout.getResponsiveSize(22.dp, 26.dp, 30.dp)
+                            vertical = ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp),
+                            horizontal = ResponsiveLayout.getResponsiveSize(18.dp, 22.dp, 26.dp)
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -110,18 +145,19 @@ fun LoginScreen(
                         fontSize = ResponsiveLayout.getResponsiveFontSize(18.sp, 20.sp, 22.sp),
                         headerColor = onSurfaceColor
                     )
-                    Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)))
+                    Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp)))
                     CustomLabel(
-                        header = "You’ve already been mailed your assigned username and password. If you can’t find the email, click below to contact the administrator to reset your password.",
-                        fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
-                        headerColor = onSurfaceVariant
+                        header = "Contact the administrator to recover your account.",
+                        fontSize = 14.sp,
+                        headerColor = onSurfaceColor.copy(alpha = 0.8f)
                     )
                     Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(18.dp, 22.dp, 26.dp)))
                     AppButton(
                         onClick = {
+                            val dummyEmail = "admin@jims.edu"
                             val intent = Intent(
                                 Intent.ACTION_SENDTO,
-                                Uri.parse("mailto:$adminEmail")
+                                Uri.parse("mailto:$dummyEmail")
                             ).apply {
                                 putExtra(Intent.EXTRA_SUBJECT, "Password Reset Request")
                                 putExtra(
@@ -158,17 +194,25 @@ fun LoginScreen(
             value = username,
             onValueChange = {username = it},
             placeholder = "Username",
-            icon = painterResource(R.drawable.ic_user)
+            icon = painterResource(R.drawable.ic_user),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = ResponsiveLayout.getResponsiveSize(2.dp, 2.5.dp, 3.dp)),
+            shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
         )
 
-        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(4.dp, 8.dp, 12.dp)))
+        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(10.dp, 14.dp, 18.dp)))
 
         AppIconTextField(
             value = password,
             onValueChange = {password = it},
             placeholder = "Password",
             visualTransformation = PasswordVisualTransformation(),
-            icon = painterResource((R.drawable.ic_password))
+            icon = painterResource((R.drawable.ic_password)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = ResponsiveLayout.getResponsiveSize(2.dp, 2.5.dp, 3.dp)),
+            shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
         )
 
         Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp)))
@@ -190,7 +234,7 @@ fun LoginScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
             CustomLabel(
@@ -198,6 +242,7 @@ fun LoginScreen(
                 headerColor = onSurfaceColor.copy(alpha = 0.8f),
                 fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
             )
+            Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsiveSize(8.dp, 10.dp, 12.dp)))
             Switch(
                 checked = rememberMe,
                 onCheckedChange = { isChecked ->
@@ -207,7 +252,14 @@ fun LoginScreen(
                     } else {
                         rememberMeManager.clearCredentials()
                     }
-                }
+                },
+                modifier = Modifier.scale(0.85f),
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = whiteColor,
+                    checkedTrackColor = primaryColor,
+                    uncheckedThumbColor = whiteColor,
+                    uncheckedTrackColor = onSurfaceColor.copy(alpha = 0.3f)
+                )
             )
         }
 
@@ -229,8 +281,31 @@ fun LoginScreen(
                     )
                 }
 
-                navController.navigate(Screen.RoleSelectionScreen.route) {
-                    popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                // Navigate to role-specific graph based on selected role
+                val selectedRole = sessionViewModel.userRole
+                val targetNavController = parentNavController ?: navController
+                when (selectedRole) {
+                    UserRole.ADMIN -> {
+                        targetNavController.navigate(Screen.AdminNavGraph.route) {
+                            popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                        }
+                    }
+                    UserRole.ASSISTANT -> {
+                        targetNavController.navigate(Screen.AssistantNavGraph.route) {
+                            popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                        }
+                    }
+                    UserRole.STAFF -> {
+                        targetNavController.navigate(Screen.StaffNavGraph.route) {
+                            popUpTo(Screen.SharedNavGraph.route) { inclusive = true }
+                        }
+                    }
+                    else -> {
+                        // If no role selected, navigate back to role selection
+                        navController.navigate(Screen.RoleSelectionScreen.route) {
+                            popUpTo(Screen.LoginScreen.route) { inclusive = true }
+                        }
+                    }
                 }
             },
             buttonText = "LOGIN"
@@ -291,26 +366,21 @@ private fun SocialLoginOption(
         onClick = onClick,
         elevation = 0.dp
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     vertical = ResponsiveLayout.getResponsiveSize(12.dp, 14.dp, 16.dp),
                     horizontal = ResponsiveLayout.getResponsiveSize(14.dp, 18.dp, 22.dp)
                 ),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Image(
                 painter = painterResource(id = iconRes),
                 contentDescription = label,
-                modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(22.dp, 28.dp, 32.dp))
-            )
-            Spacer(modifier = Modifier.width(ResponsiveLayout.getResponsiveSize(10.dp, 12.dp, 16.dp)))
-            CustomLabel(
-                header = label,
-                headerColor = onSurfaceVariant,
-                fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp)
+                modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(22.dp, 28.dp, 32.dp)),
+                colorFilter = ColorFilter.tint(primaryColor)
             )
         }
     }
