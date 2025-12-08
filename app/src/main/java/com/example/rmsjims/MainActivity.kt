@@ -7,26 +7,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
 import com.example.rmsjims.navigation.MainApp
 import com.example.rmsjims.ui.theme.LabInventoryTheme
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var isChecking = true
-        lifecycleScope.launch {
-            delay(5000L)
-            isChecking = false
-        }
-        installSplashScreen().apply {
-            setKeepOnScreenCondition{
-                isChecking
-            }
         enableEdgeToEdge()
         setContent {
             LabInventoryTheme {
@@ -35,7 +22,7 @@ class MainActivity : ComponentActivity() {
         }
     }
     
-    fun onConfigurationChanged(newConfig: Configuration) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         // Handle configuration changes (orientation, screen size, etc.)
         when (newConfig.orientation) {
@@ -66,6 +53,5 @@ class MainActivity : ComponentActivity() {
                 // Extra large screen (large tablet)
             }
         }
-    }
     }
 }

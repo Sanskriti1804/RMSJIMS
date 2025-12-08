@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/white</item>
-<!--        <item name="postSplashScreenTheme">@style/Theme.RMSJIMS</item>-->
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/animated_logo</item>
-        <item name="android:windowSplashScreenIconBackgroundColor">@color/white</item>
-        <item name="android:windowSplashScreenAnimationDuration">3000</item>
+    <!-- Splash screen is now completely handled in Compose -->
+    <!-- Using standard Android theme since Material3 theming is done in Compose -->
+    <style name="Theme.App.Starting" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
 <!--    <style name="Theme.RMSJIMS" parent="Theme.Material3.DayNight.NoActionBar">-->
