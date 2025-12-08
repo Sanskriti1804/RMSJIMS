@@ -438,23 +438,15 @@ fun HomeScreen(
                 }
             }
 
-            // Home screen's search bar and filter button
+            // Home screen's search bar
             item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
-                ) {
-                    AppSearchBar(
-                        query = searchQuery,
-                        onQueryChange = { searchQuery = it },
-                        modifier = Modifier
-                            .height(ResponsiveLayout.getResponsiveSize(46.dp, 60.dp, 68.dp))
-                            .weight(1f)
-                    )
-                    AppCircularIcon(
-                        onClick = { filterSortViewModel.showSheet() }
-                    )
-                }
+                AppSearchBar(
+                    query = searchQuery,
+                    onQueryChange = { searchQuery = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(ResponsiveLayout.getResponsiveSize(46.dp, 60.dp, 68.dp))
+                )
             }
 
             // Two dropdown filter system
@@ -1040,7 +1032,6 @@ private fun SectionSubTabRow(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ResourceSectionContent(
     items: List<ResourceContentItem>
@@ -1050,9 +1041,11 @@ private fun ResourceSectionContent(
         return
     }
 
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing()),
-        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(12.dp, 14.dp, 16.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = ResponsiveLayout.getHorizontalPadding()),
+        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
     ) {
         items.forEach { item ->
             ResourceInfoCard(item = item)
@@ -1137,51 +1130,41 @@ private fun MixedRecentlyAddedContent(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
     ) {
-        // Display equipment cards in grid
+        // Display equipment cards
         if (equipment.isNotEmpty()) {
-            FlowRow(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = ResponsiveLayout.getHorizontalPadding()),
-                horizontalArrangement = ResponsiveLayout.getGridArrangement(),
-                verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+                verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
             ) {
                 equipment.forEach { item ->
-                    Box(
-                        modifier = Modifier.width(ResponsiveLayout.getResponsiveSize(150.dp, 180.dp, 200.dp))
-                    ) {
-                        EquipmentCard(
-                            image = if (item.image_url.isNotEmpty()) item.image_url else R.drawable.temp,
-                            equipName = item.name,
-                            available = if (item.is_available == true) "Available" else "Not Available",
-                            onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
-                            isSaved = false,
-                            saveClick = { /* Handle save */ },
-                            facilityName = "Lab Facility"
-                        )
-                    }
+                    EquipmentCard(
+                        image = if (item.image_url.isNotEmpty()) item.image_url else R.drawable.temp,
+                        equipName = item.name,
+                        available = if (item.is_available == true) "Available" else "Not Available",
+                        onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                        isSaved = false,
+                        saveClick = { /* Handle save */ },
+                        facilityName = "Lab Facility"
+                    )
                 }
             }
         }
         
-        // Display building cards in grid
+        // Display building cards
         if (buildings.isNotEmpty()) {
-            FlowRow(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = ResponsiveLayout.getHorizontalPadding()),
-                horizontalArrangement = ResponsiveLayout.getGridArrangement(),
-                verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+                verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
             ) {
                 buildings.forEach { building ->
-                    Box(
-                        modifier = Modifier.width(ResponsiveLayout.getResponsiveSize(150.dp, 180.dp, 200.dp))
-                    ) {
-                        BuildingCard(
-                            building = building,
-                            onClick = { /* Navigate to building details */ }
-                        )
-                    }
+                    BuildingCard(
+                        building = building,
+                        onClick = { /* Navigate to building details */ }
+                    )
                 }
             }
         }
@@ -1230,7 +1213,6 @@ private fun BookingItemsContent(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun EquipmentItemsContent(
     equipment: List<Items>,
@@ -1241,27 +1223,22 @@ private fun EquipmentItemsContent(
         return
     }
     
-    FlowRow(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = ResponsiveLayout.getHorizontalPadding()),
-        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
-        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
     ) {
         equipment.forEach { item ->
-            Box(
-                modifier = Modifier.width(ResponsiveLayout.getResponsiveSize(150.dp, 180.dp, 200.dp))
-            ) {
-                EquipmentCard(
-                    image = if (item.image_url.isNotEmpty()) item.image_url else R.drawable.temp,
-                    equipName = item.name,
-                    available = if (item.is_available == true) "Available" else "Not Available",
-                    onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
-                    isSaved = false,
-                    saveClick = { /* Handle save */ },
-                    facilityName = "Lab Facility"
-                )
-            }
+            EquipmentCard(
+                image = if (item.image_url.isNotEmpty()) item.image_url else R.drawable.temp,
+                equipName = item.name,
+                available = if (item.is_available == true) "Available" else "Not Available",
+                onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                isSaved = false,
+                saveClick = { /* Handle save */ },
+                facilityName = "Lab Facility"
+            )
         }
     }
 }
@@ -1288,7 +1265,6 @@ private fun TicketItemsContent(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun BuildingItemsContent(
     buildings: List<BuildingItem>,
@@ -1299,22 +1275,17 @@ private fun BuildingItemsContent(
         return
     }
     
-    FlowRow(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = ResponsiveLayout.getHorizontalPadding()),
-        horizontalArrangement = ResponsiveLayout.getGridArrangement(),
-        verticalArrangement = ResponsiveLayout.getVerticalGridArrangement(),
+        verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
     ) {
         buildings.forEach { building ->
-            Box(
-                modifier = Modifier.width(ResponsiveLayout.getResponsiveSize(150.dp, 180.dp, 200.dp))
-            ) {
-                BuildingCard(
-                    building = building,
-                    onClick = { /* Navigate to building details */ }
-                )
-            }
+            BuildingCard(
+                building = building,
+                onClick = { /* Navigate to building details */ }
+            )
         }
     }
 }
@@ -1479,9 +1450,7 @@ private fun BuildingCard(
 @Composable
 private fun ResourceInfoCard(item: ResourceContentItem) {
     Card(
-        modifier = Modifier.widthIn(
-            min = ResponsiveLayout.getResponsiveSize(180.dp, 220.dp, 260.dp)
-        ),
+        modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = onSurfaceVariant),
         shape = RoundedCornerShape(pxToDp(12))
     ) {

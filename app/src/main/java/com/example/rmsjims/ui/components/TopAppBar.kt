@@ -60,28 +60,6 @@ fun CustomTopBar(
                 .align(Alignment.Center)
                 .padding(top = ResponsiveLayout.getResponsivePadding(17.dp, 20.dp, 24.dp))
         )
-
-        // Right icon: Settings for profile screens, Notification for all other screens
-        AppCircularIcon(
-            painter = if (isProfileScreen) {
-                painterResource(R.drawable.ic_settings)
-            } else {
-                painterResource(R.drawable.ic_notification)
-            },
-            iconDescription = if (isProfileScreen) "Settings" else "Notifications",
-            onClick = if (isProfileScreen) {
-                onSettingsClick ?: {}
-            } else {
-                onNotificationClick ?: {}
-            },
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(
-                    end = ResponsiveLayout.getResponsivePadding(17.dp, 20.dp, 24.dp),
-                    top = ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)
-                ),
-            tint = onSurfaceColor
-        )
     }
 }
 
