@@ -1,146 +1,126 @@
 package com.example.rmsjims.viewmodel
 
-import android.app.Application
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
-import com.example.rmsjims.R
-import com.example.rmsjims.data.local.BookingDatesManager
-import com.example.rmsjims.data.model.BookingDates
-import com.example.rmsjims.data.model.BookingItem
-import com.example.rmsjims.data.model.BookingPriority
-import com.example.rmsjims.data.model.BookingStatus
-import com.example.rmsjims.data.model.BookingTab
-import com.example.rmsjims.data.model.InChargeInfo
-import com.example.rmsjims.data.model.ProductInfo
-import com.example.rmsjims.data.model.Status
-import com.example.rmsjims.data.model.TabItem
+import android.util.Log
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.rmsjims.data.model.UiState
+import com.example.rmsjims.data.schema.Booking
+import com.example.rmsjims.repository.BookingRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
+class BookingViewModel(
+    private val bookingRepository: BookingRepository
+) : ViewModel() {
 
-class BookingScreenViewmodel(application: Application) : AndroidViewModel(application) {
+    private val _bookingsState = MutableStateFlow<UiState<List<Booking>>>(UiState.Loading)
+    val bookingsState: StateFlow<UiState<List<Booking>>> = _bookingsState.asStateFlow()
 
-    private val bookingDatesManager = BookingDatesManager(application)
+    private val _createBookingState = MutableStateFlow<UiState<Booking>>(UiState.Loading)
+    val createBookingState: StateFlow<UiState<Booking>> = _createBookingState.asStateFlow()
 
-    private val _tabs = mutableStateListOf(
-        TabItem(BookingTab.Booking_Requests, "Booking Requests", R.drawable.ic_booking_pending, true),
-        TabItem(BookingTab.Verified_Bookings, "Approved Bookings", R.drawable.ic_booking_verified, false),
-        TabItem(BookingTab.Canceled_Bookings, "Rejected Bookings", R.drawable.ic_booking_canceled, false)
-    )
-    val tabs: List<TabItem> = _tabs
+    private val _updateBookingState = MutableStateFlow<UiState<Booking>>(UiState.Loading)
+    val updateBookingState: StateFlow<UiState<Booking>> = _updateBookingState.asStateFlow()
 
-    var selectedTab by mutableStateOf(BookingTab.Booking_Requests)
-        private set
-
-    var selectedBookingDates by mutableStateOf<BookingDates?>(null)
-        private set
-
-    fun updateSelectedBookingDates(equipmentTitle: String, dates: BookingDates) {
-        selectedBookingDates = dates
-        bookingDatesManager.saveBookingDates(equipmentTitle, dates)
+    init {
+        loadAllBookings()
     }
 
-    // Sample bookings data
-    private val allBookings = listOf(
-        BookingItem(
-            id = "1",
-            productInfo = ProductInfo(
-                R.drawable.temp,
-                "Canon EOS R50 V", "IDC", "Photo Studio", Status.PENDING
-            ),
-            inChargeInfo = InChargeInfo(
-                profName = "Sumant Rao",
-                asstName = "Akash Kumar Swami",
-                asstIcons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
-            ),
-            bookingDates = BookingDates("2025-08-01", "2025-08-10"),
-            bookingStatus = BookingStatus.VERIFICATION_PENDING,
-            priority = BookingPriority.HIGH
-        ),
-        BookingItem(
-            id = "2",
-            productInfo = ProductInfo(
-                R.drawable.temp,
-                "Sony Alpha A7III", "LAB-A", "Electronics Lab", Status.BOOKED
-            ),
-            inChargeInfo = InChargeInfo(
-                profName = "Dr. Smith",
-                asstName = "Jane Doe",
-                asstIcons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
-            ),
-            bookingDates = BookingDates("2025-07-15", "2025-08-15"),
-            bookingStatus = BookingStatus.APPROVED,
-            priority = BookingPriority.MEDIUM
-        ),
-        BookingItem(
-            id = "3",
-            productInfo = ProductInfo(
-                R.drawable.temp,
-                "Nikon D850", "LAB-B", "Photography Lab", Status.CANCELLED
-            ),
-            inChargeInfo = InChargeInfo(
-                profName = "Prof. Johnson",
-                asstName = "Mike Wilson",
-                asstIcons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
-            ),
-            bookingDates = BookingDates("2025-06-01", "2025-06-10"),
-            bookingStatus = BookingStatus.REJECTED,
-            priority = BookingPriority.LOW,
-            rejectionReason = "Equipment already booked for the requested dates"
-        ),
-        BookingItem(
-            id = "4",
-            productInfo = ProductInfo(
-                R.drawable.temp,
-                "Canon EOS 5D Mark IV", "IDC", "Photo Studio", Status.PENDING
-            ),
-            inChargeInfo = InChargeInfo(
-                profName = "Sumant Rao",
-                asstName = "Akash Kumar Swami",
-                asstIcons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
-            ),
-            bookingDates = BookingDates("2025-09-01", "2025-09-05"),
-            bookingStatus = BookingStatus.VERIFICATION_PENDING,
-            priority = BookingPriority.MEDIUM
-        ),
-        BookingItem(
-            id = "5",
-            productInfo = ProductInfo(
-                R.drawable.temp,
-                "Fujifilm X-T4", "LAB-C", "Media Lab", Status.BOOKED
-            ),
-            inChargeInfo = InChargeInfo(
-                profName = "Dr. Anderson",
-                asstName = "Sarah Lee",
-                asstIcons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
-            ),
-            bookingDates = BookingDates("2025-08-20", "2025-09-20"),
-            bookingStatus = BookingStatus.APPROVED,
-            priority = BookingPriority.HIGH
-        )
-    )
-
-    val filteredBookings: List<BookingItem>
-        get() {
-            val bookings = when (selectedTab) {
-                BookingTab.Booking_Requests -> allBookings.filter { it.bookingStatus == BookingStatus.VERIFICATION_PENDING }
-                BookingTab.Verified_Bookings -> allBookings.filter { it.bookingStatus == BookingStatus.APPROVED }
-                BookingTab.Canceled_Bookings -> allBookings.filter { it.bookingStatus == BookingStatus.REJECTED }
-            }
-            // Load persisted booking dates for each equipment and update bookings accordingly
-            return bookings.map { booking ->
-                val persistedDates = bookingDatesManager.getBookingDates(booking.productInfo.title)
-                if (persistedDates != null) {
-                    booking.copy(bookingDates = persistedDates)
-                } else {
-                    booking
-                }
+    fun loadAllBookings() {
+        viewModelScope.launch {
+            _bookingsState.value = UiState.Loading
+            try {
+                val bookings = bookingRepository.getAllBookings()
+                _bookingsState.value = UiState.Success(bookings)
+                Log.d("BookingViewModel", "Loaded ${bookings.size} bookings")
+            } catch (e: Exception) {
+                _bookingsState.value = UiState.Error(e)
+                Log.e("BookingViewModel", "Error loading bookings", e)
             }
         }
+    }
 
-    fun onTabSelect(tab: BookingTab) {
-        selectedTab = tab
-        _tabs.replaceAll { it.copy(isSelected = it.tab == tab) }
+    fun loadBookingsByStatus(status: String) {
+        viewModelScope.launch {
+            _bookingsState.value = UiState.Loading
+            try {
+                val bookings = bookingRepository.getBookingsByStatus(status)
+                _bookingsState.value = UiState.Success(bookings)
+                Log.d("BookingViewModel", "Loaded ${bookings.size} bookings with status: $status")
+            } catch (e: Exception) {
+                _bookingsState.value = UiState.Error(e)
+                Log.e("BookingViewModel", "Error loading bookings by status", e)
+            }
+        }
+    }
+
+    fun loadBookingsByUserId(userId: Int) {
+        viewModelScope.launch {
+            _bookingsState.value = UiState.Loading
+            try {
+                val bookings = bookingRepository.getBookingsByUserId(userId)
+                _bookingsState.value = UiState.Success(bookings)
+                Log.d("BookingViewModel", "Loaded ${bookings.size} bookings for user: $userId")
+            } catch (e: Exception) {
+                _bookingsState.value = UiState.Error(e)
+                Log.e("BookingViewModel", "Error loading bookings by user id", e)
+            }
+        }
+    }
+
+    fun createBooking(booking: Booking) {
+        viewModelScope.launch {
+            _createBookingState.value = UiState.Loading
+            try {
+                val result = bookingRepository.createBooking(booking)
+                result.fold(
+                    onSuccess = { createdBooking ->
+                        _createBookingState.value = UiState.Success(createdBooking)
+                        Log.d("BookingViewModel", "Booking created successfully: ${createdBooking.id}")
+                        // Reload all bookings
+                        loadAllBookings()
+                    },
+                    onFailure = { error ->
+                        _createBookingState.value = UiState.Error(error)
+                        Log.e("BookingViewModel", "Error creating booking", error)
+                    }
+                )
+            } catch (e: Exception) {
+                _createBookingState.value = UiState.Error(e)
+                Log.e("BookingViewModel", "Exception creating booking", e)
+            }
+        }
+    }
+
+    fun updateBookingStatus(
+        id: Int,
+        status: String,
+        adminNotes: String? = null,
+        rejectionReason: String? = null,
+        approvedBy: Int? = null
+    ) {
+        viewModelScope.launch {
+            _updateBookingState.value = UiState.Loading
+            try {
+                val result = bookingRepository.updateBookingStatus(id, status, adminNotes, rejectionReason, approvedBy)
+                result.fold(
+                    onSuccess = { updatedBooking ->
+                        _updateBookingState.value = UiState.Success(updatedBooking)
+                        Log.d("BookingViewModel", "Booking status updated successfully: $id to $status")
+                        // Reload bookings to reflect the update
+                        loadAllBookings()
+                    },
+                    onFailure = { error ->
+                        _updateBookingState.value = UiState.Error(error)
+                        Log.e("BookingViewModel", "Error updating booking status", error)
+                    }
+                )
+            } catch (e: Exception) {
+                _updateBookingState.value = UiState.Error(e)
+                Log.e("BookingViewModel", "Exception updating booking status", e)
+            }
+        }
     }
 }

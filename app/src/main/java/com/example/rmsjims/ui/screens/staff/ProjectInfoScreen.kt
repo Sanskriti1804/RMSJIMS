@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -55,26 +56,52 @@ import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.viewmodel.BranchViewModel
 import com.example.rmsjims.viewmodel.DepartmentViewModel
+import com.example.rmsjims.viewmodel.BookingViewModel
+import com.example.rmsjims.viewmodel.EquipmentViewModel
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("RememberReturnType")
 @Composable
 fun ProjectInfoScreen(
     navController: NavHostController,
-
+    equipmentId: Int? = null
 ){
     val branchViewModel : BranchViewModel = koinViewModel()
     val branchList = branchViewModel.branchName
-    var value by remember { mutableStateOf("") }
+    var projectName by remember { mutableStateOf("") }
+    var guideName by remember { mutableStateOf("") }
+    var projectDescription by remember { mutableStateOf("") }
     var selectedBranch by remember { mutableStateOf("") }
 
     val departmentViewModel : DepartmentViewModel = koinViewModel()
     val query = departmentViewModel.query
     val filteredDepartmentList = departmentViewModel.filteredDepartments
 
+    // Booking ViewModel
+    val bookingViewModel: BookingViewModel = koinViewModel()
+    val createBookingState by bookingViewModel.createBookingState.collectAsState()
+
+    // Equipment ViewModel to fetch equipment details
+    val equipmentViewModel: EquipmentViewModel = koinViewModel()
+    val equipmentState by equipmentViewModel.equipmentState.collectAsState()
+    
+    // Booker name state
+    var bookerName by remember { mutableStateOf("") }
+
     // Team members state
     val teamMembers = remember { mutableStateListOf<String>() }
     var teamMemberInput by remember { mutableStateOf("") }
+    
+    // Fetch equipment details when equipmentId is provided
+    var selectedEquipment by remember { mutableStateOf<com.example.rmsjims.data.schema.Equipment?>(null) }
+    
+    LaunchedEffect(equipmentId) {
+        if (equipmentId != null) {
+            selectedEquipment = equipmentViewModel.getEquipmentById(equipmentId)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -91,12 +118,48 @@ fun ProjectInfoScreen(
             AppButton(
                 buttonText = "CONFIRM",
                 onClick = {
-                   navController.navigate(Screen.BookingsScreen.route)
+                    // Get current date
+                    val currentDate = java.time.LocalDate.now().toString()
+                    
+                    // Create booking
+                    val booking = com.example.rmsjims.data.schema.Booking(
+                        userId = null, // TODO: Get from user session
+                        equipmentId = equipmentId,
+                        bookerName = bookerName.ifBlank { "Unknown" },
+                        productName = selectedEquipment?.name,
+                        productDescription = selectedEquipment?.location, // Using location as description, or can be null
+                        bookingDate = currentDate,
+                        projectName = projectName,
+                        guideName = guideName.ifBlank { null },
+                        projectDescription = projectDescription.ifBlank { null },
+                        branch = selectedBranch.ifBlank { null },
+                        department = query.ifBlank { null },
+                        teamMembers = teamMembers.joinToString(",").ifBlank { null },
+                        status = "pending"
+                    )
+                    bookingViewModel.createBooking(booking)
                 },
-                modifier = Modifier.padding(ResponsiveLayout.getHorizontalPadding())
+                modifier = Modifier.padding(ResponsiveLayout.getHorizontalPadding()),
+                enabled = projectName.isNotBlank() && bookerName.isNotBlank()
             )
         }
     ) {paddingValues ->
+        // Handle booking creation success
+        LaunchedEffect(createBookingState) {
+            when (val state = createBookingState) {
+                is UiState.Success -> {
+                    Log.d("ProjectInfoScreen", "Booking created successfully, navigating to bookings screen")
+                    navController.navigate(Screen.BookingsScreen.route) {
+                        popUpTo(Screen.ProjectInfoScreen.route) { inclusive = true }
+                    }
+                }
+                is UiState.Error -> {
+                    Log.e("ProjectInfoScreen", "Error creating booking: ${state.exception.message}")
+                }
+                else -> {}
+            }
+        }
+        
         Column(
             modifier = Modifier
                 .padding(ResponsiveLayout.getHorizontalPadding())
@@ -106,24 +169,37 @@ fun ProjectInfoScreen(
             verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(13.dp, 16.dp, 20.dp))
         ){
             Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)))
+            
+            // Booker Name field
             AppTextField(
-                value = value,
-                onValueChange = { value = it},
-                placeholder = "Project Name"
+                value = bookerName,
+                onValueChange = { bookerName = it},
+                placeholder = "Your Name (Booker Name)",
+                textColor = onSurfaceColor
+            )
+            
+            AppTextField(
+                value = projectName,
+                onValueChange = { projectName = it},
+                placeholder = "Project Name",
+                textColor = onSurfaceColor
             )
 
             AppTextField(
-                value = value,
-                onValueChange = { value = it},
-                placeholder = "Guide Name"
+                value = guideName,
+                onValueChange = { guideName = it},
+                placeholder = "Guide Name",
+                textColor = onSurfaceColor
             )
 
             AppTextField(
-                value = value,
-                onValueChange = { value = it},
-                placeholder = "Project Description"
+                value = projectDescription,
+                onValueChange = { projectDescription = it},
+                placeholder = "Project Description",
+                textColor = onSurfaceColor,
+                minLines = 3,
+                maxLines = 5
             )
-
 
             when (departmentViewModel.departmentState) {
                 is UiState.Loading -> FilteredAppTextField(
@@ -178,8 +254,8 @@ fun ProjectInfoScreen(
             ) {
                 AppDropDownTextField(
                     modifier = Modifier.weight(1f),
-                    value = value,
-                    onValueChange = { value = it},
+                    value = selectedBranch,
+                    onValueChange = { selectedBranch = it},
                     placeholder = "Course Project",
                     items = listOf("Yes", "No")
                 )

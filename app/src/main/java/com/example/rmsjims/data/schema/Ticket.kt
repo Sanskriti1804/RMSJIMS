@@ -1,20 +1,19 @@
 package com.example.rmsjims.data.schema
 
-import com.example.rmsjims.data.model.TicketCategory
-import com.example.rmsjims.data.model.TicketPriority
-import com.example.rmsjims.data.model.TicketStatus
-import java.util.Date
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Ticket(
-    val ticket_id : String,
-    val ticket_priority : TicketPriority,
-    val ticket_status : TicketStatus,
-    val ticket_category: TicketCategory,
-    val created_at: Date,
-    val updated_at : Date,
-    val deadline : Date,
-    val requested_by : String,
-    val assignee : String,
-//    val count : Int,
-    val image_url : String
+    val id: Int? = null,
+    val name: String,
+    val description: String? = null,
+    val status: String? = null,
+    val urgency: String? = null,
+    @SerialName("requester_name") val requesterName: String? = null,
+    @SerialName("assigned_to") val assignedTo: String? = null,
+    @SerialName("department_id") val departmentId: Int? = null,
+    @SerialName("equipment_id") val equipmentId: Int? = null,
+    @SerialName("created_at") val createdAt: String? = null,
+    @SerialName("updated_at") val updatedAt: String? = null
 )

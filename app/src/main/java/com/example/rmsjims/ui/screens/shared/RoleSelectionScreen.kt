@@ -43,7 +43,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun RoleSelectionScreen(
     navController: NavHostController,
-    sessionViewModel: UserSessionViewModel = koinViewModel()
+    sessionViewModel: UserSessionViewModel = koinViewModel(),
+    parentNavController: NavHostController? = null
 ) {
     // Always show role selection UI - do not check saved role or auto-navigate
 
@@ -103,10 +104,15 @@ fun RoleSelectionScreen(
                     RoleCard(
                         option = option,
                         onRoleSelected = { selectedRole ->
-                            // Save role to session manager and navigate to Login screen
+                            // Save role to session manager
                             sessionViewModel.updateRole(selectedRole)
-                            navController.navigate(Screen.LoginScreen.route) {
-                                popUpTo(Screen.RoleSelectionScreen.route) { inclusive = true }
+                            
+                            // Always navigate to login screen after role selection
+                            // Use parentNavController if available, otherwise use local navController
+                            val targetNavController = parentNavController ?: navController
+                            targetNavController.navigate(Screen.LoginScreen.route) {
+                                // Clear the entire back stack
+                                popUpTo(0) { inclusive = true }
                             }
                         }
                     )

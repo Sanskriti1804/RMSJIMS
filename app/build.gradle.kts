@@ -36,7 +36,9 @@ android {
         val supabaseUrl = (localProps["SUPABASE_URL"] as? String)
             ?: System.getenv("SUPABASE_URL")
             ?: ""
-        val supabaseKey = (localProps["SUPABASE_KEY"] as? String)
+        val supabaseKey = (localProps["SUPABASE_ANON_KEY"] as? String)
+            ?: (localProps["SUPABASE_KEY"] as? String)
+            ?: System.getenv("SUPABASE_ANON_KEY")
             ?: System.getenv("SUPABASE_KEY")
             ?: ""
 
@@ -105,6 +107,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation(libs.androidx.room.external.antlr)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

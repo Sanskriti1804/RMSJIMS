@@ -8,7 +8,9 @@ sealed class Screen(val route : String) {
     }
     object BookingsScreen : Screen("bookings")
     object CalendarScreen : Screen("calendar")
-    object ProjectInfoScreen : Screen("project_info")
+    object ProjectInfoScreen : Screen("project_info/{equipmentId}") {
+        fun createRoute(equipmentId: Int? = null) = if (equipmentId != null) "project_info/$equipmentId" else "project_info/0"
+    }
     object RaiseTicketScreen : Screen("ticket_raise")
     object TicketScreen : Screen("tickets")
     object ProductDescriptionScreen : Screen("profileDescription")
@@ -16,6 +18,7 @@ sealed class Screen(val route : String) {
     object ProfileScreen : Screen("profile")
     object AdminDashboardScreen : Screen("admin_dashboard")
     object AdminBookingsScreen : Screen("admin_bookings")
+    object BookingApprovalScreen : Screen("booking_approval")
     object EquipmentManagementScreen : Screen("equipment_management")
     object SystemSettingScreen : Screen("system_setting")
     object UserManagementScreen : Screen("user_management")
@@ -46,6 +49,9 @@ sealed class Screen(val route : String) {
     }
     object SplashScreen : Screen("splash")
     object SavedCollectionScreen : Screen("saved_collection")
+    object DepartmentDetailsScreen : Screen("department_details/{departmentId}") {
+        fun createRoute(departmentId: Int) = "department_details/$departmentId"
+    }
     
     // Navigation graph routes
     object SharedNavGraph : Screen("shared_nav_graph")
