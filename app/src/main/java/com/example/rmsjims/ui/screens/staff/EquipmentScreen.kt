@@ -81,6 +81,8 @@ import com.example.rmsjims.data.schema.Items
 import com.example.rmsjims.viewmodel.FacilitiesViewModel
 import com.example.rmsjims.viewmodel.FilterSortViewModel
 import com.example.rmsjims.viewmodel.ItemsViewModel
+import com.example.rmsjims.viewmodel.UserSessionViewModel
+import com.example.rmsjims.data.model.UserRole
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -100,6 +102,8 @@ fun EquipmentScreen(
     val context = LocalContext.current
     val savedItemsManager = remember { SavedItemsManager(context) }
     val savedItems = remember { mutableStateMapOf<Int, Boolean>() }
+    val sessionViewModel: UserSessionViewModel = koinViewModel()
+    val userRole = sessionViewModel.userRole
     
     // Load saved items on initialization
     androidx.compose.runtime.LaunchedEffect(Unit) {
@@ -135,20 +139,23 @@ fun EquipmentScreen(
             SnackbarHost(hostState = snackbarHostState)
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate(Screen.NewEquipmentScreen.route)
-                },
-                containerColor = primaryColor,
-                contentColor = whiteColor,
-                shape = CircleShape,
-                modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(56.dp, 64.dp, 72.dp))
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Equipment",
-                    modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(24.dp, 28.dp, 32.dp))
-                )
+            // Only show FAB for admin users
+            if (userRole == UserRole.ADMIN) {
+                FloatingActionButton(
+                    onClick = {
+                        navController.navigate(Screen.NewEquipmentScreen.route)
+                    },
+                    containerColor = primaryColor,
+                    contentColor = whiteColor,
+                    shape = CircleShape,
+                    modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(56.dp, 64.dp, 72.dp))
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add Equipment",
+                        modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(24.dp, 28.dp, 32.dp))
+                    )
+                }
             }
         }
     ) { paddingValues ->

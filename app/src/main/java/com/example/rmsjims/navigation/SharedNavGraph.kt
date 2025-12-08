@@ -64,7 +64,8 @@ fun SharedNavGraph(
             val sessionViewModel: UserSessionViewModel = koinViewModel()
             RoleSelectionScreen(
                 navController = navController, // Use local nav controller to navigate to Login screen
-                sessionViewModel = sessionViewModel
+                sessionViewModel = sessionViewModel,
+                parentNavController = parentNavController
             )
         }
     }

@@ -29,6 +29,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -82,6 +83,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import com.example.rmsjims.R
 import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppCircularIcon
@@ -90,6 +92,7 @@ import com.example.rmsjims.ui.components.AppSearchBar
 import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomNavigationBar
 import com.example.rmsjims.ui.components.CustomSmallLabel
+import org.koin.androidx.compose.koinViewModel
 import com.example.rmsjims.ui.screens.assistant.PropertyRequestsContent
 import com.example.rmsjims.ui.theme.categoryIconColor
 import com.example.rmsjims.ui.theme.chipColor
@@ -112,6 +115,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     navController: NavHostController,
+    parentNavController: NavHostController? = null,
     filterSortViewModel: FilterSortViewModel = koinViewModel(),
     sessionViewModel: UserSessionViewModel = koinViewModel(),
     searchViewModel: SearchViewModel = koinViewModel(),
@@ -306,33 +310,55 @@ fun HomeScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getResponsivePadding(18.dp, 24.dp, 28.dp))
         ) {
-            // Title: "Home"
+            // Title: "Home" and Role Switch Button
             item {
-                CustomLabel(
-                    header = "Home",
-                    fontSize = ResponsiveLayout.getResponsiveFontSize(20.sp, 24.sp, 28.sp),
-                    headerColor = titleColor,
-                    fontWeight = FontWeight.SemiBold
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CustomLabel(
+                        header = "Home",
+                        fontSize = ResponsiveLayout.getResponsiveFontSize(20.sp, 24.sp, 28.sp),
+                        headerColor = titleColor,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    AppCircularIcon(
+                        painter = painterResource(R.drawable.ic_settings),
+                        iconDescription = "Logout",
+                        onClick = {
+                            // Clear user session
+                            sessionViewModel.clearRole()
+                            // Navigate to login screen using parentNavController if available
+                            val targetNavController = parentNavController ?: navController
+                            targetNavController.navigate(Screen.LoginScreen.route) {
+                                // Clear the entire back stack
+                                popUpTo(0) { inclusive = true }
+                            }
+                        },
+                        boxSize = ResponsiveLayout.getResponsiveSize(40.dp, 46.dp, 52.dp),
+                        iconSize = ResponsiveLayout.getResponsiveSize(20.dp, 24.dp, 28.dp),
+                        tint = primaryColor
+                    )
+                }
             }
 
-            // Home screen's original search bar and filter bar
+            // Home screen's search bar and filter button
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
-            ) {
-                AppSearchBar(
+                ) {
+                    AppSearchBar(
                         query = searchQuery,
                         onQueryChange = { searchQuery = it },
-                    modifier = Modifier
-                        .height(ResponsiveLayout.getResponsiveSize(46.dp, 60.dp, 68.dp))
+                        modifier = Modifier
+                            .height(ResponsiveLayout.getResponsiveSize(46.dp, 60.dp, 68.dp))
                             .weight(1f)
-                  )
-
-                AppCircularIcon(
-                    onClick = { filterSortViewModel.showSheet() },
-                )
+                    )
+                    AppCircularIcon(
+                        onClick = { filterSortViewModel.showSheet() }
+                    )
                 }
             }
 

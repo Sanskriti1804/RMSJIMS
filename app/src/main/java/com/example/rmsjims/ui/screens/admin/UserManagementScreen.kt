@@ -25,11 +25,15 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -46,6 +50,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.rmsjims.navigation.Screen
@@ -53,11 +58,17 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 import com.example.rmsjims.R
 import com.example.rmsjims.ui.components.AppButton
+import com.example.rmsjims.ui.components.AppIconTextField
 import com.example.rmsjims.ui.components.AppSearchBar
 import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomNavigationBar
 import com.example.rmsjims.ui.components.CustomTopBar
 import com.example.rmsjims.ui.components.ProfileImage
+import com.example.rmsjims.ui.components.FilteredAppTextField
+import com.example.rmsjims.repository.UsersRepository
+import com.example.rmsjims.data.schema.Users
+import org.koin.compose.koinInject
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import com.example.rmsjims.ui.theme.cardColor
 import com.example.rmsjims.ui.theme.chipColor
 import com.example.rmsjims.ui.theme.errorColor
@@ -75,8 +86,33 @@ import com.example.rmsjims.util.pxToDp
 fun UserManagementScreen(
     navController: NavHostController
 ) {
-    // Placeholder users data
-    val users = listOf(
+    val usersRepository: UsersRepository = koinInject()
+    val coroutineScope = rememberCoroutineScope()
+    
+    var showAddUserSheet by remember { mutableStateOf(false) }
+    var newUserEmail by remember { mutableStateOf("") }
+    var newUserPassword by remember { mutableStateOf("") }
+    var selectedRole by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var showSuccessDialog by remember { mutableStateOf(false) }
+    var dbUsers by remember { mutableStateOf<List<Users>>(emptyList()) }
+    var isLoadingUsers by remember { mutableStateOf(false) }
+    
+    // Fetch users from database
+    LaunchedEffect(Unit) {
+        isLoadingUsers = true
+        try {
+            dbUsers = usersRepository.getAllUsers()
+        } catch (e: Exception) {
+            // Handle error
+        } finally {
+            isLoadingUsers = false
+        }
+    }
+    
+    // Placeholder users data (for display purposes - can be removed later)
+    val placeholderUsers = listOf(
         User(
             id = "1",
             name = "Dr. Ravi Kumar",
@@ -167,6 +203,19 @@ fun UserManagementScreen(
     var showFilterSheet by remember { mutableStateOf(false) }
     var selectedMainFilter by remember { mutableStateOf<UserMainFilter?>(null) }
     var selectedSubFilters by remember { mutableStateOf<Set<String>>(emptySet()) }
+    
+    // Role options for dropdown
+    val roleOptions = listOf("admin", "staff", "assistant")
+    
+    // Helper function to get expected email domain for role
+    fun getExpectedDomain(role: String): String {
+        return when (role.lowercase()) {
+            "admin" -> "@admin.com"
+            "staff" -> "@staff.com"
+            "assistant" -> "@assistant.com"
+            else -> ""
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -178,6 +227,21 @@ fun UserManagementScreen(
         },
         bottomBar = {
             CustomNavigationBar(navController = navController)
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { showAddUserSheet = true },
+                containerColor = primaryColor,
+                shape = CircleShape,
+                modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(56.dp, 64.dp, 72.dp))
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add User",
+                    tint = whiteColor,
+                    modifier = Modifier.size(ResponsiveLayout.getResponsiveSize(24.dp, 28.dp, 32.dp))
+                )
+            }
         },
         containerColor = whiteColor
     ) { paddingValues ->
@@ -225,13 +289,41 @@ fun UserManagementScreen(
                 ),
                 verticalArrangement = Arrangement.spacedBy(ResponsiveLayout.getCardSpacing())
             ) {
-                items(users) { user ->
-                    UserCard(
-                        user = user,
-                        onClick = {
-                            navController.navigate(Screen.UserDetailScreen.createRoute(user.id))
-                        }
-                    )
+                // Show database users if available, otherwise show placeholder
+                if (dbUsers.isNotEmpty()) {
+                    items(dbUsers) { dbUser ->
+                        // Convert Users to User for display
+                        val displayUser = User(
+                            id = dbUser.id?.toString() ?: "0",
+                            name = dbUser.email.split("@").firstOrNull()?.replaceFirstChar { it.uppercaseChar() } ?: "User",
+                            email = dbUser.email,
+                            phone = "",
+                            role = dbUser.role.replaceFirstChar { it.uppercaseChar() },
+                            building = "",
+                            department = "",
+                            class_ = null,
+                            status = UserStatus.ACTIVE,
+                            activeAssignmentsCount = 0,
+                            overdueItemsCount = 0,
+                            joinDate = dbUser.createdAt ?: ""
+                        )
+                        UserCard(
+                            user = displayUser,
+                            onClick = {
+                                navController.navigate(Screen.UserDetailScreen.createRoute(displayUser.id))
+                            }
+                        )
+                    }
+                } else if (!isLoadingUsers) {
+                    // Show placeholder users if no database users
+                    items(placeholderUsers) { user ->
+                        UserCard(
+                            user = user,
+                            onClick = {
+                                navController.navigate(Screen.UserDetailScreen.createRoute(user.id))
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -245,6 +337,104 @@ fun UserManagementScreen(
                 selectedSubFilters = selectedSubFilters,
                 onSubFiltersChanged = { selectedSubFilters = it }
             )
+        }
+        
+        // Add User Bottom Sheet
+        if (showAddUserSheet) {
+            AddUserBottomSheet(
+                onDismiss = { 
+                    showAddUserSheet = false
+                    newUserEmail = ""
+                    newUserPassword = ""
+                    selectedRole = ""
+                    errorMessage = ""
+                },
+                email = newUserEmail,
+                onEmailChange = { 
+                    newUserEmail = it
+                    errorMessage = ""
+                },
+                password = newUserPassword,
+                onPasswordChange = { 
+                    newUserPassword = it
+                    errorMessage = ""
+                },
+                selectedRole = selectedRole,
+                onRoleSelected = { 
+                    selectedRole = it
+                    errorMessage = ""
+                    // Auto-append domain to email if it doesn't match
+                    val expectedDomain = getExpectedDomain(it)
+                    if (newUserEmail.isNotEmpty() && !newUserEmail.endsWith(expectedDomain)) {
+                        // Remove any existing domain and add correct one
+                        val emailWithoutDomain = newUserEmail.split("@").firstOrNull() ?: ""
+                        if (emailWithoutDomain.isNotEmpty()) {
+                            newUserEmail = "$emailWithoutDomain$expectedDomain"
+                        }
+                    }
+                },
+                roleOptions = roleOptions,
+                expectedDomain = getExpectedDomain(selectedRole),
+                errorMessage = errorMessage,
+                usersRepository = usersRepository,
+                onUserAdded = { success ->
+                    if (success) {
+                        showAddUserSheet = false
+                        showSuccessDialog = true
+                        newUserEmail = ""
+                        newUserPassword = ""
+                        selectedRole = ""
+                        errorMessage = ""
+                        // Refresh users list
+                        coroutineScope.launch {
+                            dbUsers = usersRepository.getAllUsers()
+                        }
+                    }
+                },
+                onError = { message ->
+                    errorMessage = message
+                }
+            )
+        }
+        
+        // Success Dialog
+        if (showSuccessDialog) {
+            Dialog(onDismissRequest = { showSuccessDialog = false }) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth(0.85f)
+                        .padding(ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)),
+                    shape = RoundedCornerShape(4.dp),
+                    colors = CardDefaults.cardColors(containerColor = whiteColor),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(
+                                vertical = ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp),
+                                horizontal = ResponsiveLayout.getResponsiveSize(18.dp, 22.dp, 26.dp)
+                            ),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CustomLabel(
+                            header = "Success",
+                            fontSize = ResponsiveLayout.getResponsiveFontSize(18.sp, 20.sp, 22.sp),
+                            headerColor = successColor
+                        )
+                        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(16.dp, 20.dp, 24.dp)))
+                        CustomLabel(
+                            header = "User added successfully",
+                            fontSize = 14.sp,
+                            headerColor = onSurfaceColor.copy(alpha = 0.8f)
+                        )
+                        Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsiveSize(18.dp, 22.dp, 26.dp)))
+                        AppButton(
+                            onClick = { showSuccessDialog = false },
+                            buttonText = "OK"
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -641,6 +831,186 @@ fun FilterChipItem(
             fontSize = 12.sp,
             fontFamily = FontFamily(Font(R.font.font_alliance_regular_two))
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddUserBottomSheet(
+    onDismiss: () -> Unit,
+    email: String,
+    onEmailChange: (String) -> Unit,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    selectedRole: String,
+    onRoleSelected: (String) -> Unit,
+    roleOptions: List<String>,
+    expectedDomain: String,
+    errorMessage: String,
+    usersRepository: UsersRepository,
+    onUserAdded: (Boolean) -> Unit,
+    onError: (String) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val coroutineScope = rememberCoroutineScope()
+    
+    LaunchedEffect(Unit) {
+        sheetState.show()
+    }
+    
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        shape = RoundedCornerShape(ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 16.dp)),
+        containerColor = whiteColor,
+        dragHandle = null,
+        contentWindowInsets = { WindowInsets(0, 0, 0, 0) }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(ResponsiveLayout.getHorizontalPadding())
+        ) {
+            CustomLabel(
+                header = "Add New User",
+                fontSize = ResponsiveLayout.getResponsiveFontSize(20.sp, 24.sp, 28.sp),
+                headerColor = onSurfaceColor,
+                modifier = Modifier.padding(vertical = ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp))
+            )
+            
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(10.dp, 12.dp, 16.dp)))
+            
+            // Role Selection
+            CustomLabel(
+                header = "Role",
+                fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp),
+                headerColor = onSurfaceColor,
+                modifier = Modifier.padding(bottom = ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
+            )
+            
+            FilteredAppTextField(
+                value = if (selectedRole.isEmpty()) "" else selectedRole,
+                onValueChange = { },
+                placeholder = "Select Role",
+                items = roleOptions,
+                onItemSelected = onRoleSelected,
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            if (selectedRole.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp)))
+                CustomLabel(
+                    header = "Email must end with: $expectedDomain",
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                    headerColor = primaryColor.copy(alpha = 0.7f)
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)))
+            
+            // Email Field
+            CustomLabel(
+                header = "Email",
+                fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp),
+                headerColor = onSurfaceColor,
+                modifier = Modifier.padding(bottom = ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
+            )
+            
+            AppIconTextField(
+                value = email,
+                onValueChange = onEmailChange,
+                placeholder = "Enter email (e.g., name$expectedDomain)",
+                icon = painterResource(R.drawable.ic_mail),
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(16.dp, 20.dp, 24.dp)))
+            
+            // Password Field
+            CustomLabel(
+                header = "Password",
+                fontSize = ResponsiveLayout.getResponsiveFontSize(14.sp, 16.sp, 18.sp),
+                headerColor = onSurfaceColor,
+                modifier = Modifier.padding(bottom = ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
+            )
+            
+            AppIconTextField(
+                value = password,
+                onValueChange = onPasswordChange,
+                placeholder = "Enter password",
+                icon = painterResource(R.drawable.ic_password),
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            // Error Message
+            if (errorMessage.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(12.dp, 16.dp, 20.dp)))
+                CustomLabel(
+                    header = errorMessage,
+                    fontSize = ResponsiveLayout.getResponsiveFontSize(12.sp, 14.sp, 16.sp),
+                    headerColor = errorColor
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(24.dp, 28.dp, 32.dp)))
+            
+            // Bottom Buttons
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                AppButton(
+                    modifier = Modifier.weight(1f).padding(end = 8.dp),
+                    buttonText = "Cancel",
+                    containerColor = cardColor,
+                    contentColor = onSurfaceColor,
+                    onClick = {
+                        coroutineScope.launch {
+                            sheetState.hide()
+                            onDismiss()
+                        }
+                    }
+                )
+                AppButton(
+                    modifier = Modifier.weight(1f),
+                    buttonText = "Add User",
+                    onClick = {
+                        // Validate inputs
+                        if (email.isBlank() || password.isBlank() || selectedRole.isBlank()) {
+                            onError("Please fill in all fields")
+                            return@AppButton
+                        }
+                        
+                        // Validate email domain matches role
+                        if (!email.lowercase().endsWith(expectedDomain)) {
+                            onError("Email must end with $expectedDomain for $selectedRole role")
+                            return@AppButton
+                        }
+                        
+                        // Add user
+                        coroutineScope.launch {
+                            val result = usersRepository.addUser(
+                                email = email,
+                                password = password,
+                                role = selectedRole
+                            )
+                            
+                            result.onSuccess {
+                                coroutineScope.launch {
+                                    sheetState.hide()
+                                }
+                                onUserAdded(true)
+                            }.onFailure { exception ->
+                                onError(exception.message ?: "Failed to add user")
+                            }
+                        }
+                    }
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(ResponsiveLayout.getVerticalPadding()))
+        }
     }
 }
 

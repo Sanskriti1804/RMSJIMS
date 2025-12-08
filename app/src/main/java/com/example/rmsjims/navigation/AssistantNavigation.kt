@@ -1,6 +1,7 @@
 package com.example.rmsjims.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,12 +21,13 @@ import com.example.rmsjims.ui.screens.staff.ProfileScreen
 import com.example.rmsjims.ui.screens.staff.SavedCollectionScreen
 import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.shared.AboutAppScreen
+import com.example.rmsjims.ui.screens.shared.RoleSelectionScreen
 import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
 import com.example.rmsjims.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AssistantModuleApp() {
+fun AssistantModuleApp(parentNavController: NavHostController? = null) {
     val navController = rememberNavController()
 
     NavHost(
@@ -34,7 +36,10 @@ fun AssistantModuleApp() {
     ) {
         // Bottom navigation screens
         composable(Screen.HomeScreen.route) {
-            HomeScreen(navController = navController)
+            HomeScreen(
+                navController = navController,
+                parentNavController = parentNavController
+            )
         }
         composable(
             Screen.EquipmentScreen.route,
@@ -95,6 +100,14 @@ fun AssistantModuleApp() {
         ) { backStackEntry ->
             val requestId = backStackEntry.arguments?.getString("requestId") ?: ""
             RequestDetailsScreen(requestId = requestId, navController = navController)
+        }
+        composable(Screen.RoleSelectionScreen.route) {
+            val sessionViewModel: UserSessionViewModel = koinViewModel()
+            RoleSelectionScreen(
+                navController = navController,
+                sessionViewModel = sessionViewModel,
+                parentNavController = parentNavController
+            )
         }
     }
 }

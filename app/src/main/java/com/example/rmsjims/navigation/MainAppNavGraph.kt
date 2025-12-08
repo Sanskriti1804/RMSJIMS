@@ -37,42 +37,55 @@ fun MainAppNavGraph(
             )
         }
 
+        // Login Screen - directly accessible from main nav graph for logout/role switch
+        composable(Screen.LoginScreen.route) {
+            val sharedNavController = rememberNavController()
+            SharedNavGraph(
+                navController = sharedNavController,
+                startDestination = Screen.LoginScreen.route,
+                parentNavController = navController
+            )
+        }
+
         // Admin Navigation Graph - merged with shared screens
         composable(Screen.AdminNavGraph.route) {
-            AdminNavGraph(navController = navController)
+            AdminNavGraph(navController = navController, parentNavController = navController)
         }
 
         // Assistant Navigation Graph - merged with shared screens
         composable(Screen.AssistantNavGraph.route) {
-            AssistantNavGraph(navController = navController)
+            AssistantNavGraph(navController = navController, parentNavController = navController)
         }
 
         // Staff Navigation Graph - merged with shared screens
         composable(Screen.StaffNavGraph.route) {
-            StaffNavGraph(navController = navController)
+            StaffNavGraph(navController = navController, parentNavController = navController)
         }
     }
 }
 
 @Composable
 fun AdminNavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    parentNavController: NavHostController
 ) {
-    AdminModuleApp()
+    AdminModuleApp(parentNavController = parentNavController)
 }
 
 @Composable
 fun AssistantNavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    parentNavController: NavHostController
 ) {
-    AssistantModuleApp()
+    AssistantModuleApp(parentNavController = parentNavController)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StaffNavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    parentNavController: NavHostController
 ) {
-    StaffModuleApp()
+    StaffModuleApp(parentNavController = parentNavController)
 }
 
