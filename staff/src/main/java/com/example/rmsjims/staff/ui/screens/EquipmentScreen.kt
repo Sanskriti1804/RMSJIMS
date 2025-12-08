@@ -160,7 +160,7 @@ fun EquipmentScreen(
                                 image = item.image_url,
                                 equipName = item.name,
                                 available = if (item.is_available == true) "Available" else "Not Available",
-                                onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                                onClick = { navController.navigate(Screen.ProductDescriptionScreen.createRoute(item.id)) },
                                 saveClick = {
                                     isSaved = !isSaved
                                 },

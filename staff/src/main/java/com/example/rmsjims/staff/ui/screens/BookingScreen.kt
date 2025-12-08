@@ -29,6 +29,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import android.content.Intent
+import android.net.Uri
 import androidx.navigation.NavHostController
 import com.example.rmsjims.R
 import com.example.rmsjims.data.model.BookingDates
@@ -38,6 +41,7 @@ import com.example.rmsjims.data.model.ProductInfo
 import com.example.rmsjims.data.model.TabItem
 import com.example.rmsjims.navigation.Screen
 import com.example.rmsjims.ui.components.AppNavIcon
+import com.example.rmsjims.ui.components.AppCircularIcon
 import com.example.rmsjims.ui.components.CustomLabel
 import com.example.rmsjims.ui.components.CustomNavigationBar
 import com.example.rmsjims.ui.components.CustomTopBar
@@ -48,6 +52,7 @@ import com.example.rmsjims.ui.theme.onSurfaceColor
 import com.example.rmsjims.ui.theme.primaryColor
 import com.example.rmsjims.ui.theme.cardColor
 import com.example.rmsjims.ui.theme.whiteColor
+import com.example.rmsjims.ui.theme.circularBoxColor
 import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
@@ -205,11 +210,17 @@ fun InfoCard(
                     header = "InCharge",
                     headerColor = onSurfaceColor.copy(0.9f)
                 )
-                InChargeRow(label = "Prof.", name = "Sumant Rao")
+                InChargeRow(
+                    label = "Prof.",
+                    name = "Sumant Rao",
+                    email = "sumant.rao@jims.edu.in"
+                )
                 InChargeRow(
                     label = "Asst.",
                     name = "Akash Kumar Swami",
-                    icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
+                    icons = listOf(R.drawable.ic_mail, R.drawable.ic_call),
+                    email = "akash.swami@example.com",
+                    phone = "+91 9876543210"
                 )
             }
 
@@ -239,35 +250,69 @@ fun InfoCard(
 }
 
 @Composable
-fun InChargeRoww(label: String, name: String, icons: List<Int>? = null) {
+fun InChargeRow(
+    label: String,
+    name: String,
+    icons: List<Int> = listOf(R.drawable.ic_mail),
+    email: String? = null,
+    phone: String? = null
+) {
+    val context = LocalContext.current
+    
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            CustomLabel(
-                header = "$label",
-                fontSize = 14.sp,
-                headerColor = onSurfaceColor.copy(0.5f),
-                modifier = Modifier.width(50.dp)
-            )
+        CustomLabel(
+            header = label,
+            headerColor = onSurfaceColor.copy(alpha = 0.5f),
+            fontSize = 14.sp,
+            modifier = Modifier.weight(0.2f)
+        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(pxToDp(16)),
+            modifier = Modifier
+                .weight(0.9f)
+        ) {
             CustomLabel(
                 header = name,
+                headerColor = onSurfaceColor.copy(alpha = 0.8f),
                 fontSize = 14.sp,
-                modifier = Modifier,
-                headerColor = onSurfaceColor.copy(0.8f)
-
+                modifier = Modifier.padding(pxToDp(10))
             )
-        }
-        icons?.let {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                it.forEach { iconRes ->
-                    Icon(
-                        painter = painterResource(id = iconRes),
-                        contentDescription = "Contact Icon"
-                    )
-                }
+
+            icons.forEach { iconRes ->
+                val adjustedIconSize = if (iconRes == R.drawable.ic_call) pxToDp(16) else pxToDp(20)
+                AppCircularIcon(
+                    painter = painterResource(iconRes),
+                    boxSize = pxToDp(28),
+                    iconPadding = pxToDp(4),
+                    iconSize = adjustedIconSize,
+                    tint = primaryColor,
+                    boxColor = circularBoxColor,
+                    onClick = {
+                        when (iconRes) {
+                            R.drawable.ic_mail -> {
+                                val emailAddress = email ?: "sumant.rao@jims.edu.in"
+                                // Open mail app with email in 'To' field
+                                val intent = Intent(Intent.ACTION_SENDTO).apply {
+                                    data = Uri.parse("mailto:$emailAddress")
+                                }
+                                context.startActivity(intent)
+                            }
+                            R.drawable.ic_call -> {
+                                phone?.let { phoneNumber ->
+                                    // Open dialer app with number on keypad
+                                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                                        data = Uri.parse("tel:$phoneNumber")
+                                    }
+                                    context.startActivity(intent)
+                                }
+                            }
+                        }
+                    }
+                )
             }
         }
     }

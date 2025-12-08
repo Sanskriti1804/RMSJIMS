@@ -40,6 +40,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import android.content.Intent
+import android.net.Uri
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.rmsjims.R
@@ -347,11 +350,17 @@ fun InChargeCard(
                                     fontSize = 16.sp
                                 )
                                 Spacer(modifier = Modifier.height(pxToDp(5)))
-                                InChargeRow(label = "Prof.", name = currentFacility.prof_incharge)
+                                InChargeRow(
+                                    label = "Prof.",
+                                    name = currentFacility.prof_incharge,
+                                    email = currentFacility.prof_incharge_email
+                                )
                                 InChargeRow(
                                     label = "Asst.",
                                     name = currentFacility.lab_incharge,
-                                    icons = listOf(R.drawable.ic_mail, R.drawable.ic_call)
+                                    icons = listOf(R.drawable.ic_mail, R.drawable.ic_call),
+                                    email = currentFacility.lab_incharge_email,
+                                    phone = currentFacility.lab_incharge_phone
                                 )
                             }
                         }
@@ -388,8 +397,12 @@ fun InChargeCard(
 fun InChargeRow(
     label: String,
     name: String,
-    icons: List<Int> = listOf(R.drawable.ic_mail)
+    icons: List<Int> = listOf(R.drawable.ic_mail),
+    email: String? = null,
+    phone: String? = null
 ) {
+    val context = LocalContext.current
+    
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -413,15 +426,36 @@ fun InChargeRow(
                 modifier = Modifier.padding(pxToDp(10))
             )
 
-            icons.forEach {
-                val adjustedIconSize = if (it == R.drawable.ic_call) pxToDp(16) else pxToDp(20)
+            icons.forEach { iconRes ->
+                val adjustedIconSize = if (iconRes == R.drawable.ic_call) pxToDp(16) else pxToDp(20)
                 AppCircularIcon(
-                    painter = painterResource(it),
+                    painter = painterResource(iconRes),
                     boxSize = pxToDp(28),
                     iconPadding = pxToDp(4),
                     iconSize = adjustedIconSize,
                     tint = primaryColor,
-                    boxColor = circularBoxColor
+                    boxColor = circularBoxColor,
+                    onClick = {
+                        when (iconRes) {
+                            R.drawable.ic_mail -> {
+                                val emailAddress = email ?: "sumant.rao@jims.edu.in"
+                                // Open mail app with email in 'To' field
+                                val intent = Intent(Intent.ACTION_SENDTO).apply {
+                                    data = Uri.parse("mailto:$emailAddress")
+                                }
+                                context.startActivity(intent)
+                            }
+                            R.drawable.ic_call -> {
+                                phone?.let { phoneNumber ->
+                                    // Open dialer app with number on keypad
+                                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                                        data = Uri.parse("tel:$phoneNumber")
+                                    }
+                                    context.startActivity(intent)
+                                }
+                            }
+                        }
+                    }
                 )
             }
         }

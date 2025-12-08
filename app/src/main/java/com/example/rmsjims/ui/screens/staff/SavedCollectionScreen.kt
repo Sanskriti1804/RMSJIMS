@@ -141,7 +141,7 @@ fun SavedCollectionScreen(
                                     image = if (item.image_url.isNotEmpty()) item.image_url else R.drawable.temp,
                                     equipName = item.name,
                                     available = if (item.is_available == true) "Available" else "Not Available",
-                                    onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                                    onClick = { navController.navigate(Screen.ProductDescriptionScreen.createRoute(item.id)) },
                                     isSaved = savedItems[item.id] ?: false,
                                     saveClick = {
                                         val newSavedState = savedItemsManager.toggleItem(item.id)

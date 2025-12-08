@@ -13,7 +13,9 @@ sealed class Screen(val route : String) {
     }
     object RaiseTicketScreen : Screen("ticket_raise")
     object TicketScreen : Screen("tickets")
-    object ProductDescriptionScreen : Screen("profileDescription")
+    object ProductDescriptionScreen : Screen("profileDescription/{itemId}") {
+        fun createRoute(itemId: Int? = null) = if (itemId != null) "profileDescription/$itemId" else "profileDescription/0"
+    }
     object ProductDescriptionEditScreen : Screen("profileDescription/edit")
     object ProfileScreen : Screen("profile")
     object AdminDashboardScreen : Screen("admin_dashboard")

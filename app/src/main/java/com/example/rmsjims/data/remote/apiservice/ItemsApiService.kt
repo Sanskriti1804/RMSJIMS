@@ -4,4 +4,5 @@ import com.example.rmsjims.data.schema.Items
 
 interface ItemsApiService {
     suspend fun getItems(): List<Items>
+    suspend fun getItemById(id: Int): Items?
 }

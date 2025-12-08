@@ -1143,7 +1143,7 @@ private fun MixedRecentlyAddedContent(
                         image = if (item.image_url.isNotEmpty()) item.image_url else R.drawable.temp,
                         equipName = item.name,
                         available = if (item.is_available == true) "Available" else "Not Available",
-                        onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                        onClick = { navController.navigate(Screen.ProductDescriptionScreen.createRoute(item.id)) },
                         isSaved = false,
                         saveClick = { /* Handle save */ },
                         facilityName = "Lab Facility"
@@ -1234,7 +1234,7 @@ private fun EquipmentItemsContent(
                 image = if (item.image_url.isNotEmpty()) item.image_url else R.drawable.temp,
                 equipName = item.name,
                 available = if (item.is_available == true) "Available" else "Not Available",
-                onClick = { navController.navigate(Screen.ProductDescriptionScreen.route) },
+                onClick = { navController.navigate(Screen.ProductDescriptionScreen.createRoute(item.id)) },
                 isSaved = false,
                 saveClick = { /* Handle save */ },
                 facilityName = "Lab Facility"

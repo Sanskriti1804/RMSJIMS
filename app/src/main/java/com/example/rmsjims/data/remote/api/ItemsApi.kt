@@ -119,4 +119,20 @@ class ItemsApi(
             throw e
         }
     }
+    
+    override suspend fun getItemById(id: Int): Items? {
+        Log.d("ItemsApi", "Fetching item with id: $id")
+        return try {
+            val result = table.select {
+                filter {
+                    eq("id", id)
+                }
+            }.decodeList<Items>().firstOrNull()
+            Log.d("ItemsApi", if (result != null) "Item found" else "Item not found")
+            result
+        } catch (e: Exception) {
+            Log.e("ItemsApi", "Error fetching item by id: ${e.message}", e)
+            throw e
+        }
+    }
 }

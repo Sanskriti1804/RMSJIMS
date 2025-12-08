@@ -33,4 +33,8 @@ class FacilitiesViewModel (
             }
         }
     }
+    
+    fun refresh() {
+        getFacilities()
+    }
 }

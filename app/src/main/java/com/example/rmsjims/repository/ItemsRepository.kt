@@ -9,4 +9,8 @@ class ItemsRepository(
     suspend fun fetchItems() : List<Items>{
         return itemsApiService.getItems()
     }
+    
+    suspend fun fetchItemById(id: Int): Items? {
+        return itemsApiService.getItemById(id)
+    }
 }

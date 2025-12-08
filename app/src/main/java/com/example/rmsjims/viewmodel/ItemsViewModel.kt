@@ -60,4 +60,13 @@ class ItemsViewModel(
         val facility = facilities.find { it.id == items.facility_id }
         return facility?.prof_incharge ?: "Unkown Facility"
     }
+    
+    suspend fun getItemById(id: Int): Items? {
+        return try {
+            itemsRepository.fetchItemById(id)
+        } catch (e: Exception) {
+            Log.e("ItemsViewModel", "Error fetching item by id", e)
+            null
+        }
+    }
 }

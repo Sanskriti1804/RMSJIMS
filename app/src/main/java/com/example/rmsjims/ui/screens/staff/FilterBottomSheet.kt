@@ -29,6 +29,7 @@ import com.example.rmsjims.ui.theme.whiteColor
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.viewmodel.FilterSortViewModel
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -124,7 +125,10 @@ fun FilterSortBottomSheet(
                     modifier = Modifier.weight(1f),
                     buttonText = "Apply Filter",
                     onClick = {
-                        // TODO: trigger filtering logic or pop bottom sheet
+                        coroutineScope.launch {
+                            sheetState.hide()
+                            viewModel.hideSheet()
+                        }
                     }
                 )
             }

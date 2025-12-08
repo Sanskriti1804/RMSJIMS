@@ -32,6 +32,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -81,6 +82,7 @@ import com.example.rmsjims.ui.theme.chipColor
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.viewmodel.FacilitiesViewModel
+import com.example.rmsjims.viewmodel.ItemsViewModel
 import com.example.rmsjims.viewmodel.UserSessionViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -93,7 +95,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ProdDescScreen(
     sessionViewModel: UserSessionViewModel = koinViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    itemId: Int? = null
 ) {
     val userRole = sessionViewModel.userRole
     val isAdmin = userRole == UserRole.ADMIN
@@ -102,16 +105,108 @@ fun ProdDescScreen(
         currentRoute == Screen.ProductDescriptionEditScreen.route 
     }
     
-    // Equipment data state (for edit mode)
-    var equipmentName by remember { mutableStateOf("Canon EOS R50 V") }
-    var equipmentBrand by remember { mutableStateOf("Canon") }
-    var equipmentModel by remember { mutableStateOf("EOS R5 Mark II") }
+    // ViewModels for fetching data
+    val itemsViewModel: ItemsViewModel = koinViewModel()
+    val facilitiesViewModel: FacilitiesViewModel = koinViewModel()
+    val facilitiesState = facilitiesViewModel.facilitiesState
+    
+    // Equipment data state - will be populated from database
+    var equipmentName by remember { mutableStateOf("") }
+    var equipmentBrand by remember { mutableStateOf("") }
+    var equipmentModel by remember { mutableStateOf("") }
     var equipmentStatus by remember { mutableStateOf("Available") }
     var assignedTo by remember { mutableStateOf("Not Assigned") }
-    var equipmentCategory by remember { mutableStateOf("Cameras") }
-    var equipmentLocation by remember { mutableStateOf("IDC, Photo Studio") }
-    var equipmentTiming by remember { mutableStateOf("9:00 AM - 6:00 PM") }
+    var equipmentCategory by remember { mutableStateOf("") }
+    var equipmentLocation by remember { mutableStateOf("") }
+    var equipmentTiming by remember { mutableStateOf("") }
+    var equipmentDescription by remember { mutableStateOf("") }
+    var equipmentImageUrl by remember { mutableStateOf("") }
     var hasUnsavedChanges by remember { mutableStateOf(false) }
+    
+    // Facility data state
+    var professorInCharge by remember { mutableStateOf("") }
+    var professorEmail by remember { mutableStateOf("") }
+    var labAssistant by remember { mutableStateOf("") }
+    var labAssistantEmail by remember { mutableStateOf("") }
+    var labAssistantPhone by remember { mutableStateOf("") }
+    var facilityLocation by remember { mutableStateOf("") }
+    var facilityTimings by remember { mutableStateOf("") }
+    
+    // Loading and error states
+    var isLoading by remember { mutableStateOf(itemId != null && itemId > 0) }
+    var loadError by remember { mutableStateOf<String?>(null) }
+    var loadedFacilityId by remember { mutableStateOf<Int?>(null) }
+    var retryKey by remember { mutableStateOf(0) }
+    
+    // Fetch equipment data when itemId is provided or retry is triggered
+    LaunchedEffect(itemId, retryKey) {
+        if (itemId != null && itemId > 0) {
+            isLoading = true
+            loadError = null
+            try {
+                val item = itemsViewModel.getItemById(itemId)
+                if (item != null) {
+                    // Populate equipment data immediately
+                    equipmentName = item.name
+                    equipmentDescription = item.description
+                    equipmentImageUrl = item.image_url
+                    equipmentCategory = item.category_name ?: ""
+                    equipmentStatus = if (item.is_available == true) "Available" else "Not Available"
+                    loadedFacilityId = item.facility_id
+                    
+                    // Equipment loaded successfully - stop loading immediately
+                    // Don't wait for facilities
+                    isLoading = false
+                } else {
+                    loadError = "Equipment not found"
+                    isLoading = false
+                }
+            } catch (e: Exception) {
+                loadError = "Failed to load equipment: ${e.message ?: "Unknown error"}"
+                isLoading = false
+            }
+        } else {
+            // No itemId provided, use default/demo data
+            equipmentName = "Canon EOS R50 V"
+            equipmentBrand = "Canon"
+            equipmentModel = "EOS R5 Mark II"
+            equipmentStatus = "Available"
+            equipmentCategory = "Cameras"
+            equipmentLocation = "IDC, Photo Studio"
+            equipmentTiming = "9:00 AM - 6:00 PM"
+            isLoading = false
+        }
+    }
+    
+    // Update facility data when facilities are loaded (separate from equipment loading)
+    // This runs independently and doesn't block equipment display
+    LaunchedEffect(facilitiesState, loadedFacilityId) {
+        if (loadedFacilityId != null) {
+            when (val facilities = facilitiesState) {
+                is UiState.Success -> {
+                    val facility = facilities.data.find { it.id == loadedFacilityId }
+                    if (facility != null) {
+                        professorInCharge = facility.prof_incharge
+                        professorEmail = facility.prof_incharge_email
+                        labAssistant = facility.lab_incharge
+                        labAssistantEmail = facility.lab_incharge_email ?: ""
+                        labAssistantPhone = facility.lab_incharge_phone
+                        facilityLocation = facility.location
+                        facilityTimings = facility.timings
+                        equipmentLocation = facility.location
+                        equipmentTiming = facility.timings
+                    }
+                }
+                is UiState.Error -> {
+                    // Don't show error for facilities - equipment is more important
+                    // Facilities are optional, equipment is required
+                }
+                is UiState.Loading -> {
+                    // Facilities are still loading, that's okay - equipment is already shown
+                }
+            }
+        }
+    }
     
     // Dialog and snackbar state
     var showDiscardDialog by remember { mutableStateOf(false) }
@@ -209,7 +304,7 @@ fun ProdDescScreen(
     Scaffold(
         topBar = {
             CustomTopBar(
-                title = if (isEditMode) "Edit Equipment" else "Camera",
+                title = if (isEditMode) "Edit Equipment" else (equipmentName.ifEmpty { "Equipment" }),
                 onNavigationClick = {
                     if (isEditMode && hasUnsavedChanges) {
                         showDiscardDialog = true
@@ -327,11 +422,68 @@ fun ProdDescScreen(
                     categoryOptions = categoryOptions
                 )
             } else {
-                // Read-only mode: Show normal cards
-                ProductDescriptionCard(modifier = Modifier)
+                // Show loading or error state
+                if (isLoading && itemId != null) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                } else if (loadError != null) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(pxToDp(12))
+                        ) {
+                            CustomLabel(
+                                header = "Error loading equipment",
+                                headerColor = errorColor,
+                                fontSize = 16.sp
+                            )
+                            CustomLabel(
+                                header = loadError ?: "Unknown error",
+                                headerColor = onSurfaceColor.copy(alpha = 0.7f),
+                                fontSize = 14.sp
+                            )
+                            AppButton(
+                                buttonText = "Retry",
+                                onClick = {
+                                    // Retry loading by incrementing retryKey to trigger LaunchedEffect
+                                    if (itemId != null && itemId > 0) {
+                                        loadError = null
+                                        retryKey++
+                                        // Also refresh facilities in case that was the issue
+                                        facilitiesViewModel.refresh()
+                                    }
+                                }
+                            )
+                        }
+                    }
+                } else {
+                    // Read-only mode: Show normal cards with real data
+                    ProductDescriptionCard(
+                        modifier = Modifier,
+                        equipmentName = equipmentName,
+                        equipmentCategory = equipmentCategory,
+                        equipmentLocation = equipmentLocation,
+                        equipmentTiming = equipmentTiming
+                    )
+                }
             }
 
-            InChargeCard()
+            if (!isLoading && loadError == null) {
+                InChargeCard(
+                    professorInCharge = professorInCharge,
+                    professorEmail = professorEmail,
+                    labAssistant = labAssistant,
+                    labAssistantEmail = labAssistantEmail,
+                    labAssistantPhone = labAssistantPhone
+                )
+            }
             AdditionalInfoCard()
             UseCard()
             
@@ -464,7 +616,7 @@ fun ProdDescScreen(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ProductCarousel(
-    images : List<Int>,
+    images : List<Any>,
     imageDescription : String = "Equipment images",
     contentScale: ContentScale = ContentScale.Crop,
     pagerState: PagerState,
@@ -531,10 +683,12 @@ fun ProductCarousel(
 fun ProductDescriptionCard(
     modifier: Modifier,
     shape: Shape = RectangleShape,
-    cardContainerColor: Color = onSurfaceVariant
+    cardContainerColor: Color = onSurfaceVariant,
+    equipmentName: String = "",
+    equipmentCategory: String = "",
+    equipmentLocation: String = "",
+    equipmentTiming: String = ""
 ) {
-    val facilitiesViewModel : FacilitiesViewModel = koinViewModel ()
-    val facilitiesList = facilitiesViewModel.facilitiesState
     var isFavorite by remember { mutableStateOf(false) }
 
     Card(
@@ -557,42 +711,21 @@ fun ProductDescriptionCard(
                 verticalArrangement = Arrangement.spacedBy(pxToDp(16))
             ) {
                 CustomLabel(
-                    header = "Canon EOS R50 V",
+                    header = equipmentName.ifEmpty { "Equipment" },
                     headerColor = onSurfaceColor,
                     fontSize = 16.sp,
                     modifier = Modifier
                 )
                 Spacer(modifier = Modifier.height(pxToDp(3)))
 
-                when(facilitiesList){
-                    is UiState.Loading -> {
-                        Text("Loading facilities")
-                    }
-                    is UiState.Error -> {
-                        // Fallback to demo facility on error
-                        Log.e("ProductDescriptionCard", "Error loading facilities", facilitiesList.exception)
-                        Log.w("ProductDescriptionCard", "Using demo facility fallback")
-                        val demoFacility = getDemoFacility()
-                        InfoRow(label = "Brand", value = "Canon")
-                        InfoRow(label = "Model", value = "EOS R5 Mark II")
-                        InfoRow(label = "Location", value = demoFacility.location)
-                        InfoRow(label = "Timing", value = demoFacility.timings)
-                    }
-                    is UiState.Success -> {
-                        // Use real facility if available, otherwise fallback to demo facility
-                        val currentFacility = if (facilitiesList.data.isNotEmpty()) {
-                            facilitiesList.data.firstOrNull()
-                        } else {
-                            getDemoFacility()
-                        }
-
-                        if (currentFacility != null){
-                            InfoRow(label = "Brand", value = "Canon")
-                            InfoRow(label = "Model", value = "EOS R5 Mark II")
-                            InfoRow(label = "Location", value = currentFacility.location)
-                            InfoRow(label = "Timing", value = currentFacility.timings)
-                        }
-                    }
+                if (equipmentCategory.isNotEmpty()) {
+                    InfoRow(label = "Category", value = equipmentCategory)
+                }
+                if (equipmentLocation.isNotEmpty()) {
+                    InfoRow(label = "Location", value = equipmentLocation)
+                }
+                if (equipmentTiming.isNotEmpty()) {
+                    InfoRow(label = "Timing", value = equipmentTiming)
                 }
             }
             AppCategoryIcon(
@@ -636,11 +769,13 @@ fun ProductDescriptionCard(
 fun InChargeCard(
     modifier: Modifier = Modifier,
     containerColor : Color = onSurfaceVariant,
-    shape: Shape = RectangleShape
+    shape: Shape = RectangleShape,
+    professorInCharge: String = "",
+    professorEmail: String = "",
+    labAssistant: String = "",
+    labAssistantEmail: String = "",
+    labAssistantPhone: String = ""
 ) {
-    val facilitiesViewModel : FacilitiesViewModel = koinViewModel()
-    val facilitiesList = facilitiesViewModel.facilitiesState
-
     var expanded by remember { mutableStateOf(true) }
     val iconAlignment = if (expanded) Alignment.TopEnd else Alignment.CenterEnd
 
@@ -661,52 +796,27 @@ fun InChargeCard(
                     verticalArrangement = Arrangement.spacedBy(pxToDp(12)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    when(facilitiesList){
-                        is UiState.Loading -> Text("Loading facilities")
-                        is UiState.Error -> {
-                            // Fallback to demo facility on error
-                            Log.e("InChargeCard", "Error loading facilities", facilitiesList.exception)
-                            Log.w("InChargeCard", "Using demo facility fallback")
-                            val demoFacility = getDemoFacility()
-                            CustomLabel(
-                                header = "InCharge",
-                                headerColor = onSurfaceColor.copy(0.9f),
-                                fontSize = 16.sp
-                            )
-                            Spacer(modifier = Modifier.height(pxToDp(5)))
-                            InChargeRow(label = "Prof.", name = demoFacility.prof_incharge)
-                            InChargeRow(
-                                label = "Asst.",
-                                name = demoFacility.lab_incharge,
-                                icons = listOf(R.drawable.ic_mail, R.drawable.ic_call),
-                                email = demoFacility.lab_incharge_email,
-                                phone = demoFacility.lab_incharge_phone
-                            )
-                        }
-                        is UiState.Success -> {
-                            // Use real facility if available, otherwise fallback to demo facility
-                            val currentFacility = if (facilitiesList.data.isNotEmpty()) {
-                                facilitiesList.data.firstOrNull()
-                            } else {
-                                getDemoFacility()
-                            }
-                            if (currentFacility != null){
-                                CustomLabel(
-                                    header = "InCharge",
-                                    headerColor = onSurfaceColor.copy(0.9f),
-                                    fontSize = 16.sp
-                                )
-                                Spacer(modifier = Modifier.height(pxToDp(5)))
-                                InChargeRow(label = "Prof.", name = currentFacility.prof_incharge)
-                                InChargeRow(
-                                    label = "Asst.",
-                                    name = currentFacility.lab_incharge,
-                                    icons = listOf(R.drawable.ic_mail, R.drawable.ic_call),
-                                    email = currentFacility.lab_incharge_email,
-                                    phone = currentFacility.lab_incharge_phone
-                                )
-                            }
-                        }
+                    CustomLabel(
+                        header = "InCharge",
+                        headerColor = onSurfaceColor.copy(0.9f),
+                        fontSize = 16.sp
+                    )
+                    Spacer(modifier = Modifier.height(pxToDp(5)))
+                    if (professorInCharge.isNotEmpty()) {
+                        InChargeRow(
+                            label = "Prof.",
+                            name = professorInCharge,
+                            email = professorEmail
+                        )
+                    }
+                    if (labAssistant.isNotEmpty()) {
+                        InChargeRow(
+                            label = "Asst.",
+                            name = labAssistant,
+                            icons = listOf(R.drawable.ic_mail, R.drawable.ic_call),
+                            email = labAssistantEmail,
+                            phone = labAssistantPhone
+                        )
                     }
                 }
             } else {

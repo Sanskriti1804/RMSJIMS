@@ -104,9 +104,17 @@ fun AdminModuleApp(parentNavController: NavHostController? = null) {
             MaintenanceDetailScreen(requestId = requestId, navController = navController)
         }
         // Shared screens - merged directly into AdminNavGraph
-        composable(Screen.ProductDescriptionScreen.route) {
+        composable(
+            Screen.ProductDescriptionScreen.route,
+            arguments = listOf(navArgument("itemId") { type = NavType.IntType; defaultValue = 0 })
+        ) { backStackEntry ->
+            val itemId = backStackEntry.arguments?.getInt("itemId") ?: 0
             val sessionViewModel: UserSessionViewModel = koinViewModel()
-            ProdDescScreen(navController = navController, sessionViewModel = sessionViewModel)
+            ProdDescScreen(
+                navController = navController,
+                sessionViewModel = sessionViewModel,
+                itemId = if (itemId == 0) null else itemId
+            )
         }
         composable(Screen.ProductDescriptionEditScreen.route) {
             val sessionViewModel: UserSessionViewModel = koinViewModel()
