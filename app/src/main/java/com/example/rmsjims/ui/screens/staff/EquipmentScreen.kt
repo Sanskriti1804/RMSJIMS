@@ -446,7 +446,7 @@ fun EquipmentCard(
     val itemViewModel : ItemsViewModel = koinViewModel()
 
     Card(
-        modifier = Modifier,
+        modifier = Modifier.fillMaxWidth(),
         onClick = onClick,
         shape = shape
     ) {

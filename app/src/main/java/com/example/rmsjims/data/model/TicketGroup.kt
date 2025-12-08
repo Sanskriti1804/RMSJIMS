@@ -9,7 +9,7 @@ enum class TicketStatus(
     val dispColor : Color
 ){
     PENDING("Pending", errorColor),
-    ACTIVE("Active", Color.Yellow),
+    ACTIVE("Active", Color(0xFF026AA2)),
     CLOSED("Closed", successColor),
     UNASSIGNED("Unassigned", Color.Gray)
 }
@@ -19,7 +19,7 @@ enum class TicketPriority(
     val dispColor: Color
 ){
     HIGH("High", Color.Red),
-    MEDIUM("Medium", Color.Yellow),
+    MEDIUM("Medium", Color(0xFFE67824)),
     LOW("Low", Color.Green)
 }
 
