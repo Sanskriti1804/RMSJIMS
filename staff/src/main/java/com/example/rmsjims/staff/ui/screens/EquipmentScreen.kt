@@ -303,11 +303,12 @@ fun EquipmentCard(
                     contentDescription = "Equipment Image",
                     modifier = Modifier
                         .align(Alignment.Center)
+                        .fillMaxSize()
                         .padding(
                             horizontal = ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp), 
                             vertical = ResponsiveLayout.getResponsiveSize(12.dp, 16.dp, 20.dp)
                         ),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Fit
                 )
                 AppCategoryIcon(
                     painter = painterResource(R.drawable.ic_save),

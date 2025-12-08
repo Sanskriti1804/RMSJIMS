@@ -279,11 +279,15 @@ fun ProdDescScreen(
         )
     }
 
-    val productImage = listOf(
-        R.drawable.temp,
-        R.drawable.temp,
-        R.drawable.temp
-    )
+    // Use the image from database (same as equipment card)
+    // Show 2 identical images so carousel can auto-rotate
+    val productImage = remember(equipmentImageUrl) {
+        if (equipmentImageUrl.isNotEmpty()) {
+            listOf(equipmentImageUrl, equipmentImageUrl)
+        } else {
+            listOf(R.drawable.temp, R.drawable.temp)
+        }
+    }
 
     val pagerState = rememberPagerState(pageCount = { productImage.size })
     val pagerInteractionSource = remember { MutableInteractionSource() }
@@ -618,7 +622,7 @@ fun ProdDescScreen(
 fun ProductCarousel(
     images : List<Any>,
     imageDescription : String = "Equipment images",
-    contentScale: ContentScale = ContentScale.Crop,
+    contentScale: ContentScale = ContentScale.Fit,
     pagerState: PagerState,
     pageInteractionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     backgroundColor : Color = onSurfaceVariant,
@@ -661,6 +665,7 @@ fun ProductCarousel(
                     contentScale = contentScale,
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(ResponsiveLayout.getResponsivePadding(8.dp, 10.dp, 12.dp))
                 )
             }
             Spacer(modifier = Modifier.height(pxToDp(16)))
