@@ -30,6 +30,7 @@ import com.example.rmsjims.ui.screens.staff.SavedCollectionScreen
 import com.example.rmsjims.ui.screens.assistant.NewEquipmentScreen
 import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
 import com.example.rmsjims.ui.screens.shared.RoleSelectionScreen
+import com.example.rmsjims.ui.screens.data.DepartmentDetailsScreen
 
 @Composable
 fun AdminModuleApp(parentNavController: NavHostController? = null) {
@@ -136,6 +137,16 @@ fun AdminModuleApp(parentNavController: NavHostController? = null) {
                 navController = navController,
                 sessionViewModel = sessionViewModel,
                 parentNavController = parentNavController
+            )
+        }
+        composable(
+            Screen.DepartmentDetailsScreen.route,
+            arguments = listOf(navArgument("departmentId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val departmentId = backStackEntry.arguments?.getInt("departmentId") ?: 0
+            DepartmentDetailsScreen(
+                departmentId = departmentId,
+                navController = navController
             )
         }
     }

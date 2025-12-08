@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -55,6 +57,15 @@ import com.example.rmsjims.util.pxToDp
 import com.example.rmsjims.util.ResponsiveLayout
 import com.example.rmsjims.viewmodel.BranchViewModel
 import com.example.rmsjims.viewmodel.DepartmentViewModel
+import com.example.rmsjims.viewmodel.AiSuggestionViewModel
+import com.example.rmsjims.data.model.AiSuggestion
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.collectAsState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.graphics.Color
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("RememberReturnType")
@@ -65,12 +76,19 @@ fun ProjectInfoScreen(
 ){
     val branchViewModel : BranchViewModel = koinViewModel()
     val branchList = branchViewModel.branchName
-    var value by remember { mutableStateOf("") }
+    var projectName by remember { mutableStateOf("") }
+    var guideName by remember { mutableStateOf("") }
+    var projectDescription by remember { mutableStateOf("") }
     var selectedBranch by remember { mutableStateOf("") }
 
     val departmentViewModel : DepartmentViewModel = koinViewModel()
     val query = departmentViewModel.query
     val filteredDepartmentList = departmentViewModel.filteredDepartments
+
+    // AI Suggestion ViewModel
+    val aiSuggestionViewModel: AiSuggestionViewModel = koinViewModel()
+    val suggestionState by aiSuggestionViewModel.suggestionState.collectAsState()
+    var showSuggestions by remember { mutableStateOf(false) }
 
     // Team members state
     val teamMembers = remember { mutableStateListOf<String>() }
@@ -107,22 +125,190 @@ fun ProjectInfoScreen(
         ){
             Spacer(modifier = Modifier.height(ResponsiveLayout.getResponsivePadding(20.dp, 24.dp, 28.dp)))
             AppTextField(
-                value = value,
-                onValueChange = { value = it},
-                placeholder = "Project Name"
+                value = projectName,
+                onValueChange = { projectName = it},
+                placeholder = "Project Name",
+                textColor = onSurfaceColor
             )
 
             AppTextField(
-                value = value,
-                onValueChange = { value = it},
-                placeholder = "Guide Name"
+                value = guideName,
+                onValueChange = { guideName = it},
+                placeholder = "Guide Name",
+                textColor = onSurfaceColor
             )
 
             AppTextField(
-                value = value,
-                onValueChange = { value = it},
-                placeholder = "Project Description"
+                value = projectDescription,
+                onValueChange = { projectDescription = it},
+                placeholder = "Project Description",
+                textColor = onSurfaceColor,
+                minLines = 3,
+                maxLines = 5
             )
+            
+            // AI Suggestions Button
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                AppButton(
+                    buttonText = if (showSuggestions) "Hide AI Suggestions" else "Get AI Equipment Suggestions",
+                    onClick = {
+                        if (!showSuggestions) {
+                            if (projectDescription.isBlank()) {
+                                // Show error or toast - for now just return
+                                return@AppButton
+                            }
+                            val fullDescription = """
+                                Project Name: $projectName
+                                Guide Name: $guideName
+                                Branch: $selectedBranch
+                                Department: $query
+                                Team Members: ${teamMembers.joinToString(", ")}
+                                Project Description: $projectDescription
+                            """.trimIndent()
+                            aiSuggestionViewModel.getSuggestions(fullDescription)
+                        }
+                        showSuggestions = !showSuggestions
+                    },
+                    modifier = Modifier.weight(1f),
+                    enabled = projectDescription.isNotBlank() || showSuggestions
+                )
+            }
+            
+            if (projectDescription.isBlank() && !showSuggestions) {
+                CustomLabel(
+                    header = "Enter project description above to get AI equipment suggestions",
+                    headerColor = onSurfaceColor.copy(alpha = 0.6f),
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
+            }
+            
+            // AI Suggestions Display
+            if (showSuggestions) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = whiteColor),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        // Header with close button
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CustomLabel(
+                                header = "AI Equipment Suggestions",
+                                headerColor = primaryColor,
+                                fontSize = 18.sp,
+                                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                            )
+                            IconButton(
+                                onClick = { 
+                                    showSuggestions = false
+                                    aiSuggestionViewModel.clearSuggestions()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Close",
+                                    tint = onSurfaceColor
+                                )
+                            }
+                        }
+                        
+                        when (val state = suggestionState) {
+                            is UiState.Loading -> {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 32.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        CircularProgressIndicator(color = primaryColor)
+                                        CustomLabel(
+                                            header = "AI is analyzing your project...",
+                                            headerColor = onSurfaceColor.copy(alpha = 0.7f),
+                                            fontSize = 14.sp
+                                        )
+                                    }
+                                }
+                            }
+                            is UiState.Success -> {
+                                if (state.data.suggestions.isEmpty()) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 16.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CustomLabel(
+                                            header = "No suggestions available. Please try with more project details.",
+                                            headerColor = onSurfaceColor.copy(alpha = 0.6f),
+                                            fontSize = 14.sp
+                                        )
+                                    }
+                                } else {
+                                    LazyColumn(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .heightIn(max = 400.dp),
+                                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        items(state.data.suggestions) { suggestion ->
+                                            AiSuggestionCard(suggestion = suggestion)
+                                        }
+                                    }
+                                }
+                            }
+                            is UiState.Error -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 16.dp),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    CustomLabel(
+                                        header = "Error: ${state.exception.message ?: "Unknown error"}",
+                                        headerColor = Color.Red,
+                                        fontSize = 14.sp
+                                    )
+                                    AppButton(
+                                        buttonText = "Try Again",
+                                        onClick = {
+                                            val fullDescription = """
+                                                Project Name: $projectName
+                                                Guide Name: $guideName
+                                                Branch: $selectedBranch
+                                                Department: $query
+                                                Team Members: ${teamMembers.joinToString(", ")}
+                                                Project Description: $projectDescription
+                                            """.trimIndent()
+                                            aiSuggestionViewModel.getSuggestions(fullDescription)
+                                        },
+                                        modifier = Modifier.padding(top = 8.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
 
             when (departmentViewModel.departmentState) {
@@ -178,8 +364,8 @@ fun ProjectInfoScreen(
             ) {
                 AppDropDownTextField(
                     modifier = Modifier.weight(1f),
-                    value = value,
-                    onValueChange = { value = it},
+                    value = selectedBranch,
+                    onValueChange = { selectedBranch = it},
                     placeholder = "Course Project",
                     items = listOf("Yes", "No")
                 )
@@ -400,6 +586,98 @@ fun TeamMemberChip(
                     modifier = Modifier.size(pxToDp(16))
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun AiSuggestionCard(suggestion: AiSuggestion.SuggestedEquipment) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = whiteColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "AI Suggestion",
+                    tint = primaryColor,
+                    modifier = Modifier.size(20.dp)
+                )
+                CustomLabel(
+                    header = suggestion.equipmentName,
+                    headerColor = onSurfaceColor,
+                    fontSize = 16.sp,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    CustomLabel(
+                        header = "Building: ${suggestion.buildingName}${suggestion.buildingNumber?.let { " ($it)" } ?: ""}",
+                        headerColor = onSurfaceColor.copy(alpha = 0.7f),
+                        fontSize = 13.sp
+                    )
+                    CustomLabel(
+                        header = "Department: ${suggestion.departmentName}",
+                        headerColor = onSurfaceColor.copy(alpha = 0.7f),
+                        fontSize = 13.sp
+                    )
+                    CustomLabel(
+                        header = "Location: ${suggestion.location}",
+                        headerColor = onSurfaceColor.copy(alpha = 0.7f),
+                        fontSize = 13.sp
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = when {
+                                suggestion.status.contains("Available", ignoreCase = true) -> Color(0xFF4CAF50).copy(alpha = 0.2f)
+                                suggestion.status.contains("Waiting", ignoreCase = true) -> Color(0xFFFF9800).copy(alpha = 0.2f)
+                                else -> Color(0xFFF44336).copy(alpha = 0.2f)
+                            },
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    CustomLabel(
+                        header = suggestion.status,
+                        headerColor = when {
+                            suggestion.status.contains("Available", ignoreCase = true) -> Color(0xFF4CAF50)
+                            suggestion.status.contains("Waiting", ignoreCase = true) -> Color(0xFFFF9800)
+                            else -> Color(0xFFF44336)
+                        },
+                        fontSize = 12.sp,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
+                    )
+                }
+            }
+            
+            CustomLabel(
+                header = "Why: ${suggestion.reason}",
+                headerColor = onSurfaceColor.copy(alpha = 0.8f),
+                fontSize = 13.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
         }
     }
 }

@@ -46,6 +46,9 @@ sealed class Screen(val route : String) {
     }
     object SplashScreen : Screen("splash")
     object SavedCollectionScreen : Screen("saved_collection")
+    object DepartmentDetailsScreen : Screen("department_details/{departmentId}") {
+        fun createRoute(departmentId: Int) = "department_details/$departmentId"
+    }
     
     // Navigation graph routes
     object SharedNavGraph : Screen("shared_nav_graph")

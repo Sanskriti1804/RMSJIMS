@@ -41,9 +41,13 @@ android {
             ?: System.getenv("SUPABASE_ANON_KEY")
             ?: System.getenv("SUPABASE_KEY")
             ?: ""
+        val geminiApiKey = (localProps["GEMINI_API_KEY"] as? String)
+            ?: System.getenv("GEMINI_API_KEY")
+            ?: ""
 
         buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
         buildConfigField("String", "SUPABASE_KEY", "\"$supabaseKey\"")
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {

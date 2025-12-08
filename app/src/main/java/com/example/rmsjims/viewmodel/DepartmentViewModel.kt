@@ -25,7 +25,7 @@ class DepartmentViewModel (
 
     val departmentName : List<String> get() =
          when(val state = departmentState){
-            is UiState.Success -> state.data.map {it.name}
+            is UiState.Success -> state.data.map {it.departmentName}
         else -> emptyList()
         }
 

@@ -57,16 +57,20 @@ fun AppButton(
     contentColor : Color = whiteColor,
     buttonText: String,
     shape: Shape = RoundedCornerShape(ResponsiveLayout.getResponsiveSize(4.dp, 6.dp, 8.dp)),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ){
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
             .fillMaxWidth()
             .height(ResponsiveLayout.getResponsiveSize(52.dp, 60.dp, 68.dp)),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
-            contentColor = contentColor
+            contentColor = contentColor,
+            disabledContainerColor = containerColor.copy(alpha = 0.6f),
+            disabledContentColor = contentColor.copy(alpha = 0.6f)
         ),
         shape = shape,
         content = {

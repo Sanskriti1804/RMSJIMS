@@ -23,6 +23,7 @@ import com.example.rmsjims.ui.screens.admin.AdminDashboardScreen
 import com.example.rmsjims.ui.screens.shared.AboutAppScreen
 import com.example.rmsjims.ui.screens.shared.RoleSelectionScreen
 import com.example.rmsjims.ui.screens.assistant.RequestDetailsScreen
+import com.example.rmsjims.ui.screens.data.DepartmentDetailsScreen
 import com.example.rmsjims.viewmodel.UserSessionViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -107,6 +108,16 @@ fun AssistantModuleApp(parentNavController: NavHostController? = null) {
                 navController = navController,
                 sessionViewModel = sessionViewModel,
                 parentNavController = parentNavController
+            )
+        }
+        composable(
+            Screen.DepartmentDetailsScreen.route,
+            arguments = listOf(navArgument("departmentId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val departmentId = backStackEntry.arguments?.getInt("departmentId") ?: 0
+            DepartmentDetailsScreen(
+                departmentId = departmentId,
+                navController = navController
             )
         }
     }
