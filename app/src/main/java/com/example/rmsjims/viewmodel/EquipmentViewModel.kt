@@ -70,6 +70,15 @@ class EquipmentViewModel(
         }
     }
 
+    suspend fun getEquipmentById(id: Int): Equipment? {
+        return try {
+            equipmentRepository.getEquipmentById(id)
+        } catch (e: Exception) {
+            Log.e("EquipmentViewModel", "Error fetching equipment by id", e)
+            null
+        }
+    }
+
     fun refresh() {
         fetchAllEquipment()
     }

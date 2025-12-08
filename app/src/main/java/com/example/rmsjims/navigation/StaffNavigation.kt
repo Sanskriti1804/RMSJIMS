@@ -77,8 +77,15 @@ fun StaffModuleApp(parentNavController: NavHostController? = null) {
             val sessionViewModel: UserSessionViewModel = koinViewModel()
             ProdDescScreen(navController = navController, sessionViewModel = sessionViewModel)
         }
-        composable(Screen.ProjectInfoScreen.route) {
-            ProjectInfoScreen(navController = navController)
+        composable(
+            Screen.ProjectInfoScreen.route,
+            arguments = listOf(navArgument("equipmentId") { type = NavType.IntType; defaultValue = 0 })
+        ) { backStackEntry ->
+            val equipmentId = backStackEntry.arguments?.getInt("equipmentId") ?: 0
+            ProjectInfoScreen(
+                navController = navController,
+                equipmentId = if (equipmentId == 0) null else equipmentId
+            )
         }
         composable(Screen.RaiseTicketScreen.route) {
             RaiseTicketScreen(navController = navController)

@@ -24,12 +24,13 @@ import com.example.rmsjims.data.remote.apiservice.DepartmentsApiService
 import com.example.rmsjims.data.remote.apiservice.RoomsApiService
 import com.example.rmsjims.data.remote.apiservice.EquipmentApiService
 import com.example.rmsjims.data.remote.apiservice.TicketsApiService
-import com.example.rmsjims.data.remote.apiservice.GeminiApiService
+import com.example.rmsjims.data.remote.apiservice.BookingApiService
 import com.example.rmsjims.data.remote.api.BuildingsApi
 import com.example.rmsjims.data.remote.api.DepartmentsApi
 import com.example.rmsjims.data.remote.api.RoomsApi
 import com.example.rmsjims.data.remote.api.EquipmentApi
 import com.example.rmsjims.data.remote.api.TicketsApi
+import com.example.rmsjims.data.remote.api.BookingApi
 import com.example.rmsjims.repository.AuthRepository
 import com.example.rmsjims.repository.BranchRepository
 import com.example.rmsjims.repository.ItemCategoriesRepository
@@ -44,8 +45,7 @@ import com.example.rmsjims.repository.DepartmentsRepository
 import com.example.rmsjims.repository.RoomsRepository
 import com.example.rmsjims.repository.EquipmentRepository
 import com.example.rmsjims.repository.TicketsRepository
-import com.example.rmsjims.repository.AiSuggestionRepository
-import com.example.rmsjims.data.remote.api.GeminiApi
+import com.example.rmsjims.repository.BookingRepository
 import com.example.rmsjims.viewmodel.AuthViewModel
 import com.example.rmsjims.viewmodel.BookingScreenViewmodel
 import com.example.rmsjims.viewmodel.BranchViewModel
@@ -64,7 +64,7 @@ import com.example.rmsjims.viewmodel.DepartmentsViewModel
 import com.example.rmsjims.viewmodel.RoomsViewModel
 import com.example.rmsjims.viewmodel.EquipmentViewModel
 import com.example.rmsjims.viewmodel.TicketsViewModel
-import com.example.rmsjims.viewmodel.AiSuggestionViewModel
+import com.example.rmsjims.viewmodel.BookingViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -88,7 +88,7 @@ val appModule = module {
     single<RoomsApiService> { RoomsApi(get()) }
     single<EquipmentApiService> { EquipmentApi(get()) }
     single<TicketsApiService> { TicketsApi(get()) }
-    single<GeminiApiService> { GeminiApi() }
+    single<BookingApiService> { BookingApi(get()) }
 
     single { BranchRepository (get()) }
     single { AuthRepository() }
@@ -104,7 +104,7 @@ val appModule = module {
     single { RoomsRepository(get()) }
     single { EquipmentRepository(get()) }
     single { TicketsRepository(get()) }
-    single { AiSuggestionRepository(get()) }
+    single { BookingRepository(get()) }
 
 //    // ViewModels
     viewModel { ItemCategoriesViewModel(get()) }
@@ -112,7 +112,7 @@ val appModule = module {
     viewModel { ItemSubCategoriesViewModel(get()) }
     viewModel { ItemImagesViewModel(get()) }
     viewModel { UserSessionViewModel(get()) }
-    viewModel { BookingScreenViewmodel(get()) }
+    viewModel { BookingScreenViewmodel(get(), get()) }
     viewModel { CalendarViewModel() }
     viewModel { FilterSortViewModel() }
     viewModel { SearchViewModel() }
@@ -125,7 +125,7 @@ val appModule = module {
     viewModel { RoomsViewModel(get()) }
     viewModel { EquipmentViewModel(get()) }
     viewModel { TicketsViewModel(get()) }
-    viewModel { AiSuggestionViewModel(get(), get(), get(), get()) }
+    viewModel { BookingViewModel(get()) }
 }
 
 

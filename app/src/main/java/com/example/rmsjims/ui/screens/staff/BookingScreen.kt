@@ -24,6 +24,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -76,6 +77,10 @@ fun BookingScreen(
     navController: NavHostController,
     viewModel: BookingScreenViewmodel = koinViewModel()
 ) {
+    // Refresh bookings when screen is displayed
+    LaunchedEffect(Unit) {
+        viewModel.loadBookings()
+    }
     Scaffold(
         topBar = {
             CustomTopBar(
@@ -252,17 +257,19 @@ fun InfoCard(
 
             Column(verticalArrangement = Arrangement.spacedBy(pxToDp(16))) {
                 CustomLabel(
-                    header = "InCharge",
+                    header = "Booking Information",
                     headerColor = onSurfaceColor.copy(0.9f)
                 )
-                InChargeRow(label = "Prof.", name = inChargeInfo.profName)
-                InChargeRow(
-                    label = "Asst.",
-                    name = inChargeInfo.asstName,
-                    icons = inChargeInfo.asstIcons,
-                    email = null, // Email not available in InChargeInfo
-                    phone = null  // Phone not available in InChargeInfo
-                )
+                InChargeRow(label = "Booker:", name = inChargeInfo.profName)
+                if (inChargeInfo.asstName != "N/A" && inChargeInfo.asstName.isNotBlank()) {
+                    InChargeRow(
+                        label = "Guide:",
+                        name = inChargeInfo.asstName,
+                        icons = inChargeInfo.asstIcons,
+                        email = null, // Email not available in InChargeInfo
+                        phone = null  // Phone not available in InChargeInfo
+                    )
+                }
             }
 
             Divider(thickness = pxToDp(1), color = cardColor)
